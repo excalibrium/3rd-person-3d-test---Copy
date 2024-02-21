@@ -1,0 +1,11 @@
+res://Main/Player.tscn
+res://Main/MainScene.tscn
+res://Objects/red_button.tscn
+res://Objects/cube.tscn
+res://Main/door.tscn
+res://joystick/virtual_joystick.tscn
+res://button_touch.tscn
+res://Objects/Models/Pantheon/PantheonBasic.tscn
+res://Objects/Models/pcpanth/pantold.tscn
+res://Objects/shield.tscn
+res://Objects/spear.tscn

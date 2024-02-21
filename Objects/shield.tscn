@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://tt16ubykusa7"]
+
+[ext_resource type="PackedScene" uid="uid://da5mytpfow4df" path="res://Main/shield.glb" id="1_mvpv8"]
+[ext_resource type="Texture2D" uid="uid://hg1j0xmid4up" path="res://Main/spear_000000013F730E78-000000013F730E78.png" id="2_5of4p"]
+[ext_resource type="Texture2D" uid="uid://bjefqpo6ew8tr" path="res://Main/spear_000000013F7335F8.jpg" id="3_lx2hp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cws5s"]
+resource_name = "weapons"
+cull_mode = 2
+albedo_texture = ExtResource("2_5of4p")
+roughness = 0.5
+normal_enabled = true
+normal_texture = ExtResource("3_lx2hp")
+
+[node name="Shield" type="Node3D"]
+
+[node name="shield" parent="." instance=ExtResource("1_mvpv8")]
+
+[node name="weapons" parent="shield" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_cws5s")
+
+[editable path="shield"]

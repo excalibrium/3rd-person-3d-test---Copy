@@ -1,0 +1,134 @@
+[gd_scene load_steps=11 format=3 uid="uid://c7ir0g4sqopgj"]
+
+[ext_resource type="Script" path="res://Main/Player.gd" id="1_g0u74"]
+[ext_resource type="PackedScene" uid="uid://b6u4r8e00b7cy" path="res://Main/UIelements/StaminaBar.tscn" id="2_vj0li"]
+[ext_resource type="PackedScene" uid="uid://destfi01ketm6" path="res://Objects/Models/DivineReaper/divine_reaper.tscn" id="3_nuy1r"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_s3l7o"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l44ut"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rwu2q"]
+
+[sub_resource type="Animation" id="Animation_cvvgg"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Divine Reaper:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Divine Reaper:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_n1dfu"]
+resource_name = "idle"
+length = 25.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Divine Reaper:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 12.5, 25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 6, 0), Vector3(0, 6, 4), Vector3(0, 6, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_pifqx"]
+resource_name = "reaper_swing_1"
+length = 3.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Divine Reaper:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3, 0.4, 0.5, 0.7, 0.8, 0.9, 1, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.9, 3.1, 3.2, 3.3, 3.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 5, 0), Vector3(0, 3, -0.022), Vector3(0, 2, -0.004), Vector3(0.159305, 1.62856, 0.387019), Vector3(0.229941, 1.89748, 0.472398), Vector3(0.497187, 3.28618, 0.688585), Vector3(0.660512, 3.41836, 0.899328), Vector3(0.973444, 3.34195, 0.899324), Vector3(1.33827, 3.63786, 1.10569), Vector3(1.77312, 3.63786, 1.18789), Vector3(3.35403, 3.85176, 1.03087), Vector3(3.45737, 3.84564, 1.18654), Vector3(3.61749, 3.81069, 1.18654), Vector3(3.70698, 3.76231, 1.18654), Vector3(3.28196, 3.86603, 1.18654), Vector3(2.08162, 5.08274, 1.18654), Vector3(1.20937, 5.29599, 1.15227), Vector3(-0.717511, 5.51956, 1.15227), Vector3(-1.4089, 5.4249, 1.15226), Vector3(-2.25392, 5.48611, 1.21426), Vector3(-3.57723, 4.80756, 1.21426), Vector3(-4.16453, 4.6136, 1.21426), Vector3(-3.95467, 4.29079, 1.21426), Vector3(-3.19832, 3.98267, 1.14071), Vector3(-1.73343, 3.46534, 1.00531), Vector3(0, 6, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Divine Reaper:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.9, 3.1, 3.2, 3.3, 3.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.0523599, 0, 0), Vector3(0.117461, 0, 0), Vector3(0.163729, 0, 0), Vector3(0.361615, -0.0877552, 4.09587e-09), Vector3(0.440434, -0.129651, -0.0076592), Vector3(0.627662, -0.152347, -0.0392133), Vector3(0.777307, -0.249878, -0.0713785), Vector3(0.865426, -0.386921, -0.121319), Vector3(0.935289, -0.4747, -0.303337), Vector3(0.844517, -0.686173, -0.530627), Vector3(0.826564, -1.07007, -0.910407), Vector3(0.741278, -1.11421, -0.972862), Vector3(0.733698, -1.16348, -1.0255), Vector3(0.702515, -1.17505, -1.04308), Vector3(0.699585, -1.22338, -1.11898), Vector3(1.0826, -1.0226, -0.815121), Vector3(1.0826, -1.0226, -0.815121), Vector3(1.24779, -0.691855, -0.456971), Vector3(1.28764, 0.505591, 0.784082), Vector3(1.19835, 0.846044, 1.13056), Vector3(1.09692, 1.01378, 1.3142), Vector3(0.95417, 1.14046, 1.46192), Vector3(0.814013, 0.988888, 1.43766), Vector3(0.808836, 0.510194, 0.901493), Vector3(0.831208, 0.464983, 0.839672), Vector3(0.815814, 0.338664, 0.649702), Vector3(0.163729, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_umhcn"]
+_data = {
+"RESET": SubResource("Animation_cvvgg"),
+"idle": SubResource("Animation_n1dfu"),
+"reaper_swing_1": SubResource("Animation_pifqx")
+}
+
+[node name="CharacterBody3D" type="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("1_g0u74")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_s3l7o")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_l44ut")
+
+[node name="view_anchor" type="Node3D" parent="."]
+transform = Transform3D(-1, 1.51808e-08, -8.60946e-08, 0, 0.984807, 0.173648, 8.74228e-08, 0.173648, -0.984807, 0, 0.5, 0)
+
+[node name="Camera3D" type="Camera3D" parent="view_anchor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+fov = 80.0
+
+[node name="view" type="Node3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="view"]
+mesh = SubResource("BoxMesh_rwu2q")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="StaminaBar" parent="CanvasLayer" instance=ExtResource("2_vj0li")]
+offset_left = 26.0
+offset_top = 24.0
+offset_right = 266.0
+offset_bottom = 38.0
+
+[node name="DR" type="Node3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, -8.74228e-09, -0.2, 0, 0.2, -8.74228e-09, 0, 0, 0)
+
+[node name="Divine Reaper" parent="DR" instance=ExtResource("3_nuy1r")]
+collision_layer = 2
+collision_mask = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DR"]
+libraries = {
+"": SubResource("AnimationLibrary_umhcn")
+}
+
+[connection signal="animation_finished" from="DR/AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

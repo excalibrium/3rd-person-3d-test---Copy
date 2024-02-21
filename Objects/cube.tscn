@@ -1,0 +1,37 @@
+[gd_scene load_steps=8 format=3 uid="uid://c5v5umkdw8wsw"]
+
+[ext_resource type="Texture2D" uid="uid://ca5rr1kabu72j" path="res://Objects/Pita/color_map.jpg" id="1_80bdn"]
+[ext_resource type="Script" path="res://Main/Door.gd" id="1_ak5gh"]
+[ext_resource type="Texture2D" uid="uid://bbi1i6s5cc31x" path="res://Objects/Pita/displacement_map.jpg" id="2_bk2fr"]
+[ext_resource type="Texture2D" uid="uid://bjlv4lr1bhfnv" path="res://Objects/Pita/normal_map_opengl.jpg" id="3_qk37d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q8p22"]
+albedo_texture = ExtResource("1_80bdn")
+roughness_texture = ExtResource("2_bk2fr")
+normal_enabled = true
+normal_scale = 1.8
+normal_texture = ExtResource("3_qk37d")
+heightmap_texture = ExtResource("2_bk2fr")
+heightmap_flip_texture = true
+uv1_scale = Vector3(3, 3, 3)
+uv2_scale = Vector3(3, 3, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_l7m1b"]
+material = SubResource("StandardMaterial3D_q8p22")
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_e58gu"]
+points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
+
+[node name="Cube" type="Node3D"]
+script = ExtResource("1_ak5gh")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.5, 0.5)
+collision_layer = 3
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("BoxMesh_l7m1b")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_e58gu")

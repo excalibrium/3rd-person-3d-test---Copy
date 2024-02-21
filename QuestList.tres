@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="QuestListV2" load_steps=9 format=3 uid="uid://bjfxyy2rlo1rb"]
+
+[ext_resource type="Script" path="res://Level/Common/Quests/questbase.gd" id="1_7koea"]
+[ext_resource type="Script" path="res://questlist.gd" id="1_aa4f0"]
+[ext_resource type="Script" path="res://Level/Common/Quests/taskbase.gd" id="2_a31ld"]
+
+[sub_resource type="Resource" id="Resource_ggavg"]
+script = ExtResource("2_a31ld")
+ID = 0
+target_ID = 2919980807
+status = 1
+name = "Go to the table and touch it"
+description = "omg do i need to explain this?"
+location = "Shelter"
+
+[sub_resource type="Resource" id="Resource_h7xlb"]
+script = ExtResource("2_a31ld")
+ID = 0
+target_ID = 2919980807
+status = 0
+name = "This is me testing task 2"
+description = "omg do i need to explain this?"
+location = "Shelter"
+
+[sub_resource type="Resource" id="Resource_58rt8"]
+script = ExtResource("1_7koea")
+ID = 0
+task_list = Array[ExtResource("2_a31ld")]([SubResource("Resource_ggavg"), SubResource("Resource_h7xlb")])
+quest_name = "Intearct with the table"
+quest_status = 1
+quest_activator_ID = 0
+
+[sub_resource type="Resource" id="Resource_g5v21"]
+script = ExtResource("2_a31ld")
+ID = 0
+target_ID = 4036368865
+status = 1
+name = "Visit the main office."
+description = ""
+location = "Shelter"
+
+[sub_resource type="Resource" id="Resource_vgyqk"]
+script = ExtResource("1_7koea")
+ID = 0
+task_list = Array[ExtResource("2_a31ld")]([SubResource("Resource_g5v21")])
+quest_name = "This is the 2nd quest in the game."
+quest_status = 1
+quest_activator_ID = 0
+
+[resource]
+script = ExtResource("1_aa4f0")
+quest_list = Array[ExtResource("1_7koea")]([SubResource("Resource_58rt8"), SubResource("Resource_vgyqk")])

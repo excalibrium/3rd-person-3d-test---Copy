@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bg2ebjv6utwto"]
+
+[ext_resource type="PackedScene" uid="uid://13l65w5vx8vb" path="res://Main/spear.glb" id="1_8cjc0"]
+
+[node name="Spear" type="Node3D"]
+
+[node name="spear" parent="." instance=ExtResource("1_8cjc0")]

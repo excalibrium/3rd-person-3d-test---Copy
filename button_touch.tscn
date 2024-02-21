@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6yp3atvvc21c"]
+
+[ext_resource type="Texture2D" uid="uid://bkvmydfn5saxg" path="res://joystick/textures/joystick_tip.png" id="2_q62n8"]
+
+[node name="Button" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="e" type="TouchScreenButton" parent="."]
+position = Vector2(986, 509)
+texture_normal = ExtResource("2_q62n8")
+texture_pressed = ExtResource("2_q62n8")
+action = "interact"
+
+[node name="run" type="TouchScreenButton" parent="."]
+position = Vector2(810, 508)
+texture_normal = ExtResource("2_q62n8")
+texture_pressed = ExtResource("2_q62n8")
+action = "LongBar"
