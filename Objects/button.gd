@@ -4,13 +4,6 @@ extends Node3D
 @export var door2 : Door
 #@onready var Ray = $RayCast3D
 @onready var Area = $Area3D
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# This function is called when the area enters another body
-
 
 # Replace "Player" with the actual class name of your player objec
 func _input(event):
