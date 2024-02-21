@@ -1,3 +1,9 @@
+#berk
+exe/
+.import/
+.godot/
+
+
 # Gradle files
 .gradle/
 build/
