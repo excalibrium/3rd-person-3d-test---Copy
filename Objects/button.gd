@@ -1,28 +1,33 @@
 extends Node3D
 
-@export var door : Door
-@export var door2 : Door
-#@onready var Ray = $RayCast3D
-@onready var Area = $Area3D
+@export var doors: Array[Door]
 
-# Replace "Player" with the actual class name of your player objec
+var is_player_nearby: bool
+
+func _ready():
+	if doors.size() > 1:
+		return
+	## Prevent crashing by checking if any doors are in the list.
+	## This would cause crashes if we were to toggle nothing (i.e list is there, but nothing is in it.)
+	assert("No door was set in the doors array, quitting.")
+
+
 func _input(event):
-	if event.is_action_pressed("interact"):
-		var overlapping_bodies = Area.get_overlapping_bodies()
-	
-		for A in overlapping_bodies:
-			if A is _Player:  # Replace "Player" with the actual class name of your player object
-				door.toggle()
-				door2.toggle()
-				break  # Exit the loop if you've found the player
-#		if Ray.is_colliding():
-#			var collider = Ray.get_collider()
-#			if collider is _Player:
-#				print("RAY colliding too")
+	if event.is_action_pressed("interact") && is_player_nearby:
+		toggle_doors()
 
-	pass
+## For each door in the list of doors, toggle them.
+func toggle_doors():
+	for door in doors:
+		door.toggle()
 
+## Set player is near to true when player has entered the area
+func _on_area_3d_body_entered(body):
+	if body is _Player:
+		is_player_nearby = true
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+## Set player is near to false when player has exited the area
+func _on_area_3d_body_exited(body):
+	if body is _Player:
+		is_player_nearby = false
+
