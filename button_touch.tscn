@@ -14,6 +14,12 @@ texture_normal = ExtResource("2_q62n8")
 texture_pressed = ExtResource("2_q62n8")
 action = "interact"
 
+[node name="lc" type="TouchScreenButton" parent="."]
+position = Vector2(986, 359)
+texture_normal = ExtResource("2_q62n8")
+texture_pressed = ExtResource("2_q62n8")
+action = "LeftClick"
+
 [node name="run" type="TouchScreenButton" parent="."]
 position = Vector2(810, 508)
 texture_normal = ExtResource("2_q62n8")

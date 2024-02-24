@@ -31,6 +31,7 @@ var fwd = false
 var bwd = false
 var lft = false
 var rgt = false
+var attacking = false
 # Add stamina-related variables
 var stamina = 100
 var max_stamina = 100
@@ -39,6 +40,8 @@ var stamina_regeneration_rate = 32
 var stamina_grace_period = 1  # Set the grace period to 1 seconds (adjust as needed)
 var time_since_stamina_used = 0
 var animationPlayer
+var attack_grace = 0.7
+var time_since_attack = 1
 @onready var animationTree = $BaseModel3D/MeshInstance3D/AnimationTree
 var deceleration_speed = 10.0  # Adjust the deceleration speed as needed
 var cameramode = 1
@@ -48,17 +51,18 @@ func _ready():
 	staminabar.init_stamina(stamina)
 	animationPlayer = $BaseModel3D/MeshInstance3D/AnimationPlayer
 #	animationPlayer.play("idle", 1, 1)
-signal test
 func _physics_process(delta):
+	print(attacking)
+	print(is_striking)
+	print(time_since_attack)
 	$Camera3D.global_transform.origin = $Camera3D.global_transform.origin.lerp($view_anchor/Node3D.global_transform.origin, 0.1)
 	$Camera3D.rotation = $view_anchor.rotation
 	if Input.is_action_pressed("LongBar") and is_on_floor():
 		actionbar += 1
 		time_since_release = 0  # Reset the time counter when the action is pressed
-
-	if Input.is_action_just_pressed("ui_accept"):
-		test.emit()
-
+		
+	if time_since_attack < attack_grace:
+		time_since_attack += delta
 	# Add gravity when not on the floor.
 	if not is_on_floor():
 		velocity.y -= gravity * delta * 1.125
@@ -105,9 +109,10 @@ func _physics_process(delta):
 		var speed_multiplier = 1.0
 		if is_running:
 			speed_multiplier = 1.5  # Adjust the multiplier as needed
-
+		if input_dir != Vector2.ZERO:
+			is_striking = 0
 # Handle dodging.
-		if is_dodging and is_striking < 2:
+		if is_dodging and attacking == false:
 			dodge_timer += delta
 			if is_moving:
 				if dodge_timer <= dodge_duration:
@@ -120,7 +125,7 @@ func _physics_process(delta):
 			# Reset dodging state
 					is_dodging = false
 					dodge_timer = 0
-		if is_dodging and is_striking < 2:
+		if is_dodging and attacking == false:
 			dodge_timer += delta
 			if !is_moving:
 				if dodge_timer <= backstep_duration:
@@ -133,7 +138,7 @@ func _physics_process(delta):
 					is_dodging = false
 					dodge_timer = 0
 		if not is_dodging:
-			if direction and is_striking < 2:
+			if direction and attacking == false:
 			# Calculate rotation angle based on movement direction.
 				target_rotation = atan2(direction.x, direction.z)
 				#$DR.rotation.y = lerp_angle($DR.rotation.y, target_rotation, 0.4)  # Adjust the interpolation factor as needed
@@ -154,8 +159,12 @@ func _physics_process(delta):
 
 				velocity.x = lerpf(velocity.x, 0, 0.2)
 				velocity.z = lerpf(velocity.z, 0, 0.2)
-		animationTree.set("parameters/conditions/Idle", input_dir == Vector2.ZERO)
-		animationTree.set("parameters/conditions/move", input_dir != Vector2.ZERO)
+		if attacking == true and time_since_attack >= attack_grace:
+			attacking = false
+		animationTree.set("parameters/conditions/Idle", input_dir == Vector2.ZERO and attacking == false)
+		animationTree.set("parameters/conditions/move", input_dir != Vector2.ZERO and attacking == false)
+		animationTree.set("parameters/conditions/strike", attacking == true)
+		animationTree.set("parameters/conditions/strike2", attacking == true and is_striking == 1)
 	move_and_slide()
 
 func _input(event):
@@ -192,10 +201,8 @@ func _input(event):
 		if lft:
 			print("180 from RGT to LFT")
 			lft = false
-	if event.is_action_pressed("LeftClick") and !is_dodging and is_on_floor():
-		is_striking = 1
 	if Input.is_action_just_released("LongBar") and is_on_floor():
-		if actionbar < 20 and !is_dodging and is_striking < 2 and stamina > 1:
+		if actionbar < 20 and !is_dodging and attacking == false and stamina > 1:
 			stored_dir_x = dir_x
 			stored_dir_z = dir_z
 			$view.rotation.y = target_rotation  # Adjust the interpolation factor as needed
@@ -208,6 +215,9 @@ func _input(event):
 				time_since_stamina_used = 0  # Reset the grace period timer when stamina is used
 		else:
 			actionbar = 0
+	if event.is_action_pressed("LeftClick") and !is_dodging and time_since_attack >= attack_grace and is_on_floor():
+		time_since_attack = 0
+		attacking = true
 
 	if event.is_action_pressed("Escape"):
 		get_tree().quit()
@@ -222,8 +232,6 @@ func _input(event):
 		$view_anchor.rotation.x -= event.relative.y / SENSITIVITY
 		$view_anchor.rotation.x = clamp($view_anchor.rotation.x , deg_to_rad(-70) , deg_to_rad(60))
 		
-		
-
 #func _on_animation_player_animation_started(anim_name): unused until plan 2025
 	#if anim_name == "reaper_swing_1":
 		#is_striking = true
@@ -236,3 +244,23 @@ func _input(event):
 		#animationPlayer.play("reaper_swing_1_recovery", 0, 1)
 	#else:
 		#animationPlayer.play("idle", 1, 8)
+func _on_animation_tree_animation_finished(anim_name):
+	if anim_name == "Attack_1":
+		attacking = false
+		is_striking = 1
+	if anim_name == "Attack_1_to_idle":
+		attacking = false
+		is_striking = 0
+	if anim_name == "Attack_2":
+		attacking = false
+	if anim_name == "Attack_2_to_idle":
+		attacking = false
+		is_striking = 0
+func _on_animation_tree_animation_started(anim_name):
+	if anim_name == "Attack_1":
+		attacking = true
+		is_striking = 0
+	if anim_name == "Attack_2":
+		attacking = true
+	if anim_name == "Attack_1_to_idle":
+		is_striking = 1
