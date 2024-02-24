@@ -35,16 +35,14 @@ script = null
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("2_bedd3")]
 
-[node name="RedButton" parent="." node_paths=PackedStringArray("door", "door2") instance=ExtResource("3_j1g3y")]
+[node name="RedButton" parent="." node_paths=PackedStringArray("doors") instance=ExtResource("3_j1g3y")]
 transform = Transform3D(-0.000191971, -1, 0, 1, -0.000191971, 0, 0, 0, 1, 1.14977, 1.44024, 0)
-door = NodePath("../Cube2")
-door2 = NodePath("../Root")
+doors = [NodePath("../Door_1"), NodePath("../Door_2")]
 
-[node name="Cube2" parent="." instance=ExtResource("1_5f1dg")]
-unique_name_in_owner = true
+[node name="Door_1" parent="." instance=ExtResource("1_5f1dg")]
 transform = Transform3D(0.348, 0, 0, 0, 2.622, 0, 0, 0, 2.07, 2.198, 0.5, 2.25)
 
-[node name="Root" parent="." instance=ExtResource("4_6ryya")]
+[node name="Door_2" parent="." instance=ExtResource("4_6ryya")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.50868, 2.14605, 0.354638, -1.74181)
 
 [node name="Cube3" parent="." instance=ExtResource("1_5f1dg")]
@@ -61,7 +59,3 @@ script = null
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
 size = Vector3(30, 3, 30)
-
-[editable path="RedButton"]
-[editable path="Cube2"]
-[editable path="Root"]
