@@ -1,9 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://dcc57sfg8omc7"]
+[gd_scene load_steps=15 format=3 uid="uid://dcc57sfg8omc7"]
 
 [ext_resource type="PackedScene" uid="uid://c5v5umkdw8wsw" path="res://Objects/cube.tscn" id="1_5f1dg"]
-[ext_resource type="PackedScene" uid="uid://c7ir0g4sqopgj" path="res://Main/Player.tscn" id="2_bedd3"]
+[ext_resource type="Texture2D" uid="uid://dqq7prwxbsg2j" path="res://Objects/Grass/1/Ground037_1K-JPG_Color.jpg" id="2_f4dsc"]
 [ext_resource type="PackedScene" uid="uid://caahgkkfwpwct" path="res://Objects/red_button.tscn" id="3_j1g3y"]
+[ext_resource type="Texture2D" uid="uid://nc5yfua7wxtq" path="res://Objects/Grass/1/Ground037_1K-JPG_Displacement.jpg" id="3_vc16u"]
 [ext_resource type="PackedScene" uid="uid://bxjxcl1rx4afl" path="res://Main/door.tscn" id="4_6ryya"]
+[ext_resource type="Texture2D" uid="uid://co8u2r7r4vjgr" path="res://Objects/Grass/1/Ground037_1K-JPG_NormalDX.jpg" id="4_a7ktx"]
+[ext_resource type="Texture2D" uid="uid://cqdxjliukecc7" path="res://Objects/Grass/1/Ground037_1K-JPG_Roughness.jpg" id="5_61x6a"]
+[ext_resource type="PackedScene" uid="uid://bchegd453201u" path="res://Main/PlayerV2/PlayerV2.tscn" id="8_cqtbt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5jrvg"]
 sky_top_color = Color(0.384314, 0.454902, 0.54902, 1)
@@ -16,27 +20,56 @@ sky_material = SubResource("ProceduralSkyMaterial_5jrvg")
 [sub_resource type="Environment" id="Environment_dqkor"]
 background_mode = 2
 sky = SubResource("Sky_of6as")
-tonemap_mode = 2
+tonemap_mode = 3
+tonemap_exposure = 0.81
 ssao_enabled = true
 glow_enabled = true
+volumetric_fog_gi_inject = 6.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_md4jf"]
+albedo_texture = ExtResource("2_f4dsc")
+roughness_texture = ExtResource("5_61x6a")
+normal_enabled = true
+normal_scale = 1.8
+normal_texture = ExtResource("4_a7ktx")
+heightmap_scale = -3.791
+heightmap_texture = ExtResource("3_vc16u")
+uv1_scale = Vector3(16, 16, 16)
+uv2_scale = Vector3(2.625, 2.625, 2.625)
+
+[sub_resource type="BoxMesh" id="BoxMesh_n5bnw"]
+material = SubResource("StandardMaterial3D_md4jf")
+size = Vector3(60, 2, 60)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k2ipe"]
+size = Vector3(60, 2, 60)
 
 [node name="Node3D" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(-0.866025, -0.0479229, -0.497698, 0, -0.995396, 0.0958458, -0.5, 0.0830049, 0.862038, 0, 0, 0)
 shadow_enabled = true
+shadow_opacity = 0.95
+directional_shadow_mode = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_dqkor")
 
 [node name="Cube" parent="." instance=ExtResource("1_5f1dg")]
-transform = Transform3D(50, 0, 0, 0, 1, 0, 0, 0, 50, 25, -0.5, -25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, -0.5, -25)
 script = null
 
-[node name="CharacterBody3D" parent="." instance=ExtResource("2_bedd3")]
+[node name="StaticBody3D" parent="Cube" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0.5, 25.003)
+
+[node name="MeshInstance3D" parent="Cube/StaticBody3D" index="0"]
+mesh = SubResource("BoxMesh_n5bnw")
+
+[node name="CollisionShape3D" parent="Cube/StaticBody3D" index="1"]
+shape = SubResource("BoxShape3D_k2ipe")
 
 [node name="RedButton" parent="." node_paths=PackedStringArray("doors") instance=ExtResource("3_j1g3y")]
-transform = Transform3D(-0.000191971, -1, 0, 1, -0.000191971, 0, 0, 0, 1, 1.14977, 1.44024, 0)
+transform = Transform3D(-0.000191971, -1, 0, 1, -0.000191971, 0, 0, 0, 1, 1.14977, 2.14706, 0)
 doors = [NodePath("../Door_1"), NodePath("../Door_2")]
 
 [node name="Door_1" parent="." instance=ExtResource("1_5f1dg")]
@@ -59,3 +92,8 @@ script = null
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
 size = Vector3(30, 3, 30)
+
+[node name="PlayerV2" parent="." instance=ExtResource("8_cqtbt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.29501, 1.98038, -0.243398)
+
+[editable path="Cube"]

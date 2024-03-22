@@ -1,20 +1,19 @@
-[gd_scene load_steps=8 format=3 uid="uid://c5v5umkdw8wsw"]
+[gd_scene load_steps=9 format=3 uid="uid://c5v5umkdw8wsw"]
 
-[ext_resource type="Texture2D" uid="uid://ca5rr1kabu72j" path="res://Objects/Pita/color_map.jpg" id="1_80bdn"]
 [ext_resource type="Script" path="res://Main/Door.gd" id="1_ak5gh"]
-[ext_resource type="Texture2D" uid="uid://bbi1i6s5cc31x" path="res://Objects/Pita/displacement_map.jpg" id="2_bk2fr"]
-[ext_resource type="Texture2D" uid="uid://bjlv4lr1bhfnv" path="res://Objects/Pita/normal_map_opengl.jpg" id="3_qk37d"]
+[ext_resource type="Texture2D" uid="uid://dqq7prwxbsg2j" path="res://Objects/Grass/1/Ground037_1K-JPG_Color.jpg" id="2_b5hda"]
+[ext_resource type="Texture2D" uid="uid://nc5yfua7wxtq" path="res://Objects/Grass/1/Ground037_1K-JPG_Displacement.jpg" id="3_nsljy"]
+[ext_resource type="Texture2D" uid="uid://co8u2r7r4vjgr" path="res://Objects/Grass/1/Ground037_1K-JPG_NormalDX.jpg" id="4_dimwe"]
+[ext_resource type="Texture2D" uid="uid://cqdxjliukecc7" path="res://Objects/Grass/1/Ground037_1K-JPG_Roughness.jpg" id="5_6od1v"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q8p22"]
-albedo_texture = ExtResource("1_80bdn")
-roughness_texture = ExtResource("2_bk2fr")
+albedo_texture = ExtResource("2_b5hda")
+roughness_texture = ExtResource("5_6od1v")
 normal_enabled = true
 normal_scale = 1.8
-normal_texture = ExtResource("3_qk37d")
-heightmap_texture = ExtResource("2_bk2fr")
-heightmap_flip_texture = true
-uv1_scale = Vector3(3, 3, 3)
-uv2_scale = Vector3(3, 3, 3)
+normal_texture = ExtResource("4_dimwe")
+heightmap_scale = -3.791
+heightmap_texture = ExtResource("3_nsljy")
 
 [sub_resource type="BoxMesh" id="BoxMesh_l7m1b"]
 material = SubResource("StandardMaterial3D_q8p22")

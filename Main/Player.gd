@@ -32,6 +32,7 @@ var bwd = false
 var lft = false
 var rgt = false
 var attacking = false
+var attack_buffer = 0
 # Add stamina-related variables
 var stamina = 100
 var max_stamina = 100
@@ -40,7 +41,7 @@ var stamina_regeneration_rate = 32
 var stamina_grace_period = 1  # Set the grace period to 1 seconds (adjust as needed)
 var time_since_stamina_used = 0
 var animationPlayer
-var attack_grace = 0.7
+var attack_grace = 0.8
 var time_since_attack = 1
 @onready var animationTree = $BaseModel3D/MeshInstance3D/AnimationTree
 var deceleration_speed = 10.0  # Adjust the deceleration speed as needed
@@ -52,12 +53,14 @@ func _ready():
 	animationPlayer = $BaseModel3D/MeshInstance3D/AnimationPlayer
 #	animationPlayer.play("idle", 1, 1)
 func _physics_process(delta):
-	print(attacking)
-	print(is_striking)
-	print(time_since_attack)
+	if attack_buffer != 0:
+		attacking = true
+	#print(attacking)
+	#print(is_striking)
+	#print(time_since_attack)
 	$Camera3D.global_transform.origin = $Camera3D.global_transform.origin.lerp($view_anchor/Node3D.global_transform.origin, 0.1)
 	$Camera3D.rotation = $view_anchor.rotation
-	if Input.is_action_pressed("LongBar") and is_on_floor():
+	if Input.is_action_pressed("SpaceBar") and is_on_floor():
 		actionbar += 1
 		time_since_release = 0  # Reset the time counter when the action is pressed
 		
@@ -92,7 +95,7 @@ func _physics_process(delta):
 			stamina += delta * stamina_regeneration_rate
 
 	# Handle jump.
-	if actionbar > 20 and is_running and is_moving and Input.is_action_just_pressed("LongBar") and is_on_floor():
+	if actionbar > 20 and is_running and is_moving and Input.is_action_just_pressed("SpaceBar") and is_on_floor():
 		if abs(velocity.x) > 2 or abs(velocity.z) > 2:
 			stamina -= 10
 			velocity.y = JUMP_VELOCITY
@@ -161,10 +164,10 @@ func _physics_process(delta):
 				velocity.z = lerpf(velocity.z, 0, 0.2)
 		if attacking == true and time_since_attack >= attack_grace:
 			attacking = false
-		animationTree.set("parameters/conditions/Idle", input_dir == Vector2.ZERO and attacking == false)
+		animationTree.set("parameters/conditions/Idle", input_dir == Vector2.ZERO and attacking == false and attack_buffer != 0)
 		animationTree.set("parameters/conditions/move", input_dir != Vector2.ZERO and attacking == false)
 		animationTree.set("parameters/conditions/strike", attacking == true)
-		animationTree.set("parameters/conditions/strike2", attacking == true and is_striking == 1)
+		animationTree.set("parameters/conditions/strike2", attacking == true and is_striking == 1 and attack_buffer == 1)
 	move_and_slide()
 
 func _input(event):
@@ -201,7 +204,7 @@ func _input(event):
 		if lft:
 			print("180 from RGT to LFT")
 			lft = false
-	if Input.is_action_just_released("LongBar") and is_on_floor():
+	if Input.is_action_just_released("SpaceBar") and is_on_floor():
 		if actionbar < 20 and !is_dodging and attacking == false and stamina > 1:
 			stored_dir_x = dir_x
 			stored_dir_z = dir_z
@@ -218,7 +221,9 @@ func _input(event):
 	if event.is_action_pressed("LeftClick") and !is_dodging and time_since_attack >= attack_grace and is_on_floor():
 		time_since_attack = 0
 		attacking = true
-
+	if event.is_action_pressed("LeftClick") and !is_dodging and is_on_floor():
+		if attack_buffer == 0 and time_since_attack > 0.3:
+			attack_buffer = 1
 	if event.is_action_pressed("Escape"):
 		get_tree().quit()
 		return
@@ -246,16 +251,19 @@ func _input(event):
 		#animationPlayer.play("idle", 1, 8)
 func _on_animation_tree_animation_finished(anim_name):
 	if anim_name == "Attack_1":
-		attacking = false
+		if attack_buffer == 0:
+			attacking = false
 		is_striking = 1
 	if anim_name == "Attack_1_to_idle":
 		attacking = false
 		is_striking = 0
 	if anim_name == "Attack_2":
 		attacking = false
+		attack_buffer = 0
 	if anim_name == "Attack_2_to_idle":
 		attacking = false
 		is_striking = 0
+		attack_buffer = 0
 func _on_animation_tree_animation_started(anim_name):
 	if anim_name == "Attack_1":
 		attacking = true

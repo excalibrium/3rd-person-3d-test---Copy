@@ -23,11 +23,11 @@ func toggle_doors():
 
 ## Set player is near to true when player has entered the area
 func _on_area_3d_body_entered(body):
-	if body is _Player:
+	if body is PlayerController:
 		is_player_nearby = true
 
 ## Set player is near to false when player has exited the area
 func _on_area_3d_body_exited(body):
-	if body is _Player:
+	if body is PlayerController:
 		is_player_nearby = false
 
