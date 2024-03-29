@@ -2,7 +2,7 @@ extends Camera3D
 
 @export var anchor: SpringArm3D
 @export var camera_slot: Node3D
-
+var cameramode = 1
 var SENSITIVITY = 600
 
 func _ready():
@@ -14,7 +14,11 @@ func _physics_process(_delta):
 	rotation = anchor.rotation
 
 func _input(event):
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion and cameramode == 1:
+		anchor.rotation.y -= event.relative.x / SENSITIVITY
+		anchor.rotation.x -= event.relative.y / SENSITIVITY
+		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-70) , deg_to_rad(60))
+	if event is InputEventScreenDrag and cameramode == 2:
 		anchor.rotation.y -= event.relative.x / SENSITIVITY
 		anchor.rotation.x -= event.relative.y / SENSITIVITY
 		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-70) , deg_to_rad(60))

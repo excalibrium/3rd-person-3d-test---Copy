@@ -19,6 +19,7 @@ var is_dodging = false
 var is_attacking = 0
 var is_running = false
 var is_moving = false
+var movement_lock = false
 var time_since_attack = 0
 var attack_grace = 0.7
 var action_bar = 0
