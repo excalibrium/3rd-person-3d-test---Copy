@@ -1,7 +1,7 @@
 extends Character
 
 @onready var animationTree = $BaseModel3D/MeshInstance3D/AnimationTree
-@onready var player = $"../PlayerV2"
+@onready var player = $"../Player"
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
 func _ready():
@@ -11,7 +11,7 @@ func _ready():
 func _physics_process(delta):
 	_handle_animations()
 	print(is_moving)
-	if velocity != Vector3(0, 0, 0):
+	if velocity != Vector3.ZERO:
 		is_moving = true
 	else:
 		is_moving = false

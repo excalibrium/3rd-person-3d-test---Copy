@@ -1,6 +1,17 @@
 extends Character
 
 class_name PlayerController
+
+enum AttackState {
+	IDLE,
+	ATTACK_1,
+	ATTACK_2,
+	ATTACK_3,
+	ATTACK_1_TO_IDLE,
+	ATTACK_2_TO_IDLE,
+	ATTACK_3_TO_IDLE
+}
+
 @onready var animationTree = $BaseModel3D/MeshInstance3D/AnimationTree
 var state_machine
 var current_state
@@ -10,7 +21,7 @@ var target_rotation: float = 0.0
 var global_dir = 0
 var attack_meter: float = 0.0
 var leftclick = false
-var attack_state = 0.0
+var attack_state = AttackState.IDLE
 var lockOn = false
 func _ready():
 	staminabar.init_stamina(stamina)
@@ -25,6 +36,7 @@ func _process(delta):
 	current_state = state_machine.get_current_node()
 	print(attacking)
 	print(attack_state)
+	print(attack_meter)
 	_handle_variables(delta)
 func _physics_process(delta):
 	_handle_movement()
@@ -84,7 +96,7 @@ func _handle_animations():
 	var camattachment = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CameraAttachment
 	$Camera.global_transform.origin.x = camattachment.global_transform.origin.x
 	$Camera.global_transform.origin.z = camattachment.global_transform.origin.z
-	var animationPlayer = $BaseModel3D/MeshInstance3D/AnimationPlayer
+	var _animationPlayer = $BaseModel3D/MeshInstance3D/AnimationPlayer
 	animationTree.set("parameters/conditions/idle", is_moving == false and is_on_floor() and attacking == false)
 	animationTree.set("parameters/conditions/is_moving", is_moving == true and is_on_floor() and attacking == false)
 	# Do anims.
@@ -92,72 +104,79 @@ func _handle_animations():
 
 
 
-
 func _handle_combat(delta):
-	if attack_state == 3.0 and attacking == true:
-		state_machine.travel("Attack_3")
-	if attack_state == 2.0 and attacking == true:
-		state_machine.travel("Attack_2")
-	if current_state == "Attack_1" or current_state == "Attack_2" or current_state == "Attack_3":
+	if current_state == "move":
+		print("MOVING")
+	if attacking:
+		if attack_state == AttackState.ATTACK_3:
+			state_machine.travel("Attack_3")
+		elif attack_state == AttackState.ATTACK_2:
+			state_machine.travel("Attack_2")
+		elif attack_state == AttackState.ATTACK_1:
+			state_machine.travel("Attack_1")
+	elif current_state == "move" or current_state == "idle":
+		attack_state = AttackState.IDLE
+
+	if attack_state == AttackState.ATTACK_1 or attack_state == AttackState.ATTACK_2 or attack_state == AttackState.ATTACK_3:
 		movement_lock = true
 	else:
 		movement_lock = false
+
 	if Input.is_action_just_pressed("LeftClick"):
 		attacking = true
 		leftclick = true
-	if Input.is_action_pressed("LeftClick") and attacking == true:
+
+	if Input.is_action_pressed("LeftClick") and attacking:
 		attack_meter += delta
-		if attack_meter >= 0.5: #play charge attack
+		if attack_meter >= 0.5:
 			print("charge_attack_placeholder")
+			attack_meter = 0.0
 			leftclick = false
-			attacking = false #making sure holding LC does nothing afterwards. couldve made a hold CA mechanic that switches between 2 or loops animations example: claymore users in genshin
-	if Input.is_action_just_released("LeftClick"):
-		if attack_meter < 0.5:
-			if current_state != "Attack_1" and current_state == "idle" or current_state == "move" or current_state == "Attack_3_to_idle":
-				attack_state = 1.0 #if not currently NA1 and idling or moving set  A_S to 1
-				state_machine.travel("Attack_1") #initiate attack_1 animation
-			if current_state != "Attack_2" and current_state == "Attack_1" or current_state == "Attack_1_to_idle":
-				if attack_state == 1.0: #if not currently NA2 and is or was at NA1 -tab- and now if A_S is 1 set it to 1.5  
-					attack_state = 1.5 #set A_S to 1.5 so when NA1 finishes it checks if A_S is 1.5 or not, if it is it will set A_S to 2 afterwards successfully
-					print("attack2 must buffer") #NA2 buffers by A_S being 1.5 and A_S is being constantly checked if it is 2 to make sure it plays NA2
-				attacking = true
-				if attack_state == 0.0:
-					attack_state = 2
-			if current_state != "Attack_3" and current_state == "Attack_2" or current_state == "Attack_2_to_idle":
-				if attack_state == 2.0:
-					attack_state = 2.5
-					print("attack3 must buffer")
-				attacking = true
-				if attack_state == 0.0:
-					state_machine.travel("Attack_3")
+			attacking = false
+			attack_state = AttackState.IDLE
+
+	if Input.is_action_just_released("LeftClick") and leftclick == true:
+		handle_attack_release()
+
+func handle_attack_release():
+
+	if attack_meter < 0.5:
+		if attack_state == AttackState.IDLE or attack_state == AttackState.ATTACK_3_TO_IDLE:
+			attack_state = AttackState.ATTACK_1
+		elif attack_state == AttackState.ATTACK_1 or attack_state == AttackState.ATTACK_1_TO_IDLE:
+			if attack_state == AttackState.ATTACK_1:
+				attack_buffer = 2
+			if attack_state == AttackState.ATTACK_1_TO_IDLE:
+				attack_state = AttackState.ATTACK_2
+		elif attack_state == AttackState.ATTACK_2 or attack_state == AttackState.ATTACK_2_TO_IDLE:
+			if attack_state == AttackState.ATTACK_2:
+				attack_buffer = 3
+			if attack_state == AttackState.ATTACK_2_TO_IDLE:
+				attack_state = AttackState.ATTACK_3
 		attack_meter = 0
 		leftclick = false
 
-
 func _on_animation_tree_animation_finished(anim_name):
-	if anim_name == "Attack_1":
-		if attack_state == 1.5:
-			attack_state = 2.0
-			attacking = true
-		else:
-			state_machine.travel("Attack_1_to_idle")
-			attack_state = 0.0
-			attacking = false
-	if anim_name == "Attack_2":
-		if attack_state == 2.5:
-			attack_state = 3.0
-			attacking = true
-		else:
-			state_machine.travel("Attack_2_to_idle")
-			attack_state = 0.0
-			attacking = false
-	if anim_name == "Attack_3":
-		if attack_state == 3.5:
-			attack_state = 4.0
-			attacking = true
-		else:
+	match anim_name:
+		"Attack_1":
+			if attack_buffer == 2:
+				attack_state = AttackState.ATTACK_2
+				attack_buffer = 0
+			else:
+				attack_state = AttackState.ATTACK_1_TO_IDLE
+				state_machine.travel("Attack_1_to_idle")
+				attacking = false
+		"Attack_2":
+			if attack_buffer == 3:
+				attack_state = AttackState.ATTACK_3
+				attack_buffer = 0
+			else:
+				attack_state = AttackState.ATTACK_2_TO_IDLE
+				state_machine.travel("Attack_2_to_idle")
+				attacking = false
+		"Attack_3":
+			attack_state = AttackState.ATTACK_3_TO_IDLE
 			state_machine.travel("Attack_3_to_idle")
-			attack_state = 0.0
 			attacking = false
-	if anim_name == "Attack_3_to_idle":
+		"Attack_3_to_idle":
 			attacking = false
