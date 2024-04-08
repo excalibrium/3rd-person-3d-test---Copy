@@ -213,7 +213,7 @@ func _on_animation_tree_animation_finished(anim_name):
 		"Attack_1":
 			if attack_meter < 0.5 and time_since_attack >= attack_grace:
 				print("SEX")
-			elif attack_buffer == 2:
+			if attack_buffer == 2:
 				attack_state = AttackState.ATTACK_2
 				attack_buffer = 0
 			else:
