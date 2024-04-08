@@ -9,7 +9,7 @@ func _ready():
 		return
 	## Prevent crashing by checking if any doors are in the list.
 	## This would cause crashes if we were to toggle nothing (i.e list is there, but nothing is in it.)
-	assert("No door was set in the doors array, quitting.")
+	#assert("No door was set in the doors array, quitting.")
 
 
 func _input(event):

@@ -1,21 +1,26 @@
-extends Character
+extends Enemy
 
 @onready var animationTree = $BaseModel3D/MeshInstance3D/AnimationTree
 @onready var player = $"../Player"
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
+var target: Node3D
 
 func _ready():
+	await get_tree().physics_frame
 	print(player.global_position)
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
+	var seeing = $RayCast3D.get_collider()
+	target = seeing
+	await get_tree().physics_frame
 	_handle_animations()
-	print(is_moving)
 	if velocity != Vector3.ZERO:
 		is_moving = true
 	else:
 		is_moving = false
-	navigation_agent.set_target_position(player.global_position)
+	if target == player:
+		navigation_agent.set_target_position(player.global_position)
 	if navigation_agent.is_navigation_finished():
 		return
 
@@ -27,6 +32,5 @@ func _physics_process(delta):
 
 func _handle_animations():
 	look_at(player.global_position)
-	var animationPlayer = $BaseModel3D/MeshInstance3D/AnimationPlayer
 	animationTree.set("parameters/conditions/idle", is_moving == false and is_on_floor() and attacking == false)
 	animationTree.set("parameters/conditions/is_moving", is_moving == true and is_on_floor() and attacking == false)

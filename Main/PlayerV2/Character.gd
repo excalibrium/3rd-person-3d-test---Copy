@@ -13,17 +13,23 @@ var stamina_drain_rate = 20
 var stamina_regeneration_rate = 32
 var stamina_grace_period = 1
 var time_since_stamina_used = 0
+
+var is_dodging = false
+var is_blocking = false
+
 var attacking = false
 var attack_buffer = 0
-var is_dodging = false
 var is_attacking = 0
+var time_since_attack = 0
+var attack_grace = 0.25
+var stunned = false
+@export var currentweapon: Weapon
+
 var is_running = false
 var is_moving = false
 var movement_lock = false
-var time_since_attack = 0
-var attack_grace = 0.7
 var action_bar = 0
-func _process(delta):
+func _process(_delta):
 	return
 
 func _physics_process(delta):

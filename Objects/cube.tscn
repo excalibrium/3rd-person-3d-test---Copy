@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c5v5umkdw8wsw"]
+[gd_scene load_steps=10 format=3 uid="uid://c5v5umkdw8wsw"]
 
 [ext_resource type="Script" path="res://Main/Door.gd" id="1_ak5gh"]
 [ext_resource type="Texture2D" uid="uid://dqq7prwxbsg2j" path="res://Objects/Grass/1/Ground037_1K-JPG_Color.jpg" id="2_b5hda"]
@@ -21,6 +21,8 @@ material = SubResource("StandardMaterial3D_q8p22")
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_e58gu"]
 points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_qtxre"]
+
 [node name="Cube" type="Node3D"]
 script = ExtResource("1_ak5gh")
 
@@ -34,3 +36,9 @@ mesh = SubResource("BoxMesh_l7m1b")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("ConvexPolygonShape3D_e58gu")
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.5, 0.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_qtxre")
