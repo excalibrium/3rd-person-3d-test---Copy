@@ -94,13 +94,16 @@ func _handle_movement():
 		velocity.x = lerpf(velocity.x, 0, 0.2)
 		velocity.z = lerpf(velocity.z, 0, 0.2)
 
-
 	if movement_lock and attacking and input_dir.length() > 0:
-		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.05)
+		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.01)
+		if !lockOn:
+			$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
+
 	if Input.is_action_pressed("SpaceBar") and is_on_floor():
 		action_bar += 1
 	if Input.is_action_just_released("SpaceBar") and is_on_floor():
 		action_bar = 0
+
 
 func _handle_variables(delta):
 	if time_since_stamina_used < stamina_grace_period:
@@ -204,8 +207,6 @@ func handle_attack_release():
 func _on_animation_tree_animation_finished(anim_name):
 	match anim_name:
 		"Attack_1":
-			if !lockOn:
-				$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.7)
 			if attack_buffer == 1:
 				state_machine.travel("Attack_2")
 				attack_buffer = 0
@@ -213,8 +214,6 @@ func _on_animation_tree_animation_finished(anim_name):
 				attacking = false
 				state_machine.travel("Attack_1_to_idle")
 		"Attack_2":
-			if !lockOn:
-				$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.7)
 			if attack_buffer == 2:
 				state_machine.travel("Attack_3")
 				attack_buffer = 0
@@ -222,8 +221,6 @@ func _on_animation_tree_animation_finished(anim_name):
 				attacking = false
 				state_machine.travel("Attack_2_to_idle")
 		"Attack_3":
-			if !lockOn:
-				$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.7)
 			attacking = false
 			state_machine.travel("Attack_3_to_idle")
 		"hit_cancel":
