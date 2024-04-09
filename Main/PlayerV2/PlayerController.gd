@@ -149,11 +149,12 @@ func _handle_animations(delta):
 
 
 func _handle_combat(delta):
-	if is_blocking and !is_moving:
+	if is_blocking and !is_moving and !attacking:
 		state_machine.travel("shield_block_1")
-	elif is_blocking and is_moving:
+	elif is_blocking and is_moving and !attacking:
 		state_machine.travel("shield_block_run")
 	if Input.is_action_pressed("RightClick"):
+		attack_buffer = 0
 		is_blocking = true
 	else:
 		is_blocking = false
