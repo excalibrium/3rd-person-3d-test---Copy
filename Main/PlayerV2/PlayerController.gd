@@ -28,7 +28,7 @@ var enemies = []
 var closest_enemy = null
 var current_path
 func _ready():
-	state_machine = animationTree.get("parameters/classic/playback")
+	state_machine = animationTree.get("parameters/StateMachine/playback")
 	enemies = get_tree().get_nodes_in_group("enemies")
 	staminabar.init_stamina(stamina)
 func _input(event):
@@ -79,9 +79,9 @@ func _handle_movement():
 	global_dir = input_dir
 	var camera_direction: Vector3 = ($Camera/view_anchor.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	var character_direction = $view.transform.basis.z.normalized()
+	target_rotation = atan2(camera_direction.x, camera_direction.z)
 	if input_dir.length() > 0 and !movement_lock:
 		is_moving = true
-		target_rotation = atan2(camera_direction.x, camera_direction.z)
 		if lockOn == true:
 			$BaseModel3D.rotation.y = $enemy_radar.rotation.y - 3
 		else:
@@ -93,8 +93,10 @@ func _handle_movement():
 		is_moving = false
 		velocity.x = lerpf(velocity.x, 0, 0.2)
 		velocity.z = lerpf(velocity.z, 0, 0.2)
-	if movement_lock and attacking:
-		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 1)
+
+
+	if movement_lock and attacking and input_dir.length() > 0:
+		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.05)
 	if Input.is_action_pressed("SpaceBar") and is_on_floor():
 		action_bar += 1
 	if Input.is_action_just_released("SpaceBar") and is_on_floor():
@@ -136,23 +138,14 @@ func _handle_animations(delta):
 #		state_machine.travel("idle")
 #	if is_moving == true and is_on_floor() and attacking == false and is_blocking == false:
 #		state_machine.travel("move")
-	animationTree.set("parameters/classic/conditions/idle", is_moving == false and is_on_floor() and attacking == false and is_blocking == false)
-	animationTree.set("parameters/classic/conditions/is_moving", is_moving == true and is_on_floor() and attacking == false and is_blocking == false)
+	animationTree.set("parameters/StateMachine/conditions/idle", is_moving == false and is_on_floor() and attacking == false and is_blocking == false)
+	animationTree.set("parameters/StateMachine/conditions/move", is_moving == true and is_on_floor() and attacking == false and is_blocking == false)
 	# Do anims.
 	pass 
 
 
 
 func _handle_combat(delta):
-	if attack_state == AttackState.ATTACK_3:
-		state_machine.travel("Attack_3")
-	elif attack_state == AttackState.ATTACK_2:
-		state_machine.travel("Attack_2")
-	elif attack_state == AttackState.ATTACK_1:
-		state_machine.travel("Attack_1")
-	elif current_state in ["move", "idle"]:
-		attack_state = AttackState.IDLE
-
 	if is_blocking and !is_moving:
 		state_machine.travel("shield_block_1")
 	elif is_blocking and is_moving:
@@ -161,85 +154,89 @@ func _handle_combat(delta):
 		is_blocking = true
 	else:
 		is_blocking = false
-	if weaponCollidingWall and attack_state != AttackState.IDLE and currentweapon.Hurt == true:
+
+	if weaponCollidingWall and attacking and currentweapon.Hurt == true:
 		state_machine.travel("hit_cancel")
-		attack_state = AttackState.IDLE
 		stunned = true
 		attacking = false
 	if time_since_attack <= attack_grace:
 		time_since_attack += delta
 
-	movement_lock = attack_state in [AttackState.ATTACK_1, AttackState.ATTACK_2, AttackState.ATTACK_3] or stunned
+	movement_lock = current_state in ["Attack_1", "Attack_2", "Attack_3"] or stunned
 
 	if Input.is_action_just_pressed("LeftClick"):
-		attacking = true
 		leftclick = true
 
-	if Input.is_action_pressed("LeftClick") and attacking and !stunned:
+	if Input.is_action_pressed("LeftClick") and leftclick == true and !stunned:
 		attack_meter += delta
 		if attack_meter >= 0.5:
 			print("charge_attack_placeholder")
+			time_since_attack = 0
 			attack_meter = 0.0
 			leftclick = false
 			attacking = false
-			attack_state = AttackState.IDLE
+
 
 
 	if Input.is_action_just_released("LeftClick") and leftclick == true:
 		handle_attack_release()
 
 func handle_attack_release():
-
+	leftclick = false
 	if attack_meter < 0.5 and time_since_attack >= attack_grace and !stunned:
 		time_since_attack = 0
-		if attack_state == AttackState.IDLE or attack_state == AttackState.ATTACK_3_TO_IDLE:
-			attack_state = AttackState.ATTACK_1
-		elif attack_state == AttackState.ATTACK_1 or attack_state == AttackState.ATTACK_1_TO_IDLE:
-			#if attack_state == AttackState.ATTACK_1:
-			#	attack_buffer = 2
-			if attack_state == AttackState.ATTACK_1_TO_IDLE:
-				print_rich("[color=red][wave amp=10 freq=2]SEX[/wave][/color]")
-				attack_state = AttackState.ATTACK_2
-		elif attack_state == AttackState.ATTACK_2 or attack_state == AttackState.ATTACK_2_TO_IDLE:
-			#if attack_state == AttackState.ATTACK_2:
-			#	attack_buffer = 3
-			if attack_state == AttackState.ATTACK_2_TO_IDLE:
-				attack_state = AttackState.ATTACK_3
-		attack_meter = 0
-		leftclick = false
+		if current_state in ["idle", "move", "attack_3_to_idle"]:
+			attacking = true
+			state_machine.travel("Attack_1")
+		match current_state:
+			"Attack_1":
+				attack_buffer = 1
+			"Attack_1_to_idle":
+				attacking = true
+				state_machine.travel("Attack_2")
+			"Attack_2":
+				attack_buffer = 2
+			"Attack_2_to_idle":
+				attacking = true
+				state_machine.travel("Attack_3")
+	attack_meter = 0
 
 func _on_animation_tree_animation_finished(anim_name):
 	match anim_name:
 		"Attack_1":
-			if attack_meter < 0.5 and time_since_attack >= attack_grace:
-				print("SEX")
-			if attack_buffer == 2:
-				attack_state = AttackState.ATTACK_2
+			if !lockOn:
+				$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.7)
+			if attack_buffer == 1:
+				state_machine.travel("Attack_2")
 				attack_buffer = 0
 			else:
 				attacking = false
 				state_machine.travel("Attack_1_to_idle")
-				attack_state = AttackState.ATTACK_1_TO_IDLE
 		"Attack_2":
-			if attack_buffer == 3:
-				attack_state = AttackState.ATTACK_3
+			if !lockOn:
+				$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.7)
+			if attack_buffer == 2:
+				state_machine.travel("Attack_3")
 				attack_buffer = 0
 			else:
-				state_machine.travel("Attack_2_to_idle")
-				attack_state = AttackState.ATTACK_2_TO_IDLE
 				attacking = false
+				state_machine.travel("Attack_2_to_idle")
 		"Attack_3":
-			state_machine.travel("Attack_3_to_idle")
-			attack_state = AttackState.ATTACK_3_TO_IDLE
+			if !lockOn:
+				$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.7)
 			attacking = false
+			state_machine.travel("Attack_3_to_idle")
 		"hit_cancel":
 			stunned = false
 			attacking = false
-#fugnc _on_spear_hitbox_area_entered(area):
-	#if area.is_in_group("walls"):
-		#weaponCollidingWall = true
-	#else:
-		#weaponCollidingWall = false
+
+
+
+func _on_spear_hitbox_area_entered(area):
+	if area.is_in_group("walls"):
+		weaponCollidingWall = true
+	else:
+		weaponCollidingWall = false
 
 
 func _on_ruined_blade_hitbox_area_entered(area):

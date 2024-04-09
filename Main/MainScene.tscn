@@ -146,13 +146,13 @@ mesh = SubResource("BoxMesh_7gb77")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.727025, 2, 4.0338)
 
 [node name="Head" parent="Player/BaseModel3D/Hitbox" index="0"]
-transform = Transform3D(0.999864, 0.0105935, 0.0126557, -0.00667959, 0.960949, -0.276644, -0.0150921, 0.276522, 0.960889, -0.000962138, 0.628775, -0.0453918)
+transform = Transform3D(0.999864, 0.0105935, 0.0126557, -0.00667959, 0.960949, -0.276644, -0.0150921, 0.276522, 0.960889, -0.000962138, 0.626656, -0.045258)
 
 [node name="Chest" parent="Player/BaseModel3D/Hitbox" index="1"]
-transform = Transform3D(1, 5.53463e-08, -2.89975e-07, -1.29283e-08, 0.990267, 0.139184, 2.94902e-07, -0.139184, 0.990267, -0.000962138, 0.389313, -0.011735)
+transform = Transform3D(1, 5.53463e-08, -2.89975e-07, -1.29283e-08, 0.990267, 0.139184, 2.94902e-07, -0.139184, 0.990267, -0.000962138, 0.387195, -0.011601)
 
 [node name="Tummy" parent="Player/BaseModel3D" index="1"]
-transform = Transform3D(0.999762, 0.0218126, -3.96944e-08, -0.0217745, 0.998015, 0.0590957, 0.00128907, -0.0590816, 0.998253, -0.00449288, 0.220991, -0.00144863)
+transform = Transform3D(0.999762, 0.0218126, -3.96944e-08, -0.0217745, 0.998015, 0.0590957, 0.00128907, -0.0590816, 0.998253, -0.00449288, 0.220126, -0.00144863)
 
 [node name="Skeleton3D" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm" index="0"]
 bones/4/rotation = Quaternion(0.00789076, 0.0173653, -0.0715015, 0.997258)
@@ -228,40 +228,40 @@ bones/83/rotation = Quaternion(-3.8184e-11, -1.64054e-11, -0.00110034, 0.999999)
 bones/85/rotation = Quaternion(6.79459e-10, -1.3503e-11, 0.0196257, 0.999807)
 
 [node name="C1" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="0"]
-transform = Transform3D(-0.0158061, -0.0140215, -0.999777, 0.159392, -0.987151, 0.0113245, -0.987089, -0.159177, 0.0178378, -0.732472, 1.51707, 3.77745)
+transform = Transform3D(-0.015806, -0.014022, -0.999777, 0.159392, -0.987151, 0.0113249, -0.987089, -0.159178, 0.0178378, -0.732472, 1.51495, 3.77758)
 
 [node name="C2" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="1"]
-transform = Transform3D(-0.0154389, -0.00250112, -0.999878, 0.0195644, -0.999807, 0.00219885, -0.99969, -0.0195281, 0.0154848, -0.735709, 1.28894, 3.7407)
+transform = Transform3D(-0.0154388, -0.00250183, -0.999877, 0.0195637, -0.999807, 0.00219958, -0.99969, -0.0195273, 0.0154847, -0.73571, 1.28682, 3.74084)
 
 [node name="C3" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="2"]
-transform = Transform3D(-0.015454, -0.00126705, -0.99988, 0.0108732, -0.99994, 0.00109907, -0.999821, -0.010855, 0.0154667, -0.736329, 1.04094, 3.73587)
+transform = Transform3D(-0.0154542, -0.00126869, -0.99988, 0.0108687, -0.99994, 0.00110078, -0.999821, -0.0108504, 0.0154669, -0.736331, 1.03882, 3.73601)
 
 [node name="C4" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="3"]
-transform = Transform3D(-0.0213359, -0.00343055, -0.999766, -0.0311108, -0.999507, 0.0040936, -0.999287, 0.0311909, 0.0212188, -0.736641, 0.793424, 3.73316)
+transform = Transform3D(-0.0213363, -0.00343302, -0.999766, -0.0311266, -0.999507, 0.00409642, -0.999287, 0.0312068, 0.0212189, -0.736645, 0.791303, 3.73332)
 
 [node name="C5" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="4"]
-transform = Transform3D(-0.0213858, -0.00129812, -0.99977, -0.035192, -0.999378, 0.00205039, -0.999151, 0.0352278, 0.0213268, -0.737525, 0.537445, 3.74119)
+transform = Transform3D(-0.0213861, -0.0012991, -0.99977, -0.0352355, -0.999376, 0.00205232, -0.999149, 0.0352713, 0.0213271, -0.737526, 0.535325, 3.74141)
 
 [node name="HL1" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="5"]
-transform = Transform3D(0.0630832, 0.545808, 0.835532, -0.970175, 0.229877, -0.0769179, -0.234053, -0.80576, 0.544031, -0.731882, 2.01825, 4.02417)
+transform = Transform3D(0.0641989, 0.546854, 0.834763, -0.969916, 0.231025, -0.0767519, -0.234823, -0.804722, 0.545234, -0.73188, 2.01615, 4.02466)
 
 [node name="HL2" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="6"]
-transform = Transform3D(0.255339, 0.085434, 0.963069, -0.531659, 0.844378, 0.0660539, -0.807552, -0.52889, 0.261025, -0.590304, 4.0751, 3.76523)
+transform = Transform3D(0.257033, 0.0860131, 0.962567, -0.531242, 0.844615, 0.0663835, -0.807289, -0.528418, 0.262788, -0.590034, 4.07327, 3.76551)
 
 [node name="HL3" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="7"]
-transform = Transform3D(0.421671, -0.179042, 0.888897, -0.902483, -0.177842, 0.392295, 0.0878461, -0.967634, -0.236574, -0.57131, 2.26268, 3.64761)
+transform = Transform3D(0.422818, -0.178517, 0.888457, -0.901973, -0.17765, 0.393555, 0.0875779, -0.967766, -0.236131, -0.570902, 2.2609, 3.64801)
 
 [node name="HL4" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="8"]
-transform = Transform3D(0.293746, -0.120921, 0.948203, -0.749213, 0.58691, 0.306946, -0.593627, -0.800571, 0.0818071, -0.615707, 4.21836, 3.40737)
+transform = Transform3D(0.295525, -0.120325, 0.947726, -0.748741, 0.586961, 0.307998, -0.593339, -0.800623, 0.0833689, -0.615208, 4.21663, 3.40772)
 
 [node name="HL5" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="9"]
-transform = Transform3D(0.316842, 0.0227226, 0.948205, -0.739376, -0.620256, 0.261925, 0.594083, -0.784069, -0.179723, -0.646655, 2.36861, 3.20219)
+transform = Transform3D(0.31718, 0.0237158, 0.948068, -0.739183, -0.620113, 0.262808, 0.594143, -0.784153, -0.179157, -0.646016, 2.3669, 3.20254)
 
 [node name="HL6" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="10"]
-transform = Transform3D(-0.216585, -0.234119, 0.947775, -0.885742, 0.455384, -0.0899208, -0.41055, -0.858961, -0.305998, -0.640581, 4.20256, 2.99252)
+transform = Transform3D(-0.215007, -0.233102, 0.948385, -0.885887, 0.455296, -0.0889315, -0.411066, -0.859284, -0.304394, -0.639678, 4.20088, 2.99284)
 
 [node name="LeftHandItem" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D" index="6"]
-transform = Transform3D(-0.304593, 0.0721047, 0.949749, -0.350999, -0.935454, -0.0415491, 0.885451, -0.346017, 0.310242, 0.394979, 0.943951, -0.0491971)
+transform = Transform3D(-0.304593, 0.0721047, 0.949749, -0.350999, -0.935454, -0.0415491, 0.885451, -0.346017, 0.310242, 0.394979, 0.941832, -0.0490633)
 
 [node name="SpearHitbox" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem/Spear" index="0"]
 collision_layer = 3
@@ -271,23 +271,23 @@ collision_mask = 3
 transform = Transform3D(0.0148874, 0.999889, -1.19209e-07, 4.00469e-08, -2.08616e-07, -1, -0.99989, 0.0148874, 2.13884e-08, -0.0905013, 0.1, -0.0433475)
 
 [node name="BoneAttachment3D2" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D" index="7"]
-transform = Transform3D(0.130557, -0.106472, 0.985707, 0.183833, -0.974377, -0.129597, 0.974249, 0.198125, -0.107639, -0.410683, 0.965127, 0.00825958)
+transform = Transform3D(0.130557, -0.106472, 0.985707, 0.183833, -0.974377, -0.129597, 0.974249, 0.198125, -0.107639, -0.410683, 0.963008, 0.0083933)
 
 [node name="CameraAttachment" parent="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D" index="8"]
-transform = Transform3D(1, 0.000138905, 0.000139227, 0.000139259, -0.999997, -0.00254355, 0.000138873, 0.00254357, -0.999997, -0.00449285, 1.07211, -0.0374968)
+transform = Transform3D(1, 0.000138905, 0.000139227, 0.000139259, -0.999997, -0.00254355, 0.000138873, 0.00254357, -0.999997, -0.00449285, 1.07124, -0.0374968)
 
 [node name="CasualEnemy" parent="." node_paths=PackedStringArray("currentweapon") groups=["enemies"] instance=ExtResource("9_8uosx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.527, 2, 4.746)
 currentweapon = NodePath("BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem/Spear")
 
 [node name="Head" parent="CasualEnemy/BaseModel3D/Hitbox" index="0"]
-transform = Transform3D(0.999983, 0.00239823, 0.00527517, -0.000640166, 0.950487, -0.310764, -0.00575927, 0.310755, 0.950473, -0.00230837, 0.61621, 0.00168896)
+transform = Transform3D(0.999964, 0.0044903, 0.00719498, -0.00197877, 0.948454, -0.316909, -0.00824712, 0.316883, 0.948429, -0.00196743, 0.611141, 0.00326777)
 
 [node name="Chest" parent="CasualEnemy/BaseModel3D/Hitbox" index="1"]
-transform = Transform3D(0.999939, -0.00555592, -0.00952794, 0.00549592, 0.999965, -0.00631216, 0.00956268, 0.00625941, 0.999935, -0.000964642, 0.374403, 0.000175476)
+transform = Transform3D(0.999966, -0.00414856, -0.0070619, 0.00405819, 0.999911, -0.0127632, 0.00711422, 0.0127341, 0.999894, -0.000964165, 0.369348, 0.000188351)
 
 [node name="Tummy" parent="CasualEnemy/BaseModel3D" index="1"]
-transform = Transform3D(0.999762, 0.0218126, -3.85175e-08, -0.0218114, 0.999709, -0.0103426, -0.00022556, 0.0103401, 0.999947, -0.00449562, 0.212584, -0.00149822)
+transform = Transform3D(0.999762, 0.0218126, -3.85175e-08, -0.0218114, 0.999709, -0.0103426, -0.00022556, 0.0103401, 0.999947, -0.00449467, 0.207529, -0.00148535)
 
 [node name="Skeleton3D" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm" index="0"]
 bones/4/rotation = Quaternion(0.00789076, 0.0173653, -0.0715015, 0.997258)
@@ -364,56 +364,56 @@ bones/83/rotation = Quaternion(-3.8184e-11, -1.64054e-11, -0.00110034, 0.999999)
 bones/85/rotation = Quaternion(6.79459e-10, -1.3503e-11, 0.0196257, 0.999807)
 
 [node name="C1" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="0"]
-transform = Transform3D(-0.0218844, -0.011238, 0.999697, 0.370012, -0.929025, -0.00234355, 0.92877, 0.369849, 0.0244895, 4.5314, 1.53586, 4.96865)
+transform = Transform3D(-0.0120461, -0.00414267, 0.999919, 0.338758, -0.940874, 0.000183001, 0.940797, 0.338733, 0.0127374, 4.53168, 1.53245, 4.96772)
 
 [node name="C2" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="1"]
-transform = Transform3D(-0.0244316, -0.00574544, 0.999685, 0.145265, -0.989391, -0.00213609, 0.989091, 0.145167, 0.025007, 4.52952, 1.3207, 5.05126)
+transform = Transform3D(-0.0137474, -0.00329144, 0.9999, 0.124572, -0.99221, -0.00155341, 0.992116, 0.124538, 0.0140504, 4.53131, 1.31455, 5.0434)
 
 [node name="C3" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="2"]
-transform = Transform3D(-0.0261361, -0.00373815, 0.999651, 0.092175, -0.995741, -0.00131361, 0.995399, 0.0921086, 0.0263692, 4.52878, 1.07481, 5.08415)
+transform = Transform3D(-0.0148062, -0.00207985, 0.999888, 0.0772, -0.997015, -0.000930693, 0.996905, 0.0771776, 0.0149228, 4.53115, 1.06808, 5.07151)
 
 [node name="C4" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="3"]
-transform = Transform3D(-0.0251828, -0.00134522, 0.999682, 0.0388209, -0.999246, -0.000366705, 0.998928, 0.0387994, 0.0252161, 4.5271, 0.827837, 5.11168)
+transform = Transform3D(-0.0124191, 0.000376793, 0.999923, 0.0215892, -0.999767, 0.000644874, 0.999689, 0.0215955, 0.0124082, 4.53024, 0.820933, 5.08893)
 
 [node name="C5" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="4"]
-transform = Transform3D(-0.0302176, -0.000897427, 0.999543, 0.0324241, -0.999474, 8.28616e-05, 0.999017, 0.0324118, 0.0302309, 4.53245, 0.572164, 5.07866)
+transform = Transform3D(-0.01603, 0.00109514, 0.999871, 0.0107349, -0.999941, 0.00126733, 0.999813, 0.0107538, 0.0160175, 4.53581, 0.565302, 5.05664)
 
 [node name="HL1" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="5"]
-transform = Transform3D(-0.965286, -0.261108, -0.00666907, 0.108049, -0.422432, 0.899932, -0.237797, 0.86797, 0.435981, 4.69157, 3.55831, 5.57208)
+transform = Transform3D(-0.966095, -0.258038, -0.00873815, 0.103644, -0.418598, 0.902238, -0.236469, 0.870741, 0.431151, 4.6887, 3.55852, 5.56526)
 
 [node name="HL2" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="6"]
-transform = Transform3D(-0.996716, -0.0582547, 0.0562411, 0.0318158, 0.356953, 0.93358, -0.0744609, 0.932303, -0.353928, 4.46582, 3.89477, 4.97223)
+transform = Transform3D(-0.997372, -0.0531997, 0.0491865, 0.0270703, 0.356091, 0.934059, -0.0672066, 0.932935, -0.353715, 4.46589, 3.89114, 4.97243)
 
 [node name="HL3" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="7"]
-transform = Transform3D(-0.962452, 0.156828, 0.221565, 0.0891634, -0.588291, 0.803719, 0.25639, 0.793296, 0.552219, 4.45403, 1.97373, 5.17945)
+transform = Transform3D(-0.964595, 0.156793, 0.212065, 0.0797616, -0.592999, 0.801243, 0.251384, 0.789789, 0.559498, 4.45418, 1.96996, 5.17969)
 
 [node name="HL4" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="8"]
-transform = Transform3D(-0.985042, 0.0239553, 0.170639, 0.162269, 0.462103, 0.871853, -0.0579674, 0.886502, -0.459078, 4.49165, 3.82712, 5.37529)
+transform = Transform3D(-0.986451, 0.0214984, 0.162643, 0.154497, 0.455226, 0.876868, -0.0551882, 0.890116, -0.452379, 4.49204, 3.82224, 5.37551)
 
 [node name="HL5" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="9"]
-transform = Transform3D(-0.88871, -0.388159, -0.243983, -0.0278287, -0.485514, 0.873785, -0.457625, 0.783331, 0.420679, 4.49556, 1.94481, 5.60321)
+transform = Transform3D(-0.887996, -0.386178, -0.249658, -0.0303532, -0.492505, 0.869779, -0.458848, 0.779939, 0.42562, 4.49602, 1.93823, 5.60359)
 
 [node name="HL6" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="10"]
-transform = Transform3D(-0.933291, -0.282074, -0.222265, -0.33411, 0.45508, 0.825392, -0.131674, 0.844592, -0.518966, 4.39234, 3.81401, 5.80948)
+transform = Transform3D(-0.931305, -0.282131, -0.230374, -0.339064, 0.440453, 0.831285, -0.133062, 0.852292, -0.505857, 4.39301, 3.80567, 5.81001)
 
 [node name="LeftHandItem" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D" index="6"]
-transform = Transform3D(-0.338152, 0.0102095, 0.941036, 0.0862406, -0.995398, 0.041789, 0.937132, 0.0952865, 0.335715, 0.355842, 0.958229, 0.10713)
+transform = Transform3D(-0.335711, 0.00905983, 0.941921, 0.0806458, -0.996006, 0.038323, 0.938507, 0.0888274, 0.333639, 0.355526, 0.952, 0.103565)
 
 [node name="BoneAttachment3D2" parent="CasualEnemy/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D" index="7"]
-transform = Transform3D(0.162328, -0.0473449, 0.9856, 0.370013, -0.923042, -0.105281, 0.914735, 0.381775, -0.132317, -0.38139, 0.965294, 0.0632665)
+transform = Transform3D(0.165106, -0.0476847, 0.985122, 0.363868, -0.925425, -0.105779, 0.916701, 0.375919, -0.135442, -0.381801, 0.960364, 0.0615795)
 
 [node name="CasualEnemy2" parent="." node_paths=PackedStringArray("currentweapon") groups=["enemies"] instance=ExtResource("9_8uosx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.473, 2, 1.746)
 currentweapon = NodePath("BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem/Spear")
 
 [node name="Head" parent="CasualEnemy2/BaseModel3D/Hitbox" index="0"]
-transform = Transform3D(0.999983, 0.00239823, 0.00527517, -0.000640166, 0.950487, -0.310764, -0.00575927, 0.310755, 0.950473, -0.00230789, 0.61621, 0.00168908)
+transform = Transform3D(0.999964, 0.0044903, 0.00719498, -0.00197877, 0.948454, -0.316909, -0.00824712, 0.316883, 0.948429, -0.00196648, 0.611141, 0.00326753)
 
 [node name="Chest" parent="CasualEnemy2/BaseModel3D/Hitbox" index="1"]
-transform = Transform3D(0.999939, -0.00555592, -0.00952794, 0.00549592, 0.999965, -0.00631216, 0.00956268, 0.00625941, 0.999935, -0.000965118, 0.374403, 0.000175357)
+transform = Transform3D(0.999966, -0.00414856, -0.0070619, 0.00405819, 0.999911, -0.0127632, 0.00711422, 0.0127341, 0.999894, -0.000965118, 0.369348, 0.000188231)
 
 [node name="Tummy" parent="CasualEnemy2/BaseModel3D" index="1"]
-transform = Transform3D(0.999762, 0.0218126, -3.85175e-08, -0.0218114, 0.999709, -0.0103426, -0.00022556, 0.0103401, 0.999947, -0.00449562, 0.212584, -0.00149834)
+transform = Transform3D(0.999762, 0.0218126, -3.85175e-08, -0.0218114, 0.999709, -0.0103426, -0.00022556, 0.0103401, 0.999947, -0.00449562, 0.207529, -0.00148547)
 
 [node name="Skeleton3D" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm" index="0"]
 bones/4/rotation = Quaternion(0.00789076, 0.0173653, -0.0715015, 0.997258)
@@ -490,43 +490,43 @@ bones/83/rotation = Quaternion(-3.8184e-11, -1.64054e-11, -0.00110034, 0.999999)
 bones/85/rotation = Quaternion(6.79459e-10, -1.3503e-11, 0.0196257, 0.999807)
 
 [node name="C1" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="0"]
-transform = Transform3D(-0.0218845, -0.0112379, 0.999697, 0.370012, -0.929024, -0.00234345, 0.928769, 0.369849, 0.0244895, -24.4686, 1.53586, 1.96866)
+transform = Transform3D(-0.0120453, -0.00413729, 0.999919, 0.338758, -0.940874, 0.00018777, 0.940797, 0.338732, 0.0127347, -24.4683, 1.53245, 1.96771)
 
 [node name="C2" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="1"]
-transform = Transform3D(-0.0244324, -0.00575234, 0.999685, 0.145266, -0.989391, -0.0021428, 0.989091, 0.145168, 0.0250088, -24.4705, 1.3207, 2.05126)
+transform = Transform3D(-0.0137459, -0.00328972, 0.9999, 0.124571, -0.99221, -0.0015519, 0.992116, 0.124537, 0.0140486, -24.4687, 1.31455, 2.0434)
 
 [node name="C3" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="2"]
-transform = Transform3D(-0.0261369, -0.00374824, 0.999651, 0.0921783, -0.995741, -0.00132348, 0.995399, 0.0921116, 0.0263713, -24.4712, 1.07481, 2.08416)
+transform = Transform3D(-0.0148049, -0.00207803, 0.999888, 0.0771993, -0.997015, -0.000928994, 0.996905, 0.0771769, 0.0149213, -24.4688, 1.06808, 2.07151)
 
 [node name="C4" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="3"]
-transform = Transform3D(-0.0251838, -0.00134988, 0.999682, 0.0388296, -0.999246, -0.0003711, 0.998928, 0.038808, 0.0252172, -24.4729, 0.827837, 2.11169)
+transform = Transform3D(-0.0124181, 0.000358835, 0.999923, 0.0215881, -0.999766, 0.000626884, 0.999689, 0.0215943, 0.0124076, -24.4698, 0.820933, 2.08893)
 
 [node name="C5" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="4"]
-transform = Transform3D(-0.030219, -0.000904212, 0.999543, 0.0324332, -0.999474, 7.64001e-05, 0.999016, 0.0324207, 0.0302325, -24.4676, 0.572164, 2.07867)
+transform = Transform3D(-0.0160279, 0.00114834, 0.999871, 0.0107396, -0.999941, 0.00132057, 0.999813, 0.0107593, 0.0160147, -24.4641, 0.565302, 2.05666)
 
 [node name="HL1" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="5"]
-transform = Transform3D(-0.76795, -0.519169, -0.375121, -0.639986, 0.598261, 0.482185, -0.0259157, 0.610366, -0.791696, -24.7429, 2.59248, 0.886571)
+transform = Transform3D(-0.769496, -0.518109, -0.373414, -0.638286, 0.604147, 0.477071, -0.0215779, 0.605449, -0.795592, -24.7397, 2.58164, 0.884381)
 
 [node name="HL2" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="6"]
-transform = Transform3D(-0.908911, -0.100392, -0.404724, -0.28269, 0.86185, 0.421069, 0.30654, 0.497126, -0.811726, -24.6002, 4.15453, 1.90536)
+transform = Transform3D(-0.908989, -0.0987954, -0.404941, -0.281479, 0.862017, 0.421538, 0.307421, 0.497156, -0.811374, -24.6005, 4.15141, 1.90438)
 
 [node name="HL3" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="7"]
-transform = Transform3D(-0.953056, 0.292389, -0.0786965, -0.151186, -0.234324, 0.960331, 0.26235, 0.927146, 0.267529, -24.6217, 2.34579, 2.01651)
+transform = Transform3D(-0.952572, 0.293877, -0.0790081, -0.153617, -0.240247, 0.958479, 0.262694, 0.925158, 0.273997, -24.6222, 2.34277, 2.0151)
 
 [node name="HL4" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="8"]
-transform = Transform3D(-0.960527, 0.132879, -0.244398, -0.115153, 0.609819, 0.78413, 0.253233, 0.781321, -0.570446, -24.5485, 4.28701, 2.2464)
+transform = Transform3D(-0.959764, 0.133927, -0.246813, -0.118403, 0.603975, 0.788158, 0.254625, 0.785669, -0.563816, -24.5493, 4.28256, 2.24502)
 
 [node name="HL5" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="9"]
-transform = Transform3D(-0.794275, -0.296379, -0.530364, -0.357837, -0.477263, 0.802602, -0.490998, 0.827271, 0.273023, -24.5135, 2.44256, 2.44792)
+transform = Transform3D(-0.799081, -0.2904, -0.526437, -0.352778, -0.482557, 0.801676, -0.486843, 0.826321, 0.283155, -24.5142, 2.43668, 2.44668)
 
 [node name="HL6" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/jiggelers" index="10"]
-transform = Transform3D(-0.747318, -0.132221, -0.651178, -0.62209, 0.483596, 0.615741, 0.233494, 0.865246, -0.443653, -24.5877, 4.31401, 2.66779)
+transform = Transform3D(-0.742824, -0.121357, -0.658395, -0.627112, 0.470446, 0.620814, 0.234399, 0.874044, -0.425563, -24.5885, 4.30682, 2.66662)
 
 [node name="LeftHandItem" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D" index="6"]
-transform = Transform3D(-0.338152, 0.0102095, 0.941036, 0.0862406, -0.995398, 0.041789, 0.937132, 0.0952865, 0.335715, 0.355842, 0.958229, 0.10713)
+transform = Transform3D(-0.335711, 0.00905983, 0.941921, 0.0806458, -0.996006, 0.038323, 0.938507, 0.0888274, 0.333639, 0.355526, 0.952, 0.103565)
 
 [node name="BoneAttachment3D2" parent="CasualEnemy2/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D" index="7"]
-transform = Transform3D(0.162328, -0.0473449, 0.9856, 0.370013, -0.923042, -0.105281, 0.914735, 0.381775, -0.132317, -0.38139, 0.965294, 0.0632665)
+transform = Transform3D(0.165106, -0.0476847, 0.985122, 0.363868, -0.925425, -0.105779, 0.916701, 0.375919, -0.135442, -0.381801, 0.960364, 0.0615795)
 
 [connection signal="area_entered" from="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem/BladeOfTheRuinedKing/RuinedBladeHitbox" to="Player" method="_on_ruined_blade_hitbox_area_entered"]
 [connection signal="area_exited" from="Player/BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem/BladeOfTheRuinedKing/RuinedBladeHitbox" to="Player" method="_on_ruined_blade_hitbox_area_exited"]
