@@ -5,12 +5,14 @@ extends Enemy
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 var target: Node3D
 
+
 func _ready():
 	await get_tree().physics_frame
 	print(player.global_position)
 
 
 func _physics_process(_delta):
+	_handle_combat()
 	var seeing = $RayCast3D.get_collider()
 	target = seeing
 	await get_tree().physics_frame
@@ -34,3 +36,7 @@ func _handle_animations():
 	look_at(player.global_position)
 	animationTree.set("parameters/conditions/idle", is_moving == false and is_on_floor() and attacking == false)
 	animationTree.set("parameters/conditions/is_moving", is_moving == true and is_on_floor() and attacking == false)
+	
+func _handle_combat():
+	var distance_to_player = global_position.distance_to(player.global_position)
+	#print(distance_to_player)
