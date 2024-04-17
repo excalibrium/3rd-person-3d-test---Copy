@@ -28,6 +28,11 @@ var enemies = []
 var closest_enemy = null
 var current_path
 var speed
+var time_since_actionbar_halt = 1
+var stored_velocity: Vector3
+var dickrot
+@onready var animation_tree = $BaseModel3D/MeshInstance3D/AnimationTree
+var RMPos
 func _ready():
 	state_machine = animationTree.get("parameters/StateMachine/playback")
 	enemies = get_tree().get_nodes_in_group("enemies")
@@ -42,10 +47,12 @@ func _input(event):
 		get_tree().quit()
 		return
 func _process(delta):
+	#print(RMPos)
+	#print(global_position)
 	current_state = state_machine.get_current_node()
 	current_path = state_machine.get_travel_path()
-	#print(current_path)
-	#print(current_state)
+	print(current_path)
+	print(current_state)
 	#print(movement_lock)
 	#print(attacking)
 	#print(attack_state)
@@ -54,7 +61,8 @@ func _process(delta):
 	_handle_variables(delta)
 	_handle_detection()
 func _physics_process(delta):
-	_handle_movement()
+	RMPos = animation_tree.get_root_motion_position()
+	_handle_movement(delta)
 	_handle_combat(delta)
 	_handle_animations(delta)
 	super(delta) # Call the parent class's _physics_process
@@ -75,29 +83,34 @@ func _handle_detection():
 		$enemy_radar.look_at(closest_enemy.global_transform.origin, Vector3.UP)
 
 
-func _handle_movement():
+func _handle_movement(delta):
 	var spd : float = velocity.length();
 	speed = spd
-	print(velocity)
-	print(spd)
+	#print(velocity)
+	#print(spd)
 	var input_dir = Input.get_vector("moveLeft", "moveRight", "moveForward", "moveBackward")
 	global_dir = input_dir
 	var camera_direction: Vector3 = ($Camera/view_anchor.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	var character_direction = $view.transform.basis.z.normalized()
 	target_rotation = atan2(camera_direction.x, camera_direction.z)
-	if input_dir.length() > 0 and !movement_lock:
+	if input_dir.length() > 0 and !movement_lock and is_on_floor():
 		is_moving = true
 		if lockOn == true:
-			$BaseModel3D.rotation.y = $enemy_radar.rotation.y - 3
+			$BaseModel3D.rotation.y = $enemy_radar.rotation.y - PI
 		else:
 			$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.2)
 		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.2)
-		velocity.x = lerpf(velocity.x, character_direction.x * speed_multiplier * 3, 0.075)
-		velocity.z = lerpf(velocity.z, character_direction.z * speed_multiplier * 3, 0.075)
-	else:
+		#velocity.x = lerpf(velocity.x, character_direction.x * speed_multiplier, 0.075)
+		#velocity.z = lerpf(velocity.z, character_direction.z * speed_multiplier, 0.075)
+		velocity = lerp(velocity, character_direction * speed_multiplier, 0.075)
+		stored_velocity = velocity
+	elif is_on_floor():
 		is_moving = false
 		velocity.x = lerpf(velocity.x, 0, 0.15)
 		velocity.z = lerpf(velocity.z, 0, 0.15)
+	var current_rotation := transform.basis.get_rotation_quaternion().normalized()
+
+	global_position += $BaseModel3D.global_transform.basis * RMPos
 
 	if movement_lock and attacking and input_dir.length() > 0:
 		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.01)
@@ -106,14 +119,19 @@ func _handle_movement():
 
 	if Input.is_action_pressed("SpaceBar") and is_on_floor():
 		action_bar += 1
-	if Input.is_action_just_released("SpaceBar") and is_on_floor():
-		action_bar = 0
+		time_since_actionbar_halt = 0
 	if Input.is_action_just_pressed("SpaceBar") and action_bar >= 20:
-		velocity.y += 20
+		velocity.y += 5
+		#velocity.z = stored_velocity.z
+		#velocity.x = stored_velocity.x
 		action_bar = 0
-		
+	dickrot = character_direction
 
 func _handle_variables(delta):
+	if time_since_actionbar_halt < 0.3:
+		time_since_actionbar_halt += delta
+	if time_since_actionbar_halt >= 0.3:
+		action_bar = 0
 	#print(action_bar)
 	if time_since_stamina_used < stamina_grace_period:
 		time_since_stamina_used += delta
@@ -133,9 +151,9 @@ func _handle_variables(delta):
 		is_running = false
 
 	if is_running == true:
-		speed_multiplier = 2.0
+		speed_multiplier = 6.0
 	else:
-		speed_multiplier = 1.2
+		speed_multiplier = 3.6
 
 	# regen stamina.
 	if time_since_stamina_used >= stamina_grace_period and stamina < max_stamina:
@@ -151,12 +169,10 @@ func _handle_animations(delta):
 #	if is_moving == true and is_on_floor() and attacking == false and is_blocking == false:
 #		state_machine.travel("move")
 	animationTree.set("parameters/StateMachine/conditions/idle", is_moving == false and is_on_floor() and attacking == false and is_blocking == false and is_running == false)
-	animationTree.set("parameters/StateMachine/conditions/move", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false and speed < 4.5)
-	animationTree.set("parameters/StateMachine/conditions/run", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == true and speed >= 4.5)
+	animationTree.set("parameters/StateMachine/conditions/move", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false and speed < 4.8)
+	animationTree.set("parameters/StateMachine/conditions/run", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == true and speed >= 4.8)
 	# Do anims.
 	pass 
-
-
 
 func _handle_combat(delta):
 	if is_blocking and !is_moving and !attacking and !is_running:
@@ -242,8 +258,6 @@ func _on_animation_tree_animation_finished(anim_name):
 			state_machine.travel("idle")
 			stunned = false
 			attacking = false
-			
-
 
 
 func _on_spear_hitbox_area_entered(area):

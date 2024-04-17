@@ -21,7 +21,7 @@ var attacking = false
 var attack_buffer = 0
 var is_attacking = 0
 var time_since_attack = 0
-var attack_grace = 0.125
+var attack_grace = 0.25
 var stunned = false
 @export var currentweapon: Weapon
 

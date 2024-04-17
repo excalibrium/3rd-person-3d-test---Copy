@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://crp4uy7afr3an"]
+[gd_scene load_steps=13 format=3 uid="uid://crp4uy7afr3an"]
 
 [ext_resource type="Script" path="res://Brick.gd" id="1_y2ylh"]
 [ext_resource type="Texture2D" uid="uid://bb3sm2yu5ah6m" path="res://Objects/Bricks/washedbrick/BricksReclaimedWhitewashedOffset001_AO_1K_METALNESS.png" id="2_ba1rm"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dfxdafsg0k6r5" path="res://Objects/Bricks/washedbrick/BricksReclaimedWhitewashedOffset001_METALNESS_1K_METALNESS.png" id="4_pd871"]
 [ext_resource type="Texture2D" uid="uid://fyjm10duy62a" path="res://Objects/Bricks/washedbrick/BricksReclaimedWhitewashedOffset001_NRM_1K_METALNESS.png" id="5_mhe20"]
 [ext_resource type="Texture2D" uid="uid://b5f8rx76vn51b" path="res://Objects/Bricks/washedbrick/BricksReclaimedWhitewashedOffset001_ROUGHNESS_1K_METALNESS.png" id="6_voy1w"]
+[ext_resource type="Texture2D" uid="uid://crogynfeixsl6" path="res://Objects/Placeholder/Prototype_Grid_Gray_09-256x256.png" id="7_lhcde"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_js4ve"]
 
@@ -30,6 +31,14 @@ heightmap_texture = ExtResource("3_4xdnl")
 [sub_resource type="BoxMesh" id="BoxMesh_nujc2"]
 material = SubResource("StandardMaterial3D_0wajf")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vaihm"]
+albedo_texture = ExtResource("7_lhcde")
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_liynt"]
+material = SubResource("StandardMaterial3D_vaihm")
+uv2_padding = 1.75
+
 [node name="Brick" type="Node3D"]
 script = ExtResource("1_y2ylh")
 
@@ -39,4 +48,8 @@ script = ExtResource("1_y2ylh")
 shape = SubResource("BoxShape3D_js4ve")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+visible = false
 mesh = SubResource("BoxMesh_nujc2")
+
+[node name="PLACEHOLDER" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("BoxMesh_liynt")
