@@ -1,11 +1,15 @@
-[gd_scene load_steps=31 format=3 uid="uid://bg2ebjv6utwto"]
+[gd_scene load_steps=33 format=3 uid="uid://bg2ebjv6utwto"]
 
+[ext_resource type="Script" path="res://Main/PlayerV2/Weapons/spear.gd" id="1_asan0"]
 [ext_resource type="Texture2D" uid="uid://cwcq1olvta7ke" path="res://Shaders/textures/T_PerlinNoise_Tiled.png" id="1_wk7io"]
 [ext_resource type="Texture2D" uid="uid://e41a1umac3fk" path="res://new_compressed_texture_2d.tres" id="2_qoi04"]
 [ext_resource type="Texture2D" uid="uid://bjefqpo6ew8tr" path="res://Main/spear_000000013F7335F8.jpg" id="3_86y4t"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_laj4l"]
 size = Vector3(1.285, 0.1, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1aldf"]
+size = Vector3(1, 0.1, 0.42)
 
 [sub_resource type="Gradient" id="Gradient_6rcjx"]
 
@@ -346,7 +350,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_wg7h7")
 
-[node name="Spear" type="Node3D"]
+[node name="Spear" type="Node3D" node_paths=PackedStringArray("hurtbox")]
+script = ExtResource("1_asan0")
+hurtbox = NodePath("SpearHurtbox")
 
 [node name="SpearHitbox" type="Area3D" parent="."]
 transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209e-07, -2.98023e-08, -0.999996, 0, -0.00427725, 0.366489, 0.000213493)
@@ -354,6 +360,13 @@ transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SpearHitbox"]
 transform = Transform3D(1, 0, -9.49512e-10, 2.98023e-08, 1, 5.87511e-08, 9.13963e-09, -7.92889e-08, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_laj4l")
+
+[node name="SpearHurtbox" type="Area3D" parent="."]
+transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209e-07, -2.98023e-08, -0.999996, 0, -0.00427721, 0.530617, 0.000213488)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SpearHurtbox"]
+transform = Transform3D(1, -2.98023e-08, -9.13963e-09, 2.98023e-08, 1, 7.92889e-08, 9.13962e-09, -7.92889e-08, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_1aldf")
 
 [node name="Cone" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.411416, 0.00657745, -0.00359079, -0.00578015, 0.469955, -0.000144447, 0.0129068, 0.00079995, 0.114394, -0.00417635, -0.00976008, 0.00846356)
@@ -368,3 +381,6 @@ libraries = {
 [node name="weapons" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_vuuxp")
 skeleton = NodePath("")
+
+[connection signal="area_entered" from="SpearHitbox" to="." method="_on_spear_hitbox_area_entered"]
+[connection signal="area_entered" from="SpearHurtbox" to="." method="_on_spear_hurtbox_area_entered"]

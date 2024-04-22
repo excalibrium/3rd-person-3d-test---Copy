@@ -16,6 +16,7 @@ enum AttackState {
 var state_machine
 var current_state
 @onready var staminabar = $HUD/StaminaBar
+@onready var healthbar = $HUD/HealthBar
 var speed_multiplier = 1.0
 var target_rotation: float = 0.0
 var global_dir = 0
@@ -37,6 +38,7 @@ func _ready():
 	state_machine = animationTree.get("parameters/StateMachine/playback")
 	enemies = get_tree().get_nodes_in_group("enemies")
 	staminabar.init_stamina(stamina)
+	healthbar.init_health(health)
 func _input(event):
 	if event.is_action_pressed("Q"):
 		if lockOn == false:
@@ -51,8 +53,8 @@ func _process(delta):
 	#print(global_position)
 	current_state = state_machine.get_current_node()
 	current_path = state_machine.get_travel_path()
-	print(current_path)
-	print(current_state)
+	#print(current_path)
+	#print(current_state)
 	#print(movement_lock)
 	#print(attacking)
 	#print(attack_state)
@@ -70,7 +72,7 @@ func _physics_process(delta):
 func _handle_detection():
 	closest_enemy = null
 	var closest_distance = INF
-	
+	"res://Main/PlayerV2/Player.tscn"
 	#print(closest_distance)
 	for enemy in enemies:
 		var distance = position.distance_to(enemy.position)
@@ -84,6 +86,9 @@ func _handle_detection():
 
 
 func _handle_movement(delta):
+	if Input.is_action_pressed("emulate"):
+		ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", "true")
+		ProjectSettings.save()
 	var spd : float = velocity.length();
 	speed = spd
 	#print(velocity)
@@ -128,6 +133,7 @@ func _handle_movement(delta):
 	dickrot = character_direction
 
 func _handle_variables(delta):
+	#print(health)
 	if time_since_actionbar_halt < 0.3:
 		time_since_actionbar_halt += delta
 	if time_since_actionbar_halt >= 0.3:
@@ -138,6 +144,11 @@ func _handle_variables(delta):
 	#print(time_since_stamina_used)
 	#print(is_dodging)
 	#print(time_since_attack)
+	if health < 0:
+		health = 0
+	if Input.is_action_just_pressed("interact"):
+		health += 50
+	healthbar.health = health
 	if stamina < 0:
 		stamina = 0
 	staminabar.stamina = stamina
@@ -273,3 +284,7 @@ func _on_ruined_blade_hitbox_area_entered(area):
 func _on_ruined_blade_hitbox_area_exited(area):
 	if area.is_in_group("walls"):
 		weaponCollidingWall = false
+
+func damage_by(damaged: int):
+	if currentweapon != CometSpear:
+		health -= damaged

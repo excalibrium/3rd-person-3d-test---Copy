@@ -43,6 +43,8 @@ uv2_padding = 1.75
 script = ExtResource("1_y2ylh")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 7
+collision_mask = 7
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("BoxShape3D_js4ve")
