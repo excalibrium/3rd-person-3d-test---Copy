@@ -12,6 +12,8 @@ enum AttackState {
 	ATTACK_3_TO_IDLE,
 	STUNNED
 }
+
+var player_no: Array
 @onready var animationTree = $BaseModel3D/MeshInstance3D/AnimationTree
 var state_machine
 var current_state
@@ -37,6 +39,7 @@ var RMPos
 func _ready():
 	state_machine = animationTree.get("parameters/StateMachine/playback")
 	enemies = get_tree().get_nodes_in_group("enemies")
+	player_no = get_tree().get_nodes_in_group("Player")
 	staminabar.init_stamina(stamina)
 	healthbar.init_health(health)
 func _input(event):
@@ -86,6 +89,9 @@ func _handle_detection():
 
 
 func _handle_movement(delta):
+	if global_position.y <= -5:
+		player_death(0)
+		print("player fell off", player_no)
 	if Input.is_action_pressed("emulate"):
 		ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", "true")
 		ProjectSettings.save()
@@ -144,11 +150,6 @@ func _handle_variables(delta):
 	#print(time_since_stamina_used)
 	#print(is_dodging)
 	#print(time_since_attack)
-	if health < 0:
-		health = 0
-	if Input.is_action_just_pressed("interact"):
-		health += 50
-	healthbar.health = health
 	if stamina < 0:
 		stamina = 0
 	staminabar.stamina = stamina
@@ -285,6 +286,15 @@ func _on_ruined_blade_hitbox_area_exited(area):
 	if area.is_in_group("walls"):
 		weaponCollidingWall = false
 
+func player_death(x):
+	global_position = Vector3(0,2,0)
+	player_no[x].reset()
+
 func damage_by(damaged: int):
-	if currentweapon != CometSpear:
-		health -= damaged
+	print("damaged you are")
+	health -= damaged
+	if health < 0:
+		health = 0
+		player_death(0)
+	healthbar.health = health
+	

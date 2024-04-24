@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://dpjwhjxo5x8i"]
 
-[ext_resource type="Script" path="res://Main/UIelements/StaminaBar.gd" id="1_4trbk"]
+[ext_resource type="Script" path="res://Main/UIelements/HealthBar.gd" id="1_t2uyp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pva3h"]
 
@@ -29,7 +29,7 @@ theme_override_styles/background = SubResource("StyleBoxEmpty_pva3h")
 theme_override_styles/fill = SubResource("StyleBoxFlat_3rkb2")
 value = 60.0
 show_percentage = false
-script = ExtResource("1_4trbk")
+script = ExtResource("1_t2uyp")
 
 [node name="ReductionBar" type="ProgressBar" parent="."]
 z_index = -1

@@ -38,3 +38,13 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y -= gravity * delta * 1.125
 	move_and_slide()
+
+func death():
+	
+	global_position = Vector3(0,2,0)
+	reset()
+	
+func reset():
+	health = 100
+	stamina = 100
+	velocity = Vector3.ZERO
