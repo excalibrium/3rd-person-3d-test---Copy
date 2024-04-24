@@ -115,7 +115,8 @@ func _on_animation_tree_animation_finished(anim_name):
 		"Attack_1":
 			movement_lock = false
 			attacking = false
-			
+		"death_01":
+			death()
 func damage_by(damaged: int):
 	print("YEAOOCH", health)
 	print(damaged)
