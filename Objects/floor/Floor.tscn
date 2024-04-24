@@ -1,0 +1,24 @@
+[gd_scene load_steps=6 format=3 uid="uid://es1ayoin2pk7"]
+
+[ext_resource type="Script" path="res://Brick.gd" id="1_e3410"]
+[ext_resource type="Texture2D" uid="uid://crogynfeixsl6" path="res://Objects/Placeholder/Prototype_Grid_Gray_09-256x256.png" id="2_a4o6k"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_js4ve"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_huat4"]
+albedo_texture = ExtResource("2_a4o6k")
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_nujc2"]
+material = SubResource("StandardMaterial3D_huat4")
+
+[node name="Floor" type="Node3D"]
+script = ExtResource("1_e3410")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_js4ve")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("BoxMesh_nujc2")

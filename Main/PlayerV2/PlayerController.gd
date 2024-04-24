@@ -90,7 +90,7 @@ func _handle_detection():
 
 func _handle_movement(delta):
 	if global_position.y <= -5:
-		player_death(0)
+		state_machine.travel("death_01")
 		print("player fell off", player_no)
 	if Input.is_action_pressed("emulate"):
 		ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", "true")
@@ -270,8 +270,9 @@ func _on_animation_tree_animation_finished(anim_name):
 			state_machine.travel("idle")
 			stunned = false
 			attacking = false
-
-
+		"death_01":
+			player_death(0)
+			state_machine.travel("idle")
 func _on_spear_hitbox_area_entered(area):
 	if area.is_in_group("walls"):
 		weaponCollidingWall = true
@@ -295,6 +296,6 @@ func damage_by(damaged: int):
 	health -= damaged
 	if health < 0:
 		health = 0
-		player_death(0)
+		state_machine.travel("death_01")
 	healthbar.health = health
 	

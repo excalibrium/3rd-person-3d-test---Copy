@@ -122,5 +122,5 @@ func damage_by(damaged: int):
 	health -= 10
 	if health < 0:
 		health = 0
-		death()
+		state_machine.travel("death_01")
 	healthbar.health = health
