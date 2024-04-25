@@ -1,19 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://es1ayoin2pk7"]
+[gd_scene load_steps=5 format=3 uid="uid://es1ayoin2pk7"]
 
 [ext_resource type="Script" path="res://Brick.gd" id="1_e3410"]
-[ext_resource type="Texture2D" uid="uid://crogynfeixsl6" path="res://Objects/Placeholder/Prototype_Grid_Gray_09-256x256.png" id="2_a4o6k"]
+[ext_resource type="Material" uid="uid://diaqj7qi84wjs" path="res://Objects/floor/Floor_Material.tres" id="2_7j7nj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_js4ve"]
+size = Vector3(60, 1, 60)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_huat4"]
-albedo_texture = ExtResource("2_a4o6k")
-uv1_triplanar = true
-
-[sub_resource type="BoxMesh" id="BoxMesh_nujc2"]
-material = SubResource("StandardMaterial3D_huat4")
+[sub_resource type="PlaneMesh" id="PlaneMesh_1vik5"]
+material = ExtResource("2_7j7nj")
+size = Vector2(60, 60)
 
 [node name="Floor" type="Node3D"]
 script = ExtResource("1_e3410")
+FloorSize = Vector2(3.03, 2.975)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 
@@ -21,4 +20,4 @@ script = ExtResource("1_e3410")
 shape = SubResource("BoxShape3D_js4ve")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
-mesh = SubResource("BoxMesh_nujc2")
+mesh = SubResource("PlaneMesh_1vik5")
