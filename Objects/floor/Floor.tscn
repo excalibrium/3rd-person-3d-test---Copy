@@ -15,8 +15,6 @@ script = ExtResource("1_e3410")
 FloorSize = Vector2(3.03, 2.975)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-collision_layer = 15
-collision_mask = 15
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("BoxShape3D_js4ve")
