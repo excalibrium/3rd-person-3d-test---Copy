@@ -289,9 +289,8 @@ func _on_ruined_blade_hitbox_area_exited(area):
 
 func player_death(x):
 	global_position = Vector3(0,2,0)
-	player_no[x].death()
-	health = 100
-	healthbar.health = health
+	player_no[x].reset()
+
 func damage_by(damaged: int):
 	print("damaged you are")
 	health -= damaged

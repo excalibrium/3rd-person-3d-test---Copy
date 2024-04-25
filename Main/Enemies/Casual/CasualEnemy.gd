@@ -4,8 +4,8 @@ class_name Casual_Enemy
 @onready var playerar = get_tree().get_nodes_in_group("Player")
 @onready var player: CharacterBody3D = playerar[0]
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
-@onready var raycasts: Array[RayCast3D] = []
 @onready var healthbar = $SubViewport/HealthBar
+@onready var vision: PlayerDetector = $Raycast
 var state_machine
 var current_state
 var target: Node3D
@@ -14,12 +14,8 @@ var state_timer: float
 var state_grace: int = 2
 var distance_to_player: int 
 var tarpos_timer = 0
-var seeing: Array
+var seeing: Array[CharacterBody3D]
 func _ready():
-	var raycasts_node = get_node("BaseModel3D/Raycast") # Adjust the path as necessary
-	for child in raycasts_node.get_children():
-		if child is RayCast3D:
-			raycasts.append(child)
 	state_timer = 0.0
 	state_machine = animationTree.get("parameters/playback")
 	await get_tree().physics_frame
@@ -41,15 +37,13 @@ func _physics_process(delta):
 	if state_timer < state_grace:
 		state_timer += delta
 	current_state = state_machine.get_current_node()
-	for i in raycasts:
-		seeing.push_front(i.get_collider())
-		if seeing.size() >= 36:
-			seeing = [i.get_collider()]
-
-	for i in range(seeing.size()):
-		if seeing[i] != null and seeing[i].is_in_group("Ally"):
-			target = seeing[i]
-			break # Exit the loop once the first ally is found
+	
+	# Get all bodies in vision from player_detector
+	seeing = vision.find_bodies()
+	# Select the first body that is an ally as target
+	for body in seeing:
+		if body.is_in_group("Ally"):
+			target = body
 
 	await get_tree().physics_frame
 	_handle_animations()
@@ -78,8 +72,8 @@ func _physics_process(delta):
 func _handle_animations():
 	for element in seeing:
 		if element != null and element.is_in_group("Ally"):
-			$BaseModel3D.look_at(target.global_position)
-			$BaseModel3D.global_rotation.y -= PI
+			look_at(target.global_position)
+			#$BaseModel3D.global_rotation.y -= PI
 			break
 	animationTree.set("parameters/conditions/idle", is_moving == false and is_on_floor() and attacking == false and !is_blocking)
 	animationTree.set("parameters/conditions/is_moving", is_moving == true and is_on_floor() and attacking == false and !is_blocking)
@@ -115,8 +109,7 @@ func _on_animation_tree_animation_finished(anim_name):
 		"Attack_1":
 			movement_lock = false
 			attacking = false
-		"death_01":
-			death()
+			
 func damage_by(damaged: int):
 	print("YEAOOCH", health)
 	print(damaged)
