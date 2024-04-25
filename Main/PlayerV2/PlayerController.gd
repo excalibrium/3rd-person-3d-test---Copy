@@ -273,6 +273,7 @@ func _on_animation_tree_animation_finished(anim_name):
 		"death_01":
 			player_death(0)
 			state_machine.travel("idle")
+			stunned = false
 func _on_spear_hitbox_area_entered(area):
 	if area.is_in_group("walls"):
 		weaponCollidingWall = true
@@ -289,6 +290,9 @@ func _on_ruined_blade_hitbox_area_exited(area):
 
 func player_death(x):
 	global_position = Vector3(0,2,0)
+	player_no[x].death()
+	health = 100
+	healthbar.health = health
 	player_no[x].reset()
 
 func damage_by(damaged: int):
@@ -297,5 +301,6 @@ func damage_by(damaged: int):
 	if health < 0:
 		health = 0
 		state_machine.travel("death_01")
+		stunned = true
 	healthbar.health = health
 	
