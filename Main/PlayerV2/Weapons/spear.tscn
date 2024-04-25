@@ -9,7 +9,7 @@
 size = Vector3(1.285, 0.1, 0.1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1aldf"]
-size = Vector3(1.5, 0.1, 0.42)
+size = Vector3(1, 0.1, 0.42)
 
 [sub_resource type="Gradient" id="Gradient_6rcjx"]
 
@@ -362,10 +362,10 @@ transform = Transform3D(1, 0, -9.49512e-10, 2.98023e-08, 1, 5.87511e-08, 9.13963
 shape = SubResource("BoxShape3D_laj4l")
 
 [node name="SpearHurtbox" type="Area3D" parent="."]
-transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209e-07, -2.98023e-08, -0.999996, 0, -0.00427728, 0.274007, 0.000213496)
+transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209e-07, -2.98023e-08, -0.999996, 0, -0.00427721, 0.530617, 0.000213488)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SpearHurtbox"]
-transform = Transform3D(1, -2.98023e-08, -9.13962e-09, 2.98023e-08, 1, 7.92889e-08, 9.13962e-09, -7.92889e-08, 1, 0, 0, 0)
+transform = Transform3D(1, -2.98023e-08, -9.13963e-09, 2.98023e-08, 1, 7.92889e-08, 9.13962e-09, -7.92889e-08, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_1aldf")
 
 [node name="Cone" type="MeshInstance3D" parent="."]
