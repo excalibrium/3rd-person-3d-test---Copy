@@ -44,7 +44,8 @@ func _physics_process(delta):
 	for body in seeing:
 		if body.is_in_group("Ally"):
 			target = body
-
+		else:
+			target = null
 	await get_tree().physics_frame
 	_handle_animations()
 	#print(velocity)
@@ -79,37 +80,41 @@ func _handle_animations():
 	animationTree.set("parameters/conditions/is_moving", is_moving == true and is_on_floor() and attacking == false and !is_blocking)
 	
 func _handle_combat():
+	print(target)
 	var random
-	if state_timer >= state_grace:
+	if state_timer >= state_grace and distance_to_player <= 5:
 		random = randi_range(1, 2)
 		if is_blocking and random != 2: #if blocking, make it false if decided to not  
 			is_blocking = false
 			movement_lock = false
-	if distance_to_player <= 4:
-		entered = true
-		if entered and state_timer >= state_grace and !stunned and target != null: # entered range, and if able to change states and is not stunned, it should:
-			movement_lock = false
-			state_timer = 0
-			if random == 1:
-				attacking = true
-				movement_lock = true
-				state_machine.travel("Attack_1")
-			if random == 2:
-				state_machine.travel("shield_block_1")
-				print_rich("[b][bgcolor=red]blocking[/bgcolor][/b]")
-				is_blocking = true
-				navigation_agent.set_target_position(self.global_position)
-				movement_lock = true
+	for element in seeing:
+		if element != null and element.is_in_group("Ally"):
+			if distance_to_player <= 4 and target != null:
+				entered = true
+				if entered and state_timer >= state_grace and !stunned and target != null: # entered range, and if able to change states and is not stunned, it should:
+					movement_lock = false
+					state_timer = 0
+					if random == 1:
+						attacking = true
+						movement_lock = true
+						state_machine.travel("Attack_1")
+					if random == 2:
+						state_machine.travel("shield_block_1")
+						print_rich("[b][bgcolor=red]blocking[/bgcolor][/b]")
+						is_blocking = true
+						navigation_agent.set_target_position(self.global_position)
+						movement_lock = true
 
-	else:
-		entered = false
+			else:
+				entered = false
 	#print(random)
 func _on_animation_tree_animation_finished(anim_name):
 	match anim_name:
 		"Attack_1":
 			movement_lock = false
 			attacking = false
-			
+		"death_01":
+			death()
 func damage_by(damaged: int):
 	print("YEAOOCH", health)
 	print(damaged)
