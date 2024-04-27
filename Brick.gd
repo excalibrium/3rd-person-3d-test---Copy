@@ -20,7 +20,7 @@ func set_mesh_size(val):
 	# Workaround bug that causes this function to run before the scene is loaded.
 	if is_node_ready():
 		$StaticBody3D/MeshInstance3D.mesh.size = val
-		$StaticBody3D/CollisionShape3D.shape.size = Vector3(val.x, 1, val.y)
+		$StaticBody3D/CollisionShape3D.shape.size = Vector3(val.x, 2, val.y)
 	else:
 		await ready
 		set_mesh_size(val)
