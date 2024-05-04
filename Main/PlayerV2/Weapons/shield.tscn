@@ -1,13 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://13l65w5vx8vb"]
+[gd_scene load_steps=6 format=3 uid="uid://13l65w5vx8vb"]
 
-[ext_resource type="Texture2D" uid="uid://e41a1umac3fk" path="res://new_compressed_texture_2d.tres" id="1_tjhcb"]
-[ext_resource type="Texture2D" uid="uid://hg1j0xmid4up" path="res://Main/spear_000000013F730E78-000000013F730E78.png" id="2_b0wxd"]
-[ext_resource type="Texture2D" uid="uid://bjefqpo6ew8tr" path="res://Main/spear_000000013F7335F8.jpg" id="3_emape"]
+[ext_resource type="Texture2D" uid="uid://cjkxwij2kdhx6" path="res://Main/PlayerV2/Weapons/spear_000000013F730E78-000000013F730E78.png" id="1_eqoy1"]
+[ext_resource type="Texture2D" uid="uid://b5qnxbwaktbil" path="res://Main/PlayerV2/Weapons/spear_000000013F7335F8.jpg" id="2_wmtrt"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2k7jw"]
 resource_name = "weapons"
-albedo_texture = ExtResource("1_tjhcb")
+albedo_texture = ExtResource("1_eqoy1")
 roughness = 0.5
+normal_enabled = true
+normal_texture = ExtResource("2_wmtrt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_avn5v"]
 _surfaces = [{
@@ -43,17 +44,8 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_avn5v")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cws5s"]
-resource_name = "weapons"
-cull_mode = 2
-albedo_texture = ExtResource("2_b0wxd")
-roughness = 0.5
-normal_enabled = true
-normal_texture = ExtResource("3_emape")
-
 [node name="Shield" type="Node3D"]
 
 [node name="weapons" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_ks615")
 skeleton = NodePath("")
-surface_material_override/0 = SubResource("StandardMaterial3D_cws5s")

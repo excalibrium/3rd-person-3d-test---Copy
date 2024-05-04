@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 class_name Character 
 
-const SPEED = 3.0
+const SPEED = 1.5
 const JUMP_VELOCITY = 4.0
 
 
@@ -23,7 +23,7 @@ var attacking = false
 var attack_buffer = 0
 var is_attacking = 0
 var time_since_attack = 0
-var attack_grace = 0.25
+var attack_grace = 0.175
 var stunned = false
 @export var currentweapon: Weapon
 

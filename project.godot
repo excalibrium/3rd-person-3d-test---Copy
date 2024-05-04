@@ -98,5 +98,6 @@ reflections/reflection_atlas/reflection_size.mobile=32
 global_illumination/gi/use_half_resolution=true
 shading/overrides/force_vertex_shading.mobile=false
 anti_aliasing/screen_space_roughness_limiter/enabled=false
+scaling_3d/scale=2.0
 scaling_3d/fsr_sharpness=1.2
 lights_and_shadows/positional_shadow/atlas_size.mobile=512

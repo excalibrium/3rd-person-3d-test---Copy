@@ -4,15 +4,14 @@
 [ext_resource type="Material" uid="uid://diaqj7qi84wjs" path="res://Objects/floor/Floor_Material.tres" id="2_7j7nj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_js4ve"]
-size = Vector3(60, 1, 60)
+size = Vector3(60, 2, 60)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_1vik5"]
+[sub_resource type="BoxMesh" id="BoxMesh_w2xd3"]
 material = ExtResource("2_7j7nj")
-size = Vector2(60, 60)
+size = Vector3(60, 2, 60)
 
 [node name="Floor" type="Node3D"]
 script = ExtResource("1_e3410")
-FloorSize = Vector2(3.03, 2.975)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 collision_layer = 7
@@ -22,4 +21,4 @@ collision_mask = 7
 shape = SubResource("BoxShape3D_js4ve")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
-mesh = SubResource("PlaneMesh_1vik5")
+mesh = SubResource("BoxMesh_w2xd3")

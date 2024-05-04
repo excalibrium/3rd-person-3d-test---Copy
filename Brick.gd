@@ -5,7 +5,7 @@ extends Node3D
 class_name Ground
 
 ## Size in meters. Expands the floor from the middle point to x/2 meters right and x/2 meters left.
-@export var FloorSize: Vector2 = Vector2(2, 2):
+@export var FloorSize: Vector3 = Vector3(2, 1, 2):
 	get:
 		return FloorSize
 	set(val):
@@ -20,7 +20,7 @@ func set_mesh_size(val):
 	# Workaround bug that causes this function to run before the scene is loaded.
 	if is_node_ready():
 		$StaticBody3D/MeshInstance3D.mesh.size = val
-		$StaticBody3D/CollisionShape3D.shape.size = Vector3(val.x, 2, val.y)
+		$StaticBody3D/CollisionShape3D.shape.size = Vector3(val.x, val.y, val.z)
 	else:
 		await ready
 		set_mesh_size(val)

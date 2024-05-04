@@ -5,7 +5,7 @@ extends Camera3D
 @export var anchor: SpringArm3D
 @export var camera_slot: Node3D
 var cameramode = 1
-var SENSITIVITY = 600
+var SENSITIVITY = 1000
 var lockOn = false
 
 func _ready():

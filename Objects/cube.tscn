@@ -37,7 +37,7 @@ mesh = SubResource("BoxMesh_l7m1b")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("ConvexPolygonShape3D_e58gu")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="Area3D" type="Area3D" parent="." groups=["walls"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.5, 0.5)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]

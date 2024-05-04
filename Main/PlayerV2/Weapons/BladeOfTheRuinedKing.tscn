@@ -9,10 +9,11 @@ resource_name = "sword"
 transparency = 4
 cull_mode = 2
 albedo_texture = ExtResource("1_8xdao")
-roughness = 0.413636
+roughness = 0.45
 emission_enabled = true
 emission_texture = ExtResource("2_xcl6p")
 normal_enabled = true
+normal_scale = 8.2
 normal_texture = ExtResource("3_kp8g6")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_i7ivj"]
@@ -50,7 +51,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_i7ivj")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5sxxp"]
-size = Vector3(2, 0.2, 0.2)
+size = Vector3(1, 0.2, 0.2)
 
 [node name="BladeOfTheRuinedKing" type="Node3D"]
 
@@ -59,9 +60,16 @@ transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 
 mesh = SubResource("ArrayMesh_vepip")
 skeleton = NodePath("")
 
-[node name="RuinedBladeHitbox" type="Area3D" parent="."]
-transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209e-07, -2.98023e-08, -0.999996, 0, -0.00427715, 0.741174, 0.000213482)
+[node name="Hitbox" type="Area3D" parent="."]
+transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209e-07, -2.98023e-08, -0.999996, 0, -0.004, -0.009, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RuinedBladeHitbox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+transform = Transform3D(1, 1.42109e-14, -9.49509e-10, 2.98023e-08, 1, 5.87511e-08, 9.13962e-09, -7.92889e-08, 1, 0.37407, 1.11468e-08, 3.25963e-09)
+shape = SubResource("BoxShape3D_5sxxp")
+
+[node name="Hurtbox" type="Area3D" parent="."]
+transform = Transform3D(7.28306e-14, 0.999996, -2.68221e-07, 2.08616e-07, 8.94062e-08, -1, -0.999996, 5.96044e-08, 1.49011e-07, -0.00449066, 0.736897, -0.740957)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
 transform = Transform3D(1, 1.42109e-14, -9.49509e-10, 2.98023e-08, 1, 5.87511e-08, 9.13962e-09, -7.92889e-08, 1, 0.37407, 1.11468e-08, 3.25963e-09)
 shape = SubResource("BoxShape3D_5sxxp")

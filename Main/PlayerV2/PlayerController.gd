@@ -124,7 +124,7 @@ func _handle_movement(delta):
 	global_position += $BaseModel3D.global_transform.basis * RMPos
 
 	if movement_lock and attacking and input_dir.length() > 0:
-		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.01)
+		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.05)
 		if !lockOn:
 			$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
 
@@ -165,7 +165,7 @@ func _handle_variables(delta):
 	if is_running == true:
 		speed_multiplier = 6.0
 	else:
-		speed_multiplier = 3.6
+		speed_multiplier = 1.75
 
 	# regen stamina.
 	if time_since_stamina_used >= stamina_grace_period and stamina < max_stamina:
@@ -187,6 +187,10 @@ func _handle_animations(delta):
 	pass 
 
 func _handle_combat(delta):
+	if time_since_attack >= 0.3 and time_since_attack <= 0.9 and attacking:
+		currentweapon.Hurt = true
+	else: currentweapon.Hurt = false
+	print("SEX TIME WOOHOOOO?? :", currentweapon.Hurt)
 	if is_blocking and !is_moving and !attacking and !is_running:
 		state_machine.travel("shield_block_1")
 	elif is_blocking and is_moving and !attacking and !is_running:
@@ -199,10 +203,10 @@ func _handle_combat(delta):
 	else:
 		is_blocking = false
 
-	if time_since_attack <= attack_grace:
+	if time_since_attack <= 10:
 		time_since_attack += delta
 
-	movement_lock = current_state in ["Attack_1", "Attack_2", "Attack_3"] or stunned
+	movement_lock = current_state in ["Attack_1", "Attack_2", "Attack_3", "Attack_C_1"] or stunned
 
 	if Input.is_action_just_pressed("LeftClick"):
 		leftclick = true
@@ -210,12 +214,13 @@ func _handle_combat(delta):
 	if Input.is_action_pressed("LeftClick") and leftclick == true and !stunned:
 		attack_meter += delta
 		if attack_meter >= 0.5:
+			state_machine.travel("Attack_C_1")
 			print("charge_attack_placeholder")
 			time_since_attack = 0
 			attack_meter = 0.0
 			leftclick = false
 
-
+	#print(weaponCollidingWall, attacking, currentweapon.Hurt)
 	if weaponCollidingWall and attacking and currentweapon.Hurt == true:
 		stunned = true
 		attacking = false
@@ -242,6 +247,8 @@ func handle_attack_release():
 			"Attack_2_to_idle":
 				attacking = true
 				state_machine.travel("Attack_3")
+			"Attack_C_1":
+				state_machine.travel("Attack_C_1_bash")
 	attack_meter = 0
 
 func _on_animation_tree_animation_finished(anim_name):
@@ -263,20 +270,45 @@ func _on_animation_tree_animation_finished(anim_name):
 				if !stunned:
 					state_machine.travel("Attack_2_to_idle")
 		"Attack_3":
+			if attack_buffer == 3 and !weaponCollidingWall:
+				state_machine.travel("Attack_4")
+				attack_buffer = 0
+			else:
+				attacking = false
+				if !stunned:
+					state_machine.travel("Attack_3_to_idle")
+		"Attack_4":
+			if attack_buffer == 4 and !weaponCollidingWall:
+				state_machine.travel("Attack_5")
+				attack_buffer = 0
+			else:
+				attacking = false
+				if !stunned:
+					state_machine.travel("Attack_4_to_idle")
+		"Attack_5":
+			if attack_buffer == 5 and !weaponCollidingWall:
+				state_machine.travel("Attack_6")
+				attack_buffer = 0
+			else:
+				attacking = false
+				if !stunned:
+					state_machine.travel("Attack_5_to_idle")
+		"Attack_6":
 			attacking = false
 			if !stunned:
-				state_machine.travel("Attack_3_to_idle")
+				state_machine.travel("Attack_5_to_idle")
 		"hit_cancel":
 			state_machine.travel("idle")
 			stunned = false
 			attacking = false
 		"death_01":
+			stunned = false
 			player_death(0)
-			state_machine.travel("idle")
-func _on_spear_hitbox_area_entered(area):
+func _on_hitbox_area_entered(area):
 	if area.is_in_group("walls"):
 		weaponCollidingWall = true
-func _on_spear_hitbox_area_exited(area):
+func _on_hitbox_area_exited(area):
+	if area.is_in_group("walls"):
 		weaponCollidingWall = false
 
 
@@ -288,14 +320,20 @@ func _on_ruined_blade_hitbox_area_exited(area):
 		weaponCollidingWall = false
 
 func player_death(x):
-	global_position = Vector3(0,2,0)
+	global_position = Vector3(0,3,0)
 	player_no[x].reset()
-
+	is_moving = false
+	attacking = false
+	is_blocking = false
+	is_running = false
+	healthbar.health = health
 func damage_by(damaged: int):
 	print("damaged you are")
 	health -= damaged
-	if health < 0:
-		health = 0
+	if health <= 1:
 		state_machine.travel("death_01")
+		stunned = true
+	
 	healthbar.health = health
 	
+
