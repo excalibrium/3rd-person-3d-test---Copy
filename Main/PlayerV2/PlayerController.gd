@@ -125,10 +125,8 @@ func _handle_movement(delta):
 	global_position += $BaseModel3D.global_transform.basis * RMPos
 
 	if movement_lock and attacking and input_dir.length() > 0:
-		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.05)
-		if !lockOn:
-			$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
-
+		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.1)
+		
 	if Input.is_action_pressed("SpaceBar") and is_on_floor():
 		action_bar += 1
 		time_since_actionbar_halt = 0
@@ -188,8 +186,8 @@ func _handle_animations(delta):
 	pass 
 
 func _handle_combat(delta):
-	print("path:", current_path)
-	print("current state:", current_state)
+	#print("path:", current_path)
+	#print("current state:", current_state)
 	if !attacking:
 		currentweapon.Hurt = false
 
@@ -227,7 +225,7 @@ func _handle_combat(delta):
 			else:
 				currentweapon.Hurt = false
 	#print("hurt :", currentweapon.Hurt)
-	print(currentweapon.attack_multiplier)
+	#print(currentweapon.attack_multiplier)
 
 
 	if is_blocking and !is_moving and !attacking and !is_running:
@@ -269,7 +267,7 @@ func _handle_combat(delta):
 
 func handle_attack_release():
 	if attack_meter < 0.5 and time_since_engage >= attack_grace and !stunned:
-		print(attacking, "MUST ATTACK", "buffer?", attack_buffer)
+		#print(attacking, "MUST ATTACK", "buffer?", attack_buffer)
 		time_since_engage = 0
 		if current_state in ["idle", "walk", "run", "walk_to_idle", "idle_to_walk", "attack_3_to_idle"]:
 			attacking = true
@@ -292,7 +290,7 @@ func handle_attack_release():
 				attacking = true
 			"Attack_C_1":
 				state_machine.travel("Attack_C_1_bash")
-		print(attacking, "NEW MUST ATTACK", "new buffer", attack_buffer)
+		#print(attacking, "NEW MUST ATTACK", "new buffer", attack_buffer)
 	attack_meter = 0
 	leftclick = false
 func _on_animation_tree_animation_started(anim_name):
@@ -330,6 +328,8 @@ func _on_animation_tree_animation_started(anim_name):
 				state_machine.travel("Attack_4")
 				attack_buffer = 0
 func _on_animation_tree_animation_finished(anim_name):
+	if !lockOn:
+		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.75)
 	match anim_name:
 		"Attack_1":
 			attack_timer = 0

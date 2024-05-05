@@ -21,7 +21,7 @@ var closest_ally = null
 var knocked
 var canBeDamaged := false
 var damI := 0.0
-var damI_cd := 0.1
+var damI_cd := 0.08
 func _ready():
 	allies = get_tree().get_nodes_in_group("Ally")
 	state_timer = 0.0
@@ -42,7 +42,7 @@ func _physics_process(delta):
 	if movement_lock:
 		navigation_agent.set_target_position(self.global_position)
 	distance_to_player = global_position.distance_to(player.global_position)
-	_handle_combat()
+	_handle_combat(delta)
 	if tarpos_timer < 3:
 		tarpos_timer += delta 
 	if state_timer < state_grace:
@@ -87,7 +87,7 @@ func _handle_animations():
 	animationTree.set("parameters/conditions/idle", is_moving == false and is_on_floor() and attacking == false and !is_blocking and !stunned)
 	animationTree.set("parameters/conditions/is_moving", is_moving == true and is_on_floor() and attacking == false and !is_blocking and !stunned)
 	
-func _handle_combat():
+func _handle_combat(delta):
 	if damI >= damI_cd:
 		canBeDamaged = true
 	else: canBeDamaged = false
@@ -101,7 +101,16 @@ func _handle_combat():
 		if is_blocking and random != 2: #if blocking, make it false if decided to not  
 			is_blocking = false
 			movement_lock = false
-	
+	match current_state:
+		"Attack_1":
+			print(currentweapon.Hurt)
+			currentweapon.attack_multiplier = 2
+			attack_timer += delta
+			#print(attack_timer)
+			if (attack_timer >= 0.3 && attack_timer < 0.5 ):
+				currentweapon.Hurt = true
+			else:
+				currentweapon.Hurt = false
 
 
 	if ally_found:
@@ -153,3 +162,9 @@ func detection():
 	if closest_ally != null:
 		#print("Closest enemy: ", closest_enemy.name)
 		look_at(closest_ally.global_transform.origin, Vector3.UP)
+
+
+func _on_animation_tree_animation_started(anim_name):
+	match anim_name:
+		"Attack_1":
+			attack_timer = 0
