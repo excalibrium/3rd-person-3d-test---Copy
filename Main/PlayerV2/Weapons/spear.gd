@@ -7,6 +7,8 @@ class_name CometSpear
 var neotgtwjs
 var in_area := false
 var incheck
+func _ready():
+	attack_damage = 10.0
 func _physics_process(delta):
 	#print(player)
 	hitboxes = get_tree().get_nodes_in_group("hitbox")
@@ -25,7 +27,6 @@ func _on_hurtbox_area_exited(area):
 
 # it has to apply these V to the characterbody3d that owns the hitboxes that spear just hit
 func _process(delta):
-	print(in_area)
 	#print(incheck)
 	if in_area == true:
 		neotgtwjs = incheck.owner
@@ -34,7 +35,7 @@ func _process(delta):
 	if neotgtwjs != null:
 		if Hurt == false or neotgtwjs.currentweapon == self: return
 		else:
-			neotgtwjs.damage_by(10)
+			neotgtwjs.damage_by(attack_damage * attack_multiplier)
 			
 	#print("SEX MONSTER")
 		#player.damage_by(10)

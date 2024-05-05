@@ -128,10 +128,10 @@ func _on_animation_tree_animation_finished(anim_name):
 			stunned = false
 			state_machine.travel("idle")
 func damage_by(damaged: int):
-	print("YEAOOCH", health)
-	print(damaged)
+	#print("YEAOOCH", health)
+	#print(damaged)
 	if canBeDamaged:
-		health -= 10
+		health -= damaged
 		movement_lock = true
 		velocity =  player.get_node("BaseModel3D").global_transform.basis * Vector3(0, 0, 5)
 		if health <= 0:

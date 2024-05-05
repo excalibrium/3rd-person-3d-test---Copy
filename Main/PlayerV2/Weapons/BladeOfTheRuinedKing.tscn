@@ -51,7 +51,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_i7ivj")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5sxxp"]
-size = Vector3(1, 0.2, 0.2)
+size = Vector3(1.865, 0.2, 0.2)
 
 [node name="BladeOfTheRuinedKing" type="Node3D"]
 
@@ -68,8 +68,8 @@ transform = Transform3D(1, 1.42109e-14, -9.49509e-10, 2.98023e-08, 1, 5.87511e-0
 shape = SubResource("BoxShape3D_5sxxp")
 
 [node name="Hurtbox" type="Area3D" parent="."]
-transform = Transform3D(7.28306e-14, 0.999996, -2.68221e-07, 2.08616e-07, 8.94062e-08, -1, -0.999996, 5.96044e-08, 1.49011e-07, -0.00449066, 0.736897, -0.740957)
+transform = Transform3D(-4.37112e-08, -0.999996, 0, 0.999996, -4.37112e-08, 0, 0, 0, 1, 0.00680157, 1.23316, -3.30041e-09)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 1.42109e-14, -9.49509e-10, 2.98023e-08, 1, 5.87511e-08, 9.13962e-09, -7.92889e-08, 1, 0.37407, 1.11468e-08, 3.25963e-09)
+transform = Transform3D(1, 1.42109e-14, -9.49509e-10, 2.98023e-08, 1, 5.87511e-08, 9.13962e-09, -7.92889e-08, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_5sxxp")

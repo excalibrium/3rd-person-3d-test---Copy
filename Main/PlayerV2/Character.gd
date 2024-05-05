@@ -22,9 +22,10 @@ var is_blocking = false
 var attacking = false
 var attack_buffer = 0
 var is_attacking = 0
-var time_since_attack = 0
-var attack_grace = 0.175
+var time_since_engage = 0
+var attack_grace = 0.1
 var stunned = false
+var attack_timer := 0.0
 @export var currentweapon: Weapon
 
 var is_running = false
