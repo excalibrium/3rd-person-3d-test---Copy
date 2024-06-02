@@ -6,10 +6,11 @@
 
 [node name="CameraRoot" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("anchor", "camera_slot")]
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("rotater", "anchor", "camera_slot")]
 transform = Transform3D(1, 0, -7.10543e-15, 0, 1, 0, 7.10543e-15, 0, 1, 0, 0, 0)
 top_level = true
 script = ExtResource("1_xvufl")
+rotater = NodePath("../rotation")
 anchor = NodePath("../view_anchor")
 camera_slot = NodePath("../view_anchor/CameraSlot")
 
@@ -20,3 +21,6 @@ shape = SubResource("SeparationRayShape3D_eppg2")
 spring_length = 2.5
 
 [node name="CameraSlot" type="Node3D" parent="view_anchor"]
+
+[node name="rotation" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04175, 0)

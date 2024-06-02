@@ -23,17 +23,23 @@ var speed_multiplier = 1.0
 var target_rotation: float = 0.0
 var global_dir = 0
 var attack_meter: float = 0.0
+var shield_meter: float = 0.0
 var leftclick = false
+var rightclick = false
 var attack_state = AttackState.IDLE
 var lockOn = false
-var weaponCollidingWall = false
 var enemies = []
-var closest_enemy = null
-var current_path
+var closest_enemy
+var current_path := []
 var speed
 var time_since_actionbar_halt = 1
 var stored_velocity: Vector3
 var dickrot
+var canBeDamaged := false
+var rotate_to_view = true
+var shift := false
+var path_empty := true
+var in_mode := false
 @onready var animation_tree = $BaseModel3D/MeshInstance3D/AnimationTree
 var RMPos
 func _ready():
@@ -53,16 +59,8 @@ func _input(event):
 		return
 func _process(delta):
 	#print(RMPos)
-	#print(global_position)
 	current_state = state_machine.get_current_node()
 	current_path = state_machine.get_travel_path()
-	#print(current_path)
-	#print(current_state)
-	#print(movement_lock)
-	#print(attacking)
-	#print(attack_state)
-	#print(attack_meter)
-	#print(weaponCollidingWall)
 	_handle_variables(delta)
 	_handle_detection()
 
@@ -74,7 +72,6 @@ func _physics_process(delta):
 	super(delta) # Call the parent class's _physics_process
 
 func _handle_detection():
-	closest_enemy = null
 	var closest_distance = INF
 	"res://Main/PlayerV2/Player.tscn"
 	#print(closest_distance)
@@ -87,9 +84,10 @@ func _handle_detection():
 	if closest_enemy != null:
 		#print("Closest enemy: ", closest_enemy.name)
 		$enemy_radar.look_at(closest_enemy.global_transform.origin, Vector3.UP)
-
+		$enemy_radar.rotation.y -= PI
 
 func _handle_movement(delta):
+	print(is_moving)
 	if global_position.y <= -5:
 		state_machine.travel("death_01")
 		print("player fell off", player_no)
@@ -105,12 +103,17 @@ func _handle_movement(delta):
 	var camera_direction: Vector3 = ($Camera/view_anchor.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	var character_direction = $view.transform.basis.z.normalized()
 	target_rotation = atan2(camera_direction.x, camera_direction.z)
+	if rotate_to_view == true and !lockOn and !attacking and !stunned:
+		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
+	elif attacking and attack_timer >= attack_grace and !lockOn and !stunned and rotate_to_view == true:
+		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
 	if input_dir.length() > 0 and !movement_lock and is_on_floor():
 		is_moving = true
 		if lockOn == true:
-			$BaseModel3D.rotation.y = $enemy_radar.rotation.y - PI
-		else:
-			$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.2)
+			rotate_to_view = false
+			$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $enemy_radar.rotation.y, 0.5)
+		if !lockOn:
+			rotate_to_view = true
 		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.2)
 		#velocity.x = lerpf(velocity.x, character_direction.x * speed_multiplier, 0.075)
 		#velocity.z = lerpf(velocity.z, character_direction.z * speed_multiplier, 0.075)
@@ -138,6 +141,16 @@ func _handle_movement(delta):
 	dickrot = character_direction
 
 func _handle_variables(delta):
+	if shift == true:
+		shield_meter = 0
+	if shield_meter > 0:
+		is_blocking = true
+	if shield_meter == 0:
+		is_blocking = false
+	if Input.is_action_just_pressed("emulate"):
+		state_machine.travel("ULT")
+	if damI < damI_cd:
+		damI += delta
 	#print(health)
 	if time_since_actionbar_halt < 0.3:
 		time_since_actionbar_halt += delta
@@ -162,38 +175,70 @@ func _handle_variables(delta):
 		is_running = false
 
 	if is_running == true:
-		speed_multiplier = 8.0
+		speed_multiplier = 7.0
 	else:
-		speed_multiplier = 3.0
+		speed_multiplier = 2.75
 
 	# regen stamina.
 	if time_since_stamina_used >= stamina_grace_period and stamina < max_stamina:
 		stamina += delta * stamina_regeneration_rate
-		
+
 func _handle_animations(delta):
 	var camattachment = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CameraAttachment
-	$Camera.global_transform.origin.x = camattachment.global_transform.origin.x
-	$Camera.global_transform.origin.z = camattachment.global_transform.origin.z
+	$Camera.global_transform.origin.x = lerp($Camera.global_transform.origin.x, camattachment.global_transform.origin.x, 0.0125)
+	$Camera.global_transform.origin.z = lerp($Camera.global_transform.origin.z, camattachment.global_transform.origin.z, 0.0125)
 	var _animationPlayer = $BaseModel3D/MeshInstance3D/AnimationPlayer
 #	if is_moving == false and is_on_floor() and attacking == false and is_blocking == false:
 #		state_machine.travel("idle")
 #	if is_moving == true and is_on_floor() and attacking == false and is_blocking == false:
 #		state_machine.travel("move")
-	animationTree.set("parameters/StateMachine/conditions/idle", is_moving == false and is_on_floor() and attacking == false and is_blocking == false and is_running == false)
+	print("Are we moving? ", is_moving, "  Are we blocking? ", is_blocking, "  Are we running? ", is_running, "  Inning? ", in_mode, "  SEX>", is_on_floor())
+	if is_moving == false and is_on_floor() and is_blocking == false and is_running == false and in_mode == true:
+		print("in")
+	if is_moving == false and is_on_floor() and attacking == false and is_blocking == false and is_running == false and in_mode == false:
+		print("idle")
+	if is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false and speed < 4.8:
+		print("move")
+	animationTree.set("parameters/StateMachine/conditions/in", is_moving == false and is_on_floor() and is_blocking == false and is_running == false and in_mode == true)
+	animationTree.set("parameters/StateMachine/conditions/idle", is_moving == false and is_on_floor() and attacking == false and is_blocking == false and is_running == false and in_mode == false)
 	animationTree.set("parameters/StateMachine/conditions/move", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false and speed < 4.8)
 	animationTree.set("parameters/StateMachine/conditions/run", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == true and speed >= 4.8)
 	# Do anims.
 	pass 
 
 func _handle_combat(delta):
-	#print("path:", current_path)
-	#print("current state:", current_state)
+	print(in_mode)
+	print("attack meter: ", attack_meter, "  current path: ", current_path, "  current state: ", current_state )
+	if shift == true and is_on_floor() and is_blocking == false and is_running == false:
+	#	state_machine.travel("in")
+		in_mode = true
+	else:
+		in_mode = false
+	#if is_moving and is_running == false and attacking == false:
+	#	state_machine.travel("walk")
+	#print(attack_meter)
+	if !is_blocking:
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D2/Shield/Area3D/CollisionShape3D.disabled = true
+	elif current_state in ["shield_block_1", "shield_block_walk", "run_blocking"]:
+		if damI >= 0:
+			damI -= delta * 1.4
+		if damI <= 0:
+			$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D2/Shield/Area3D/CollisionShape3D.disabled = false
+	if damI >= damI_cd:
+		canBeDamaged = true
+	else: canBeDamaged = false
+	#print("path:", current_path, "shift:", shift)
+	#print("current state:", current_s	tate)
 	if !attacking:
 		currentweapon.Hurt = false
-
-	match current_state:
+	path_empty = true
+	for path in current_path:
+		if path != null:
+			path_empty = false
+			break
+	match current_state: # Attack hurt frame code
 		"Attack_1":
-			currentweapon.attack_multiplier = 2
+			currentweapon.attack_multiplier = 1.5
 			attack_timer += delta
 			#print(attack_timer)
 			if ( attack_timer >= 0.3 && attack_timer < 0.4583 ):
@@ -201,7 +246,7 @@ func _handle_combat(delta):
 			else:
 				currentweapon.Hurt = false
 		"Attack_2":
-			currentweapon.attack_multiplier = 2
+			currentweapon.attack_multiplier = 1
 			attack_timer += delta
 			#print(attack_timer)
 			if ( attack_timer >= 0.3 && attack_timer < 0.5 ):
@@ -209,7 +254,7 @@ func _handle_combat(delta):
 			else:
 				currentweapon.Hurt = false
 		"Attack_3":
-			currentweapon.attack_multiplier = 0.5
+			currentweapon.attack_multiplier = 0.75
 			attack_timer += delta
 			#print(attack_timer)
 			if ( attack_timer >= 0.4 && attack_timer < 0.5417 ):
@@ -217,45 +262,107 @@ func _handle_combat(delta):
 			else:
 				currentweapon.Hurt = false
 		"Attack_4":
-			currentweapon.attack_multiplier = 0.5
+			currentweapon.attack_multiplier = 0.75
 			attack_timer += delta
 			#print(attack_timer)
-			if ( attack_timer >= 0.1 && attack_timer < 3.375 ):
+			if ( attack_timer >= 0.1 && attack_timer < 0.375 ):
 				currentweapon.Hurt = true
 			else:
 				currentweapon.Hurt = false
-	#print("hurt :", currentweapon.Hurt)
-	#print(currentweapon.attack_multiplier)
+		"Attack_5":
+			currentweapon.attack_multiplier = 2
+			attack_timer += delta
+			#print(attack_timer)
+			if ( attack_timer >= 0.4 && attack_timer < 0.5833 ):
+				currentweapon.Hurt = true
+			else:
+				currentweapon.Hurt = false
+		"in_to_H_Attack_1":
+			currentweapon.attack_multiplier = 3
+			attack_timer += delta
+			#print(attack_timer)
+			if ( attack_timer >= 0.4 && attack_timer < 0.5833 ):
+				currentweapon.Hurt = true
+			else:
+				currentweapon.Hurt = false
+		"H_Attack_2":
+			currentweapon.attack_multiplier = 5
+			attack_timer += delta
+			#print(attack_timer)
+			if ( attack_timer >= 0.7 && attack_timer < 0.875 ):
+				currentweapon.Hurt = true
+			else:
+				currentweapon.Hurt = false
+		"Attack_C_1":
+			attacking = false
+			is_blocking = false
+			is_running = false
+			currentweapon.attack_multiplier = 1
+			attack_timer += delta
+			#print(attack_timer)
+			if ( attack_timer >= 0.3 && attack_timer < 0.5 ) or ( attack_timer >= 0.7 && attack_timer < 0.833 ):
+				currentweapon.Hurt = true
+			else:
+				currentweapon.Hurt = false
 
 
-	if is_blocking and !is_moving and !attacking and !is_running:
+	if is_blocking and !is_moving and !attacking and !is_running and !stunned:
+		print("shield block 1")
 		state_machine.travel("shield_block_1")
-	elif is_blocking and is_moving and !attacking and !is_running:
+	if is_blocking and is_moving and !attacking and !is_running and !stunned:
+		print("shield walk")
 		state_machine.travel("shield_block_walk")
-	elif is_blocking and is_moving and !attacking and is_running:
+	if is_blocking and is_moving and !attacking and is_running and !stunned:
 		state_machine.travel("run_blocking")
-	if Input.is_action_pressed("RightClick"):
-		attack_buffer = 0
-		is_blocking = true
-	else:
-		is_blocking = false
-
 	if time_since_engage <= 10:
 		time_since_engage += delta
-	movement_lock = current_state in ["Attack_1", "Attack_2", "Attack_3", "Attack_4", "Attack_5", "Attack_6", "Attack_C_1", "Attack_C_1_bash"] or stunned
+	movement_lock = current_state in ["Attack_1", "Attack_2", "Attack_3", "Attack_4", "Attack_5", "Attack_6", "Attack_C_1", "Attack_C_1_bash", "death_01", "Attack_bash", "in_to_H_Attack_1", "H_Attack_2"] or stunned
+
+
+	if Input.is_action_just_pressed("RightClick"):
+		rightclick = true
+		if current_state != "shield_block_1" and current_state != "Attack_bash" and Input.is_action_pressed("shiftKey"):
+				print(rightclick , shield_meter , shift)
+				shift = true
+
+	if Input.is_action_pressed("RightClick") and !stunned and rightclick:
+		shield_meter += delta
+		if shift == true:
+			state_machine.travel("Attack_bash")
+			stunned = true
+	if Input.is_action_pressed("RightClick") and !stunned:
+		print(rightclick , shield_meter , shift)
+
+	if Input.is_action_just_released("RightClick"):
+		shield_meter = 0
+		rightclick = false
+
+
+	if Input.is_action_just_pressed("shiftKey"):
+		shift = true
+		#if current_state == "idle":
+	if Input.is_action_just_released("shiftKey"):
+		shift = false
+
 
 	if Input.is_action_just_pressed("LeftClick"):
 		leftclick = true
+	if Input.is_action_pressed("LeftClick") and !stunned and leftclick:
+		attack_meter += delta
 
 	if Input.is_action_pressed("LeftClick") and !stunned:
-		attack_meter += delta
-		if attack_meter >= 0.5:
-			state_machine.travel("Attack_C_1")
-			print("charge_attack_placeholder")
-			time_since_engage = 0
+		print(leftclick)
+		if attack_meter >= 0.25 and leftclick:
 			attack_meter = 0.0
+			state_machine.travel("Attack_C_1")
+			if current_state == "Attack_C_1":
+				attack_buffer = 101
+			print("charge_attack_placeholder")
+			currentweapon.guard_break = true
+			time_since_engage = 0
 			leftclick = false
-
+	else:
+		attack_meter = 0
 	#print(weaponCollidingWall, attacking, currentweapon.Hurt)
 	if weaponCollidingWall and attacking and currentweapon.Hurt == true:
 		stunned = true
@@ -269,34 +376,75 @@ func handle_attack_release():
 	if attack_meter < 0.5 and time_since_engage >= attack_grace and !stunned:
 		#print(attacking, "MUST ATTACK", "buffer?", attack_buffer)
 		time_since_engage = 0
-		if current_state in ["idle", "walk", "run", "walk_to_idle", "idle_to_walk", "attack_3_to_idle"]:
+		if current_state == "Attack_C_1":
+			attack_buffer = 102
+		if in_mode == true and current_state != "H_Attack_2" and current_state != "H_Attack_2_to_in":
+			attacking = true
+			state_machine.travel("in_to_H_Attack_1")
+		if current_state in ["idle", "walk", "run", "walk_to_idle", "idle_to_walk", "attack_5_to_idle", "shield_block_1_to_idle", "Attack_C_1_to_idle", "Attack_bash"] and in_mode == false:
 			attacking = true
 			state_machine.travel("Attack_1")
 		match current_state:
+			"in_to_H_Attack_1":
+				attack_buffer = 201
+			"H_Attack_1_to_in":
+				state_machine.travel("H_Attack_2")
+				attacking = true
 			"Attack_1":
 				attack_buffer = 1
+				if in_mode:
+					attack_buffer == 200
 			"Attack_1_to_idle":
-				state_machine.travel("Attack_2")
-				attacking = true
+				if in_mode == false:
+					state_machine.travel("Attack_2")
+					attacking = true
+				if in_mode:
+					state_machine.travel("in_to_H_Attack_1")
+					attacking = true
 			"Attack_2":
 				attack_buffer = 2
+				if in_mode:
+					attack_buffer == 200
 			"Attack_2_to_idle":
-				state_machine.travel("Attack_3")
-				attacking = true
+				if in_mode == false:
+					state_machine.travel("Attack_3")
+					attacking = true
+				if in_mode:
+					state_machine.travel("in_to_H_Attack_1")
+					attacking = true
 			"Attack_3":
 				attack_buffer = 3
+				if in_mode:
+					attack_buffer == 200
 			"Attack_3_to_idle":
-				state_machine.travel("Attack_4")
-				attacking = true
-			"Attack_C_1":
-				state_machine.travel("Attack_C_1_bash")
+				if in_mode == false:
+					state_machine.travel("Attack_4")
+					attacking = true
+				if in_mode:
+					state_machine.travel("in_to_H_Attack_1")
+					attacking = true
+			"Attack_4":
+				attack_buffer = 4
+				if in_mode:
+					attack_buffer == 200
+			"Attack_4_to_idle":
+				if in_mode == false:
+					state_machine.travel("Attack_5")
+					attacking = true
+				if in_mode:
+					state_machine.travel("in_to_H_Attack_1")
+					attacking = true
 		#print(attacking, "NEW MUST ATTACK", "new buffer", attack_buffer)
 	attack_meter = 0
 	leftclick = false
+
 func _on_animation_tree_animation_started(anim_name):
-	if anim_name in ["Attack_1_to_idle", "Attack_2_to_idle", "Attack_3_to_idle", "Attack_4_to_idle", "Attack_5_to_idle", "Attack_6_to_idle"]:
+	if anim_name in ["Attack_1_to_idle", "Attack_2_to_idle", "Attack_3_to_idle", "Attack_4_to_idle", "Attack_5_to_idle", "Attack_6_to_idle", "H_Attack_1_to_in", "H_Attack_2_to_in"]:
 		attacking = false
 	match anim_name:
+		"in_to_H_Attack_1":
+			attacking = true
+			attack_timer = 0
 		"Attack_1":
 			attacking = true
 			attack_timer = 0
@@ -313,6 +461,9 @@ func _on_animation_tree_animation_started(anim_name):
 			attacking = true
 			attack_timer = 0
 		"Attack_6":
+			attacking = true
+			attack_timer = 0
+		"Attack_C_1":
 			attacking = true
 			attack_timer = 0
 		"Attack_1_to_idle":
@@ -327,12 +478,42 @@ func _on_animation_tree_animation_started(anim_name):
 			if attack_buffer == 3 and !weaponCollidingWall:
 				state_machine.travel("Attack_4")
 				attack_buffer = 0
+		"Attack_4_to_idle":
+			if attack_buffer == 4 and !weaponCollidingWall:
+				state_machine.travel("Attack_5")
+				attack_buffer = 0
+		"H_Attack_1_to_in":
+			if attack_buffer == 201 and !weaponCollidingWall:
+				state_machine.travel("H_Attack_2")
+				attack_buffer = 0
+
 func _on_animation_tree_animation_finished(anim_name):
 	if !lockOn:
-		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.75)
+		rotate_to_view = true
+	if lockOn and anim_name in ["Attack_1", "Attack_2", "Attack_3", "Attack_4", "Attack_5", "Attack_6"]:
+		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $enemy_radar.rotation.y, 0.75)
 	match anim_name:
+		"in_to_H_Attack_1":
+			attack_timer = 0
+			if attack_buffer == 201 and !weaponCollidingWall:
+				state_machine.travel("H_Attack_2")
+				attack_buffer = 0
+			else:
+				if !stunned:
+					state_machine.travel("H_Attack_1_to_in")
+		"in_to_H_Attack_2":
+			attack_timer = 0
+			if attack_buffer == 202 and !weaponCollidingWall:
+				state_machine.travel("H_Attack_3")
+				attack_buffer = 0
+			else:
+				if !stunned:
+					state_machine.travel("H_Attack_2_to_in")
 		"Attack_1":
 			attack_timer = 0
+			if attack_buffer == 200 and !weaponCollidingWall:
+				state_machine.travel("in_to_H_Attack_1")
+				attack_buffer = 0
 			if attack_buffer == 1 and !weaponCollidingWall:
 				state_machine.travel("Attack_2")
 				attack_buffer = 0
@@ -341,6 +522,9 @@ func _on_animation_tree_animation_finished(anim_name):
 					state_machine.travel("Attack_1_to_idle")
 		"Attack_2":
 			attack_timer = 0
+			if attack_buffer == 200 and !weaponCollidingWall:
+				state_machine.travel("in_to_H_Attack_1")
+				attack_buffer = 0
 			if attack_buffer == 2 and !weaponCollidingWall:
 				state_machine.travel("Attack_3")
 				attack_buffer = 0
@@ -349,6 +533,9 @@ func _on_animation_tree_animation_finished(anim_name):
 					state_machine.travel("Attack_2_to_idle")
 		"Attack_3":
 			attack_timer = 0
+			if attack_buffer == 200 and !weaponCollidingWall:
+				state_machine.travel("in_to_H_Attack_1")
+				attack_buffer = 0
 			if attack_buffer == 3 and !weaponCollidingWall:
 				state_machine.travel("Attack_4")
 				attack_buffer = 0
@@ -357,6 +544,9 @@ func _on_animation_tree_animation_finished(anim_name):
 					state_machine.travel("Attack_3_to_idle")
 		"Attack_4":
 			attack_timer = 0
+			if attack_buffer == 200 and !weaponCollidingWall:
+				state_machine.travel("in_to_H_Attack_1")
+				attack_buffer = 0
 			if attack_buffer == 4 and !weaponCollidingWall:
 				state_machine.travel("Attack_5")
 				attack_buffer = 0
@@ -365,6 +555,9 @@ func _on_animation_tree_animation_finished(anim_name):
 					state_machine.travel("Attack_4_to_idle")
 		"Attack_5":
 			attack_timer = 0
+			if attack_buffer == 200 and !weaponCollidingWall:
+				state_machine.travel("in_to_H_Attack_1")
+				attack_buffer = 0
 			if attack_buffer == 5 and !weaponCollidingWall:
 				state_machine.travel("Attack_6")
 				attack_buffer = 0
@@ -377,25 +570,37 @@ func _on_animation_tree_animation_finished(anim_name):
 				state_machine.travel("Attack_5_to_idle")
 		"hit_cancel":
 			state_machine.travel("idle")
+			attack_buffer = 0
+			attack_timer = 0
 			stunned = false
 			attacking = false
+		"Attack_C_1":
+			attack_timer = 0
+			if attack_buffer == 101:
+				state_machine.travel("Attack_C_1")
+				attack_buffer = 0
+			if attack_buffer == 102:
+				state_machine.travel("Attack_1")
+				attack_buffer = 0
+			attacking = false
+			currentweapon.guard_break = false
 		"death_01":
 			stunned = false
 			player_death(0)
-func _on_hitbox_area_entered(area):
-	if area.is_in_group("walls"):
-		weaponCollidingWall = true
-func _on_hitbox_area_exited(area):
-	if area.is_in_group("walls"):
-		weaponCollidingWall = false
+		"Attack_bash":
+			stunned = false
+			shift = false
+#				shift = false
+	#			is_blocking = true
+	#			print("BLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsex")
+#func _on_hitbox_area_entered(area):
+	#if area.is_in_group("walls"):
+		#weaponCollidingWall = true
+#func _on_hitbox_area_exited(area):
+	#if area.is_in_group("walls"):
+		#weaponCollidingWall = false
 
-
-func _on_ruined_blade_hitbox_area_entered(area):
-	if area.is_in_group("walls"):
-		weaponCollidingWall = true
-func _on_ruined_blade_hitbox_area_exited(area):
-	if area.is_in_group("walls"):
-		weaponCollidingWall = false
+# # # # # #
 
 func player_death(x):
 	global_position = Vector3(0,3,0)
@@ -405,15 +610,23 @@ func player_death(x):
 	is_blocking = false
 	is_running = false
 	healthbar.health = health
+
 func damage_by(damaged: int):
 	print("damaged you are")
-	health -= damaged
-	if health <= 1:
-		state_machine.travel("death_01")
+	if health <= 0:
 		stunned = true
-	
+		state_machine.stop()
+		state_machine.travel("death_01")
+		health = 0
+	if canBeDamaged:
+		health -= damaged
+	damI = 0.0
 	healthbar.health = health
-	
+
+func guard_break():
+	if is_blocking:
+		state_machine.travel("hit_cancel")
+		is_blocking = false
 
 
 

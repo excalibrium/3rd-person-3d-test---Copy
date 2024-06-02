@@ -1,7 +1,7 @@
 extends Camera3D
 
 @export var player: PlayerController
-
+@export var rotater: Node3D
 @export var anchor: SpringArm3D
 @export var camera_slot: Node3D
 var cameramode = 1
@@ -16,9 +16,12 @@ func _physics_process(_delta):
 	var target = player.closest_enemy
 	global_transform.origin = global_transform.origin.lerp(camera_slot.global_transform.origin, 0.1)
 	rotation = anchor.rotation
+	print(rotater.rotation)
 	if lockOn == true:
-		anchor.look_at(lerp(anchor.global_position, target.global_position, 1), Vector3.UP)
-	
+		rotater.look_at(target.global_position)
+		anchor.rotation.y = lerp_angle(anchor.rotation.y, rotater.rotation.y, 0.25)
+		anchor.rotation.x = lerp_angle(anchor.rotation.x, rotater.rotation.x, 0.25)
+		anchor.rotation.z = lerp_angle(anchor.rotation.z, rotater.rotation.z, 0.25)
 func _input(event):
 	if event.is_action_pressed("Q"):
 		if lockOn == false:

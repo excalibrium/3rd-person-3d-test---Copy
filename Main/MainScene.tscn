@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://dcc57sfg8omc7"]
+[gd_scene load_steps=15 format=3 uid="uid://dcc57sfg8omc7"]
 
 [ext_resource type="PackedScene" uid="uid://c5v5umkdw8wsw" path="res://Objects/cube.tscn" id="1_5f1dg"]
 [ext_resource type="PackedScene" uid="uid://caahgkkfwpwct" path="res://Objects/red_button.tscn" id="3_j1g3y"]
 [ext_resource type="PackedScene" uid="uid://bxjxcl1rx4afl" path="res://Main/door.tscn" id="4_6ryya"]
+[ext_resource type="AudioStream" uid="uid://brn3xs3mtq7a" path="res://Main/wind-noise-long-fx_126bpm_B_major.wav" id="8_gs34p"]
 [ext_resource type="PackedScene" uid="uid://es1ayoin2pk7" path="res://Objects/floor/Floor.tscn" id="12_svhyn"]
 [ext_resource type="PackedScene" uid="uid://dr00dqqqp3wbf" path="res://Objects/Quartz/Quartzite/quartzite.tscn" id="16_f2ovt"]
 [ext_resource type="PackedScene" uid="uid://dc1tba4wjti4h" path="res://Main/Enemies/Casual/casual_enemy.tscn" id="17_lsn5g"]
@@ -85,3 +86,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="CasualEnemy" parent="." groups=["enemies"] instance=ExtResource("17_lsn5g")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2, 10)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_gs34p")
+volume_db = -17.8
+autoplay = true

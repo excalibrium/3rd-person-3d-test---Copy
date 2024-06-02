@@ -26,6 +26,9 @@ var time_since_engage = 0
 var attack_grace = 0.1
 var stunned = false
 var attack_timer := 0.0
+var damI := 0.0
+var damI_cd := 0.08
+var weaponCollidingWall = false
 @export var currentweapon: Weapon
 
 var is_running = false
@@ -42,10 +45,12 @@ func _physics_process(delta):
 
 func death():
 	
-	global_position = Vector3(0,2,0)
+	global_position = Vector3(6,2,6)
 	reset()
 	
 func reset():
 	health = 100
 	stamina = 100
 	velocity = Vector3.ZERO
+	attacking = false
+	is_blocking = false

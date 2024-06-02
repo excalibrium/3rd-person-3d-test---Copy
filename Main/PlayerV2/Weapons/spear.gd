@@ -21,10 +21,13 @@ func _on_hurtbox_area_entered(area):
 	if area.is_in_group("hitbox"):
 		in_area = true
 		incheck = area
+	if area.is_in_group("walls"):
+		owner.weaponCollidingWall = true
 func _on_hurtbox_area_exited(area):
 	if area.is_in_group("hitbox"):
 		in_area = false
-
+	if area.is_in_group("walls"):
+		owner.weaponCollidingWall = false
 # it has to apply these V to the characterbody3d that owns the hitboxes that spear just hit
 func _process(delta):
 	#print(incheck)
@@ -36,6 +39,8 @@ func _process(delta):
 		if Hurt == false or neotgtwjs.currentweapon == self: return
 		else:
 			neotgtwjs.damage_by(attack_damage * attack_multiplier)
+			if neotgtwjs.currentweapon != self and guard_break == true:
+				neotgtwjs.guard_break()
 			
 	#print("SEX MONSTER")
 		#player.damage_by(10)
