@@ -106,17 +106,18 @@ func _handle_combat(delta):
 		if is_blocking and random != 3: #if blocking, make it false if decided to not  
 			is_blocking = false
 			movement_lock = false
-
+	if !attacking:
+		currentweapon.Hurt = false
 	match current_state:
 		"Attack_1":
 			currentweapon.attack_multiplier = 2
 			attack_timer += delta
 			#print(attack_timer)
-			if (attack_timer >= 0.3 && attack_timer < 0.5 ):
+			if (attack_timer >= 0.3 && attack_timer < 0.5833 ):
 				currentweapon.Hurt = true
 			else:
 				currentweapon.Hurt = false
-
+	print(currentweapon.Hurt)
 	if weaponCollidingWall and attacking and currentweapon.Hurt == true:
 		stunned = true
 		attacking = false

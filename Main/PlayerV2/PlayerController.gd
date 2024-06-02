@@ -192,14 +192,14 @@ func _handle_animations(delta):
 #		state_machine.travel("idle")
 #	if is_moving == true and is_on_floor() and attacking == false and is_blocking == false:
 #		state_machine.travel("move")
-	print("Are we moving? ", is_moving, "  Are we blocking? ", is_blocking, "  Are we running? ", is_running, "  Inning? ", in_mode, "  SEX>", is_on_floor())
+	#print("Are we moving? ", is_moving, "  Are we blocking? ", is_blocking, "  Are we running? ", is_running, "  Inning? ", in_mode, "  SEX>", is_on_floor(), "  are we attacking? ", attacking)
 	if is_moving == false and is_on_floor() and is_blocking == false and is_running == false and in_mode == true:
 		print("in")
 	if is_moving == false and is_on_floor() and attacking == false and is_blocking == false and is_running == false and in_mode == false:
 		print("idle")
 	if is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false and speed < 4.8:
 		print("move")
-	animationTree.set("parameters/StateMachine/conditions/in", is_moving == false and is_on_floor() and is_blocking == false and is_running == false and in_mode == true)
+	animationTree.set("parameters/StateMachine/conditions/in", is_moving == false and is_on_floor() and is_running == false and in_mode == true)
 	animationTree.set("parameters/StateMachine/conditions/idle", is_moving == false and is_on_floor() and attacking == false and is_blocking == false and is_running == false and in_mode == false)
 	animationTree.set("parameters/StateMachine/conditions/move", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false and speed < 4.8)
 	animationTree.set("parameters/StateMachine/conditions/run", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == true and speed >= 4.8)
@@ -207,8 +207,8 @@ func _handle_animations(delta):
 	pass 
 
 func _handle_combat(delta):
-	print(in_mode)
-	print("attack meter: ", attack_meter, "  current path: ", current_path, "  current state: ", current_state )
+	#print(in_mode)
+	#print("attack meter: ", attack_meter, "  current path: ", current_path, "  current state: ", current_state )
 	if shift == true and is_on_floor() and is_blocking == false and is_running == false:
 	#	state_machine.travel("in")
 		in_mode = true
@@ -386,10 +386,17 @@ func handle_attack_release():
 			state_machine.travel("Attack_1")
 		match current_state:
 			"in_to_H_Attack_1":
-				attack_buffer = 201
+				if in_mode == false:
+					attack_buffer = 10
+				if in_mode:
+					attack_buffer = 201
 			"H_Attack_1_to_in":
-				state_machine.travel("H_Attack_2")
-				attacking = true
+				if in_mode == false:
+					attacking = true
+					state_machine.travel("Attack_1")
+				if in_mode:
+					state_machine.travel("H_Attack_2")
+					attacking = true
 			"Attack_1":
 				attack_buffer = 1
 				if in_mode:
@@ -486,7 +493,9 @@ func _on_animation_tree_animation_started(anim_name):
 			if attack_buffer == 201 and !weaponCollidingWall:
 				state_machine.travel("H_Attack_2")
 				attack_buffer = 0
-
+			if attack_buffer == 10 and !weaponCollidingWall:
+				state_machine.travel("Attack_1")
+				attack_buffer = 0
 func _on_animation_tree_animation_finished(anim_name):
 	if !lockOn:
 		rotate_to_view = true
