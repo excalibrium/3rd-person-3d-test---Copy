@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dfr4gqduqkcjr"]
+[gd_scene load_steps=10 format=3 uid="uid://dfr4gqduqkcjr"]
 
 [ext_resource type="Texture2D" uid="uid://bsj6p5426khjy" path="res://Main/PlayerV2/Weapons/RuinedViegoSword_SwordB_2.png" id="1_8xdao"]
+[ext_resource type="Script" path="res://Main/PlayerV2/Weapons/BladeOfTheRuinedKing.gd" id="1_wdesp"]
 [ext_resource type="Texture2D" uid="uid://dwqdroqopds7f" path="res://Main/PlayerV2/Weapons/RuinedViegoSword_SwordB.png" id="2_xcl6p"]
 [ext_resource type="Texture2D" uid="uid://dah02yftmige7" path="res://Main/PlayerV2/Weapons/RuinedViegoSword_SwordN.png" id="3_kp8g6"]
 
@@ -53,7 +54,13 @@ shadow_mesh = SubResource("ArrayMesh_i7ivj")
 [sub_resource type="BoxShape3D" id="BoxShape3D_5sxxp"]
 size = Vector3(1.865, 0.2, 0.2)
 
-[node name="BladeOfTheRuinedKing" type="Node3D"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ht6nb"]
+radius = 0.125
+height = 2.75
+
+[node name="BladeOfTheRuinedKing" type="Node3D" node_paths=PackedStringArray("hurtbox")]
+script = ExtResource("1_wdesp")
+hurtbox = NodePath("Hurtbox")
 
 [node name="sword" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0)
@@ -68,8 +75,11 @@ transform = Transform3D(1, 1.42109e-14, -9.49509e-10, 2.98023e-08, 1, 5.87511e-0
 shape = SubResource("BoxShape3D_5sxxp")
 
 [node name="Hurtbox" type="Area3D" parent="."]
-transform = Transform3D(-4.37112e-08, -0.999996, 0, 0.999996, -4.37112e-08, 0, 0, 0, 1, 0.00680157, 1.23316, -3.30041e-09)
+transform = Transform3D(2.68221e-07, -7.54976e-08, -1, 1, -4.37112e-08, 2.68221e-07, -4.37114e-08, -0.999996, 7.54979e-08, 1.85945e-07, 0.693252, -3.0303e-08)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 1.42109e-14, -9.49509e-10, 2.98023e-08, 1, 5.87511e-08, 9.13962e-09, -7.92889e-08, 1, 0, 0, 0)
-shape = SubResource("BoxShape3D_5sxxp")
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(-1.62921e-07, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -1.62921e-07, 7.12149e-15, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_ht6nb")
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]

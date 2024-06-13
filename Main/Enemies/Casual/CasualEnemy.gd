@@ -30,7 +30,6 @@ func _ready():
 	healthbar.init_health(health)
 func _process(delta):
 	_handle_variables(delta)
-	#print(currentweapon)
 		
 func _handle_variables(delta):
 	if health < 0:
@@ -58,10 +57,8 @@ func _physics_process(delta):
 			target = body
 	if seeing == []:
 		ally_found = false
-	#print(seeing)
 	await get_tree().physics_frame
 	_handle_animations()
-	#print(velocity)
 
 	if abs(velocity) == Vector3.ZERO:
 		is_moving = false
@@ -75,28 +72,28 @@ func _physics_process(delta):
 	#if navigation_agent.is_navigation_finished() and !knocked:
 	var current_agent_position: Vector3 = global_position
 	var next_path_position: Vector3 = navigation_agent.get_next_path_position()
-	velocity = lerp(velocity, current_agent_position.direction_to(next_path_position) * SPEED * 2, 0.1)
+	velocity = lerp(velocity, current_agent_position.direction_to(next_path_position) * SPEED, 0.1)
 	move_and_slide()
 
 func _handle_animations():
-#	print(is_moving, is_on_floor(), attacking, is_blocking, stunned)
 	if ally_found:
 		look_at(target.global_position)
-		#$BaseModel3D.global_rotation.y -= PI
 
 	animationTree.set("parameters/conditions/idle", is_moving == false and is_on_floor() and attacking == false and !is_blocking and !stunned)
 	animationTree.set("parameters/conditions/is_moving", is_moving == true and is_on_floor() and attacking == false and !is_blocking and !stunned)
 	
 func _handle_combat(delta):
+	$BaseModel3D/Hitbox/CPUParticles3D.global_rotation.y = player.get_node("BaseModel3D").get_node("MeshInstance3D").global_rotation.y - PI/3
+
+	print("current weapon: ",currentweapon," hurting: ", currentweapon.Hurt)
 	if !is_blocking:
-		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D2/Shield/Area3D/CollisionShape3D.disabled = true
+		$BaseModel3D/MeshInstance3D/Viego/Skeleton3D/BoneAttachment3D2/Shield/Area3D/CollisionShape3D.disabled = true
 	else:
-		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D2/Shield/Area3D/CollisionShape3D.disabled = false
+		$BaseModel3D/MeshInstance3D/Viego/Skeleton3D/BoneAttachment3D2/Shield/Area3D/CollisionShape3D.disabled = false
 		damI = 0.0
 	if damI >= damI_cd:
 		canBeDamaged = true
 	else: canBeDamaged = false
-#	print(player.get_node("BaseModel3D").global_transform.basis * Vector3(0, 0, 5))
 	movement_lock = current_state in ["shield_block_1"] or stunned
 	if movement_lock:
 		navigation_agent.set_target_position(self.global_position)
@@ -112,17 +109,15 @@ func _handle_combat(delta):
 		"Attack_1":
 			currentweapon.attack_multiplier = 2
 			attack_timer += delta
-			#print(attack_timer)
-			if (attack_timer >= 0.3 && attack_timer < 0.5833 ):
+			if (attack_timer >= 0.7 && attack_timer < 1.0 ):
 				currentweapon.Hurt = true
 			else:
 				currentweapon.Hurt = false
-	print(currentweapon.Hurt)
-	if weaponCollidingWall and attacking and currentweapon.Hurt == true:
+	if weaponCollidingWall and attacking and currentweapon.Hurt == true or player.is_blocking == true and attacking and currentweapon.Hurt == true:
 		stunned = true
 		attacking = false
 		state_machine.travel("hit_cancel")
-
+	movement_lock = current_state in ["Attack_1"]
 	if ally_found:
 		if state_timer >= state_grace and !stunned and distance_to_player <= 4: # entered range, and if able to change states and is not stunned, it should:
 			state_timer = 0
@@ -134,15 +129,13 @@ func _handle_combat(delta):
 				state_machine.travel("shield_block_1")
 				print_rich("[b][bgcolor=red]blocking[/bgcolor][/b]")
 				is_blocking = true
-	
-	#print(random)
-	#print(movement_lock)
+
 func _on_animation_tree_animation_finished(anim_name):
 	match anim_name:
 		"Attack_1":
 			movement_lock = false
 			attacking = false
-		"death_01":
+		"death":
 			death()
 			stunned = false
 			state_machine.travel("idle")
@@ -153,8 +146,6 @@ func _on_animation_tree_animation_finished(anim_name):
 			stunned = false
 			attacking = false
 func damage_by(damaged: int):
-	#print("YEAOOCH", health)
-	#print(damaged)
 	$BaseModel3D/Hitbox/CPUParticles3D.emitting = true
 	timer.start()
 	if canBeDamaged:
@@ -164,7 +155,7 @@ func damage_by(damaged: int):
 		navigation_agent.set_target_position(global_transform.basis * Vector3(0, 0, 7))
 		if health <= 0:
 			health = 0
-			state_machine.travel("death_01")
+			state_machine.travel("death")
 			stunned = true
 	healthbar.health = health
 	damI = 0.0
@@ -179,7 +170,6 @@ func detection():
 			closest_ally = enemy
 			
 	if closest_ally != null:
-		#print("Closest enemy: ", closest_enemy.name)
 		look_at(closest_ally.global_transform.origin, Vector3.UP)
 
 
