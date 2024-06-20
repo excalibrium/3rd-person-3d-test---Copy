@@ -14,6 +14,6 @@ func _input(event):
 	if Input.is_action_pressed("F"):
 		var scene = preload("res://Main/Enemies/Casual/casual_enemy.tscn")
 		var casene = scene.instantiate()
-		casene.global_translate(Vector3(0, 2, 0))
+		casene.global_translate(Vector3(0, 5, 0))
 		add_child(casene)
 

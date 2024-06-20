@@ -45,8 +45,8 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_avn5v")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_36q63"]
-radius = 0.607048
-height = 1.22102
+radius = 0.6
+height = 1.2
 
 [node name="Shield" type="Node3D"]
 
@@ -58,5 +58,4 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.073983)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0127563, -0.0962677)
 shape = SubResource("CapsuleShape3D_36q63")

@@ -38,6 +38,8 @@ func _handle_variables(delta):
 	if damI < damI_cd:
 		damI += delta
 func _physics_process(delta):
+	if not is_on_floor():
+		velocity.y -= gravity * 1.125
 	if movement_lock:
 		navigation_agent.set_target_position(self.global_position)
 	distance_to_player = global_position.distance_to(player.global_position)
@@ -60,7 +62,7 @@ func _physics_process(delta):
 	await get_tree().physics_frame
 	_handle_animations()
 
-	if abs(velocity) == Vector3.ZERO:
+	if abs(velocity.x) <= 0.5 and abs(velocity.z) <= 0.5:
 		is_moving = false
 	else:
 		is_moving = true
@@ -72,7 +74,8 @@ func _physics_process(delta):
 	#if navigation_agent.is_navigation_finished() and !knocked:
 	var current_agent_position: Vector3 = global_position
 	var next_path_position: Vector3 = navigation_agent.get_next_path_position()
-	velocity = lerp(velocity, current_agent_position.direction_to(next_path_position) * SPEED, 0.1)
+	velocity.x = lerp(velocity.x, current_agent_position.direction_to(next_path_position).x * SPEED, 0.1)
+	velocity.z = lerp(velocity.z, current_agent_position.direction_to(next_path_position).z * SPEED, 0.1)
 	move_and_slide()
 
 func _handle_animations():
@@ -80,10 +83,10 @@ func _handle_animations():
 		look_at(target.global_position)
 
 	animationTree.set("parameters/conditions/idle", is_moving == false and is_on_floor() and attacking == false and !is_blocking and !stunned)
-	animationTree.set("parameters/conditions/is_moving", is_moving == true and is_on_floor() and attacking == false and !is_blocking and !stunned)
+	animationTree.set("parameters/conditions/move", is_moving == true and is_on_floor() and attacking == false and !is_blocking and !stunned)
 	
 func _handle_combat(delta):
-	$BaseModel3D/Hitbox/CPUParticles3D.global_rotation.y = player.get_node("BaseModel3D").get_node("MeshInstance3D").global_rotation.y - PI/3
+	$BaseModel3D/Hitbox/CPUParticles3D.global_rotation.y = player.get_node("BaseModel3D").get_node("MeshInstance3D").global_rotation.y - PI/2
 
 	print("current weapon: ",currentweapon," hurting: ", currentweapon.Hurt)
 	if !is_blocking:
@@ -117,7 +120,7 @@ func _handle_combat(delta):
 		stunned = true
 		attacking = false
 		state_machine.travel("hit_cancel")
-	movement_lock = current_state in ["Attack_1"]
+	movement_lock = current_state in ["Attack_1", "Attack_1_to_idle", "death"]
 	if ally_found:
 		if state_timer >= state_grace and !stunned and distance_to_player <= 4: # entered range, and if able to change states and is not stunned, it should:
 			state_timer = 0
@@ -146,13 +149,14 @@ func _on_animation_tree_animation_finished(anim_name):
 			stunned = false
 			attacking = false
 func damage_by(damaged: int):
-	$BaseModel3D/Hitbox/CPUParticles3D.emitting = true
 	timer.start()
 	if canBeDamaged:
+		$BaseModel3D/Hitbox/CPUParticles3D.emitting = true
 		health -= damaged
 		movement_lock = true
-		velocity =  player.get_node("BaseModel3D").global_transform.basis * Vector3(0, 0, 7)
-		navigation_agent.set_target_position(global_transform.basis * Vector3(0, 0, 7))
+		push("bwdplayer")
+		#velocity += player.global_position * Vector3(0, 0, 10)
+		
 		if health <= 0:
 			health = 0
 			state_machine.travel("death")
@@ -189,3 +193,18 @@ func guard_break():
 		stunned = true
 		state_machine.travel("hit_cancel")
 		is_blocking = false
+
+func push(towards):
+	if towards == "left":
+		velocity += global_transform.basis * Vector3(10, 0, 0)
+	if towards == "right":
+		velocity += global_transform.basis * Vector3(-10, 0, 0)
+	if towards == "fwd":
+		velocity += global_transform.basis * Vector3(0, 0, -10)
+	if towards == "bwd":
+		velocity += global_transform.basis * Vector3(0, 0, 10)
+	if towards == "bwdplayer":
+		var direction: Vector3 = global_position - player.global_position
+		direction = direction.normalized()
+		velocity += direction * 10
+	return

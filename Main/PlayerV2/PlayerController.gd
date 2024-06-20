@@ -390,12 +390,16 @@ func handle_attack_release():
 		#print(attacking, "MUST ATTACK", "buffer?", attack_buffer)
 		time_since_engage = 0
 		if current_state == "Attack_C_1":
-			attack_buffer = 102
+			if in_mode == false:
+				attack_buffer = 102
+			if in_mode == true:
+				attack_buffer = 200
 		if in_mode == true and current_state != "H_Attack_2" and current_state != "H_Attack_2_to_in":
-			attacking = true
 			if current_state == "Attack_1":
 				attack_buffer = 200
-			if current_state != "Attack_1":
+				attacking = true
+			if current_state != "Attack_1" and attacking == false and current_state != "Attack_C_1":
+				attacking = true
 				state_machine.travel("in_to_H_Attack_1")
 		if current_state in ["idle", "walk", "run", "walk_to_idle", "idle_to_walk", "attack_5_to_idle", "shield_block_1_to_idle", "Attack_C_1_to_idle", "Attack_bash"] and in_mode == false:
 			attacking = true
@@ -461,6 +465,9 @@ func handle_attack_release():
 				if in_mode:
 					state_machine.travel("in_to_H_Attack_1")
 					attacking = true
+			"Attack_CA_1":
+				if in_mode:
+					attack_buffer = 200
 		#print(attacking, "NEW MUST ATTACK", "new buffer", attack_buffer)
 	attack_meter = 0
 	leftclick = false
@@ -614,6 +621,9 @@ func _on_animation_tree_animation_finished(anim_name):
 				attack_buffer = 0
 			if attack_buffer == 102:
 				state_machine.travel("Attack_1")
+				attack_buffer = 0
+			if attack_buffer == 200 and !weaponCollidingWall:
+				state_machine.travel("in_to_H_Attack_1")
 				attack_buffer = 0
 			attacking = false
 			currentweapon.guard_break = false
