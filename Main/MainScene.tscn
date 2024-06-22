@@ -1,9 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://dcc57sfg8omc7"]
+[gd_scene load_steps=16 format=3 uid="uid://dcc57sfg8omc7"]
 
 [ext_resource type="PackedScene" uid="uid://c5v5umkdw8wsw" path="res://Objects/cube.tscn" id="1_5f1dg"]
 [ext_resource type="PackedScene" uid="uid://caahgkkfwpwct" path="res://Objects/red_button.tscn" id="3_j1g3y"]
 [ext_resource type="PackedScene" uid="uid://bxjxcl1rx4afl" path="res://Main/door.tscn" id="4_6ryya"]
 [ext_resource type="AudioStream" uid="uid://brn3xs3mtq7a" path="res://Main/wind-noise-long-fx_126bpm_B_major.wav" id="8_gs34p"]
+[ext_resource type="PackedScene" uid="uid://dpg3246yt7fr1" path="res://areatests.tscn" id="9_7mgh7"]
 [ext_resource type="PackedScene" uid="uid://es1ayoin2pk7" path="res://Objects/floor/Floor.tscn" id="12_svhyn"]
 [ext_resource type="PackedScene" uid="uid://dr00dqqqp3wbf" path="res://Objects/Quartz/Quartzite/quartzite.tscn" id="16_f2ovt"]
 [ext_resource type="PackedScene" uid="uid://dc1tba4wjti4h" path="res://Main/Enemies/Casual/casual_enemy.tscn" id="17_lsn5g"]
@@ -32,6 +33,15 @@ radiance_size = 2
 [sub_resource type="Environment" id="Environment_rqqk8"]
 background_mode = 2
 sky = SubResource("Sky_lc2de")
+tonemap_mode = 2
+tonemap_exposure = 0.75
+ssao_enabled = true
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_min_cell_size = 0.1
+sdfgi_y_scale = 0
+volumetric_fog_density = 0.0035
+volumetric_fog_ambient_inject = 1.0
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_cuq68"]
 vertices = PackedVector3Array(0.5, 0.969485, -2, 1.5, 0.969485, -2.25, 1.5, 0.969485, -2.75, 0.5, 0.969485, -3, -5.25, 0.969485, -1, -29.5, 0.969485, 1.25, -11, 0.969485, 1.25, -10.75, 0.969485, -1, -5.25, 0.969485, -1, 0.5, 0.969485, -1.25, 0.5, 0.969485, -2, 0.5, 0.969485, -11.25, 1.5, 0.969485, -11.5, 1.5, 0.969485, -29.5, -10.75, 0.969485, -1, -5.25, 0.969485, -1, 0.5, 0.969485, -3, 0.5, 0.969485, -11.25, -10.75, 0.969485, -1, 0.5, 0.969485, -11.25, 1.5, 0.969485, -29.5, -29.5, 0.969485, -29.5, -29.5, 0.969485, 1.25, 1.5, 0.969485, -29.5, 1.5, 0.969485, -11.5, 2.25, 0.969485, -11.5, 29.5, 0.969485, -11.75, 29.5, 0.969485, -29.5, 2.75, 0.969485, 2.75, 1.75, 0.969485, 3, 1.75, 0.969485, 3.75, 2.75, 0.969485, 4, 2.75, 0.969485, 2.75, 2.75, 0.969485, 4, 29.5, 0.969485, 13.25, 2.75, 0.969485, -3, 1.5, 0.969485, -2.75, 1.5, 0.969485, -2.25, 2.75, 0.969485, -2, 2.75, 0.969485, 2.75, 29.5, 0.969485, 13.25, 29.5, 0.969485, -11.75, 2.75, 0.969485, -2, 2.75, 0.969485, 12.75, 2.25, 0.969485, 13, 29.5, 0.969485, 13.25, 29.5, 0.969485, -11.75, 2.25, 0.969485, -11.5, 2.75, 0.969485, -11.25, 29.5, 0.969485, -11.75, 2.75, 0.969485, -11.25, 2.75, 0.969485, -3, 2.75, 0.969485, 4, 2.75, 0.969485, 12.75, 29.5, 0.969485, 13.25, 29.5, 0.969485, -11.75, 2.75, 0.969485, -3, 2.75, 0.969485, -2, 0.5, 0.969485, 4, 1.75, 0.969485, 3.75, 1.75, 0.969485, 3, 0.5, 0.969485, 2.75, -4.75, 0.969485, 4.75, -4.75, 0.969485, -0.75, -4.75, 0.969485, 4.75, 0.5, 0.969485, 2.75, 0.5, 0.969485, -1.25, -4.75, 0.969485, 4.75, -5.25, 0.969485, 5.25, 0.5, 0.969485, 5.25, 0.5, 0.969485, 4, 0.5, 0.969485, -1.25, -5.25, 0.969485, -1, -4.75, 0.969485, -0.75, -10, 10.4695, 0, -10, 10.4695, 4.25, -5.75, 10.4695, 4.25, -5.75, 10.4695, 0, -9.75, 0.969485, 0.25, -9.75, 0.969485, 4, -6, 0.969485, 4, -6, 0.969485, 0.25, -29.5, 0.969485, 3, -11, 0.969485, 3, -11, 0.969485, 1.25, -29.5, 0.969485, 1.25, 0.5, 0.969485, 12.75, 0.5, 0.969485, 5.25, -5.25, 0.969485, 5.25, 0.5, 0.969485, 12.75, -5.25, 0.969485, 5.25, -10.75, 0.969485, 5.25, 1.5, 0.969485, 29.5, 1.5, 0.969485, 13, 0.5, 0.969485, 12.75, -10.75, 0.969485, 5.25, -11, 0.969485, 3, -29.5, 0.969485, 3, 1.5, 0.969485, 29.5, 0.5, 0.969485, 12.75, -10.75, 0.969485, 5.25, -29.5, 0.969485, 3, -29.5, 0.969485, 29.5, 2.25, 0.969485, 13, 1.5, 0.969485, 13, 1.5, 0.969485, 29.5, 29.5, 0.969485, 29.5, 29.5, 0.969485, 13.25)
@@ -43,7 +53,9 @@ polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Arr
 environment = SubResource("Environment_rqqk8")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.882948, 0.0956522, -0.459624, -3.72529e-09, 0.979024, 0.203744, 0.469472, 0.179896, -0.864427, 0, 11, -24)
+transform = Transform3D(-0.753297, 0.246159, -0.609877, -0.132233, 0.85169, 0.507088, 0.644251, 0.462634, -0.609025, 0, 11, -24)
+light_color = Color(1, 0.894118, 0.807843, 1)
+light_bake_mode = 1
 shadow_enabled = true
 
 [node name="RedButton" parent="." node_paths=PackedStringArray("doors") instance=ExtResource("3_j1g3y")]
@@ -91,3 +103,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2, 10)
 stream = ExtResource("8_gs34p")
 volume_db = -17.8
 autoplay = true
+
+[node name="Node3D" parent="." instance=ExtResource("9_7mgh7")]
+transform = Transform3D(0.324614, 0, -0.339891, 0, 0.47, 0, 0.339891, 0, 0.324614, 35.5104, -0.749715, -32.4872)

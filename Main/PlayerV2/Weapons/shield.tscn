@@ -8,6 +8,7 @@ resource_name = "weapons"
 albedo_texture = ExtResource("1_eqoy1")
 roughness = 0.5
 normal_enabled = true
+normal_scale = -1.0
 normal_texture = ExtResource("2_wmtrt")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_avn5v"]
