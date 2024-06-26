@@ -16,7 +16,7 @@ func _physics_process(_delta):
 	var target = player.closest_enemy
 	global_transform.origin = global_transform.origin.lerp(camera_slot.global_transform.origin, 0.1)
 	rotation = anchor.rotation
-	print(rotater.rotation)
+	#print(rotater.rotation)
 	if lockOn == true:
 		rotater.look_at(target.global_position)
 		anchor.rotation.y = lerp_angle(anchor.rotation.y, rotater.rotation.y, 0.25)

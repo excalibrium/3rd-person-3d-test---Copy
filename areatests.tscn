@@ -4,7 +4,13 @@
 resource_name = "Material"
 cull_mode = 2
 albedo_color = Color(0.906332, 0.906332, 0.906332, 1)
-roughness = 0.5
+metallic = 0.35
+metallic_specular = 0.75
+roughness = 0.2
+rim_enabled = true
+rim = 0.15
+subsurf_scatter_strength = 1.0
+subsurf_scatter_skin_mode = true
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_anhnx"]
 _surfaces = [{

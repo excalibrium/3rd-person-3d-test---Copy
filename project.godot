@@ -15,6 +15,11 @@ run/main_scene="res://Main/MainScene.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/jigglebones/plugin.cfg")
@@ -110,7 +115,7 @@ global_illumination/voxel_gi/quality=1
 shading/overrides/force_vertex_shading.mobile=false
 driver/depth_prepass/disable_for_vendors=""
 anti_aliasing/screen_space_roughness_limiter/enabled=false
-scaling_3d/scale=2.0
+scaling_3d/mode=2
 scaling_3d/fsr_sharpness=1.2
 global_illumination/sdfgi/probe_ray_count=4
 global_illumination/sdfgi/frames_to_update_lights=3

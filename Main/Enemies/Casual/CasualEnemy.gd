@@ -25,7 +25,7 @@ var shield_break
 func _ready():
 	allies = get_tree().get_nodes_in_group("Ally")
 	state_timer = 0.0
-	state_machine = animationTree.get("parameters/playback")
+	state_machine = animationTree.get("parameters/stater/playback")
 	await get_tree().physics_frame
 	healthbar.init_health(health)
 func _process(delta):
@@ -82,13 +82,17 @@ func _handle_animations():
 	if ally_found:
 		look_at(target.global_position)
 
-	animationTree.set("parameters/conditions/idle", is_moving == false and is_on_floor() and attacking == false and !is_blocking and !stunned)
-	animationTree.set("parameters/conditions/move", is_moving == true and is_on_floor() and attacking == false and !is_blocking and !stunned)
+	animationTree.set("parameters/stater/conditions/idle", is_moving == false and is_on_floor() and attacking == false and !is_blocking and !stunned)
+	animationTree.set("parameters/stater/conditions/move", is_moving == true and is_on_floor() and attacking == false and !is_blocking and !stunned)
 	
 func _handle_combat(delta):
+	if instaslow == false:
+		animationTree.set("parameters/TimeScale/scale", 1)
+	else:
+		animationTree.set("parameters/TimeScale/scale", 0.01)
 	$BaseModel3D/Hitbox/CPUParticles3D.global_rotation.y = player.get_node("BaseModel3D").get_node("MeshInstance3D").global_rotation.y - PI/2
 
-	print("current weapon: ",currentweapon," hurting: ", currentweapon.Hurt)
+	#print("current weapon: ",currentweapon," hurting: ", currentweapon.Hurt)
 	if !is_blocking:
 		$BaseModel3D/MeshInstance3D/Viego/Skeleton3D/BoneAttachment3D2/Shield/Area3D/CollisionShape3D.disabled = true
 	else:
@@ -112,11 +116,11 @@ func _handle_combat(delta):
 		"Attack_1":
 			currentweapon.attack_multiplier = 2
 			attack_timer += delta
-			if (attack_timer >= 0.7 && attack_timer < 1.0 ):
+			if (attack_timer >= 0.5 && attack_timer < 1.0 ):
 				currentweapon.Hurt = true
 			else:
 				currentweapon.Hurt = false
-	if weaponCollidingWall and attacking and currentweapon.Hurt == true or player.is_blocking == true and attacking and currentweapon.Hurt == true:
+	if weaponCollidingWall and attacking and currentweapon.Hurt == true: #or player.is_blocking == true and attacking and currentweapon.Hurt == true:
 		stunned = true
 		attacking = false
 		state_machine.travel("hit_cancel")
@@ -130,7 +134,7 @@ func _handle_combat(delta):
 				state_machine.travel("Attack_1")
 			if random == 3:
 				state_machine.travel("shield_block_1")
-				print_rich("[b][bgcolor=red]blocking[/bgcolor][/b]")
+				#print_rich("[b][bgcolor=red]blocking[/bgcolor][/b]")
 				is_blocking = true
 
 func _on_animation_tree_animation_finished(anim_name):

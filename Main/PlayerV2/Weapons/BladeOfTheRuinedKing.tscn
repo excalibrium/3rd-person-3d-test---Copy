@@ -14,7 +14,7 @@ roughness = 0.45
 emission_enabled = true
 emission_texture = ExtResource("2_xcl6p")
 normal_enabled = true
-normal_scale = 8.2
+normal_scale = -1.0
 normal_texture = ExtResource("3_kp8g6")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_i7ivj"]
@@ -52,11 +52,10 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_i7ivj")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5sxxp"]
-size = Vector3(1.865, 0.2, 0.2)
+size = Vector3(1.865, 0.1, 0.1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ht6nb"]
-radius = 0.125
-height = 2.50763
+radius = 0.1
 
 [node name="BladeOfTheRuinedKing" type="Node3D" node_paths=PackedStringArray("hurtbox")]
 script = ExtResource("1_wdesp")
@@ -71,14 +70,14 @@ skeleton = NodePath("")
 transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209e-07, -2.98023e-08, -0.999996, 0, -0.004, -0.009, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
-transform = Transform3D(1, 1.42109e-14, -9.49509e-10, 2.98023e-08, 1, 5.87511e-08, 9.13962e-09, -7.92889e-08, 1, 0.37407, 1.11468e-08, 3.25963e-09)
+transform = Transform3D(1, -2.98023e-08, -9.13963e-09, 2.98023e-08, 1, 7.92889e-08, 9.13962e-09, -7.92889e-08, 1, 0.37407, 1.11468e-08, 3.25963e-09)
 shape = SubResource("BoxShape3D_5sxxp")
 
 [node name="Hurtbox" type="Area3D" parent="."]
-transform = Transform3D(2.68221e-07, -7.54976e-08, -1, 1, -4.37112e-08, 2.68221e-07, -4.37114e-08, -0.999996, 7.54979e-08, 1.85945e-07, 0.693252, -3.0303e-08)
+transform = Transform3D(2.68221e-07, -7.54976e-08, -1, 1, -4.37112e-08, 2.68221e-07, -4.37114e-08, -0.999996, 7.54979e-08, 2.71507e-07, 1.01225, -4.42469e-08)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(-1.62921e-07, 1, -4.37114e-08, 7.10543e-15, -4.37114e-08, -1, -1, -1.62921e-07, 3.55271e-14, 0.204166, -8.92436e-09, -3.31167e-08)
+transform = Transform3D(-1.62921e-07, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -1.62921e-07, 7.12149e-15, 0.2, 0, 0)
 shape = SubResource("CapsuleShape3D_ht6nb")
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]

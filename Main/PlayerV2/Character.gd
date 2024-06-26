@@ -35,6 +35,8 @@ var is_running = false
 var is_moving = false
 var movement_lock = false
 var action_bar = 0
+var instaslow := false
+var attackCompensation
 func _process(_delta):
 	return
 
