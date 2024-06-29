@@ -32,7 +32,7 @@ func _on_hurtbox_area_exited(area):
 func _process(delta):
 #	print(neotgtwjs)
 	#print(hitCD)
-	if hitCD < 0.1:
+	if hitCD < 0.125:
 		hitCD += delta
 	#print(owner, Hurt, neotgtwjs)
 	#print(incheck)
@@ -46,7 +46,7 @@ func _process(delta):
 		if Hurt == false or neotgtwjs.currentweapon == self: return
 		else:
 			prevhit = neotgtwjs
-			if hitCD >= 0.1:
+			if hitCD >= 0.125:
 				prevhit.damage_by(attack_damage * attack_multiplier)
 #				print("HIT! " , incheck.get_parent().get_parent().get_tree_string())
 				owner.instaslow = true

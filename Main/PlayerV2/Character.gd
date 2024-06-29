@@ -18,7 +18,7 @@ var time_since_stamina_used = 0
 
 var is_dodging = false
 var is_blocking = false
-
+var staggered = false
 var attacking = false
 var attack_buffer = 0
 var is_attacking = 0
@@ -30,6 +30,7 @@ var damI := 0.0
 var damI_cd := 0.08
 var weaponCollidingWall = false
 @export var currentweapon: Weapon
+@export var offhand: Offhand
 
 var is_running = false
 var is_moving = false

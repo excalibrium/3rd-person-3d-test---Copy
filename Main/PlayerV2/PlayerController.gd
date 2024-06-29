@@ -43,7 +43,6 @@ var path_empty := true
 var in_mode := false
 var shield_activation := false
 var charge_attack := false
-@onready var animation_tree = $BaseModel3D/MeshInstance3D/AnimationTree
 var RMPos
 func _ready():
 	state_machine = animationTree.get("parameters/StateMachine/playback")
@@ -68,7 +67,7 @@ func _process(delta):
 	_handle_detection()
 
 func _physics_process(delta):
-	RMPos = animation_tree.get_root_motion_position()
+	RMPos = animationTree.get_root_motion_position()
 	_handle_movement(delta)
 	_handle_combat(delta)
 	_handle_animations(delta)
@@ -110,7 +109,7 @@ func _handle_movement(delta):
 		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
 	elif attacking and attack_timer >= attack_grace and !lockOn and !stunned and rotate_to_view == true:
 		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
-	if input_dir.length() > 0 and !movement_lock and !instaslow and is_on_floor():
+	if input_dir.length() > 0 and !movement_lock and !instaslow and !staggered and is_on_floor():
 		is_moving = true
 		if lockOn == true:
 			rotate_to_view = false
@@ -207,21 +206,26 @@ func _handle_animations(delta):
 	if is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false and speed < 4.8:
 		#print("move")
 		pass
-	animationTree.set("parameters/StateMachine/conditions/in", is_moving == false and is_on_floor() and is_running == false and in_mode == true and charge_attack == false)
-	animationTree.set("parameters/StateMachine/conditions/idle", is_moving == false and is_on_floor() and attacking == false and is_blocking == false and is_running == false and in_mode == false)
-	animationTree.set("parameters/StateMachine/conditions/move", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false and speed < 4.8)
-	animationTree.set("parameters/StateMachine/conditions/run", is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == true and speed >= 4.8)
+	animationTree.set("parameters/StateMachine/conditions/in", !staggered and is_moving == false and is_on_floor() and is_running == false and in_mode == true and charge_attack == false)
+	animationTree.set("parameters/StateMachine/conditions/idle", !staggered and is_moving == false and is_on_floor() and attacking == false and is_blocking == false and is_running == false and in_mode == false)
+	animationTree.set("parameters/StateMachine/conditions/move", !staggered and is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false and speed < 4.8)
+	animationTree.set("parameters/StateMachine/conditions/run", !staggered and is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == true and speed >= 4.8)
 	# Do anims.
 	pass 
 
 func _handle_combat(delta):
+	var staggeranimhelper = 0
+	if staggeranimhelper >= 1:
+		staggeranimhelper += delta
+	if staggeranimhelper >= 1:
+		staggered = false
 	if instaslow == false:
 		animationTree.set("parameters/TimeScale/scale", 1)
 	else:
 		animationTree.set("parameters/TimeScale/scale", 0.01)
 	#print("current weapon: ",currentweapon," hurting: ", currentweapon.Hurt)
 	#print(in_mode)
-	#print("attack meter: ", attack_meter, "  current path: ", current_path, "  current state: ", current_state )
+	print("attack meter: ", attack_meter, "  current path: ", current_path, "  current state: ", current_state )
 	if shift == true and is_on_floor() and is_blocking == false and is_running == false:
 	#	state_machine.travel("in")
 		in_mode = true
@@ -252,7 +256,12 @@ func _handle_combat(delta):
 			break
 	match current_state: # Attack hurt frame code
 		"Attack_bash":
-			print("wow")
+			if instaslow == false:
+				attack_timer += delta
+			if ( attack_timer >= 0.1 && attack_timer < 0.375 ):
+				offhand.Active = true
+			else:
+				offhand.Active = false
 		"Attack_1":
 			currentweapon.attack_multiplier = 1.5
 			if instaslow == false:
@@ -303,7 +312,7 @@ func _handle_combat(delta):
 			if instaslow == false:
 				attack_timer += delta
 			#print(attack_timer)
-			if ( attack_timer >= 0.4 && attack_timer < 0.5833 ):
+			if ( attack_timer >= 0.7 && attack_timer < 0.875 ):
 				currentweapon.Hurt = true
 			else:
 				currentweapon.Hurt = false
@@ -363,7 +372,7 @@ func _handle_combat(delta):
 		is_blocking = false
 	if time_since_engage <= 10:
 		time_since_engage += delta
-	movement_lock = current_state in ["Attack_1", "Attack_2", "Attack_3", "Attack_4", "Attack_5", "Attack_6", "Attack_C_1", "Attack_C_1_bash", "death_01", "Attack_bash", "in_to_H_Attack_1", "H_Attack_2"] or stunned
+	movement_lock = current_state in ["Light_Damaged_L","Attack_1", "Attack_2", "Attack_3", "Attack_4", "Attack_5", "Attack_6", "Attack_C_1", "Attack_C_1_bash", "death_01", "Attack_bash", "in_to_H_Attack_1", "H_Attack_2"] or stunned
 
 	#print(shield_activation, shield_meter, "WOHOOO", is_blocking, attacking)
 	if Input.is_action_just_pressed("RightClick"):
@@ -536,6 +545,8 @@ func _on_animation_tree_animation_started(anim_name):
 		"Attack_C_1":
 			attacking = true
 			attack_timer = 0
+		"Attack_bash":
+			attack_timer = 0
 		"Attack_1_to_idle":
 			if attack_buffer == 1 and !weaponCollidingWall and in_mode == false:
 				state_machine.travel("Attack_2")
@@ -565,6 +576,20 @@ func _on_animation_tree_animation_finished(anim_name):
 	if lockOn and anim_name in ["Attack_1", "Attack_2", "Attack_3", "Attack_4", "Attack_5", "Attack_6"]:
 		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $enemy_radar.rotation.y, 0.75)
 	match anim_name:
+		"Light_Damaged_L":
+			staggered = false
+			movement_lock = false
+			attacking = false
+			stunned = false
+			is_moving = false
+			attacking = false
+			is_blocking = false
+			is_running = false
+			in_mode = false
+			leftclick = false
+			rightclick = false
+			shield_activation = false
+			charge_attack = false
 		"in_to_H_Attack_1":
 			attack_timer = 0
 			if attack_buffer == 10 and !weaponCollidingWall:
@@ -669,6 +694,9 @@ func _on_animation_tree_animation_finished(anim_name):
 		"Attack_bash":
 			stunned = false
 			shift = false
+			attack_timer = 0
+			attacking = false
+			attack_buffer = 0
 #				shift = false
 	#			is_blocking = true
 	#			print("BLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsexBLOCKsex")
@@ -682,6 +710,7 @@ func _on_animation_tree_animation_finished(anim_name):
 # # # # # #
 
 func player_death(x):
+	staggered = false
 	global_position = Vector3(0,3,0)
 	player_no[x].reset()
 	is_moving = false
@@ -690,8 +719,12 @@ func player_death(x):
 	is_running = false
 	healthbar.health = health
 
-func damage_by(damaged: int):
+func damage_by(damaged: int, side = 1):
 	#print("damaged you are")
+	if side == 1 and canBeDamaged:
+		staggered = true
+	#	_animationPlayer.play("Light_Damaged_L")
+		state_machine.start("Light_Damaged_L")
 	if health <= 0:
 		stunned = true
 		state_machine.stop()
@@ -701,6 +734,7 @@ func damage_by(damaged: int):
 		health -= damaged
 	damI = 0.0
 	healthbar.health = health
+
 
 func guard_break():
 	if is_blocking:

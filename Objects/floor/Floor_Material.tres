@@ -4,4 +4,10 @@
 
 [resource]
 albedo_texture = ExtResource("1_y2dbk")
+metallic_specular = 0.1
+roughness = 0.5
+rim_enabled = true
+rim = 0.1
+rim_tint = 1.0
+anisotropy = 1.0
 uv1_triplanar = true

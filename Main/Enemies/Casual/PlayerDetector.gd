@@ -8,7 +8,7 @@ class_name PlayerDetector
 
 var raycasts: Array[RayCast3D] = []
 
-func _ready():
+func _ready(): #berke code
 	# Remove any children.
 	if get_child_count() > 0:
 		for child in get_children():

@@ -47,15 +47,20 @@ func _process(delta):
 		else:
 			prevhit = neotgtwjs
 			if hitCD >= 0.3:
-				prevhit.damage_by(attack_damage * attack_multiplier)
+				if prevhit.offhand.Active == false:
+					prevhit.damage_by(attack_damage * attack_multiplier)
 #				print("HIT! " , incheck.get_parent().get_parent().get_tree_string())
-				owner.instaslow = true
-				prevhit.instaslow = true
-				await get_tree().create_timer(0.1).timeout
+					owner.instaslow = true
+					prevhit.instaslow = true
+					await get_tree().create_timer(0.1).timeout
 				#owner.attack_timer -= 0.015
 				#prevhit.attack_timer -= 0.015
-				owner.instaslow = false
-				prevhit.instaslow = false
+					owner.instaslow = false
+					prevhit.instaslow = false
+				else:
+					owner.stunned = true
+					owner.attacking = false
+					owner.state_machine.travel("hit_cancel")
 				hitCD = 0.0
 			if prevhit.currentweapon != self and guard_break == true:
 				prevhit.guard_break()

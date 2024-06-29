@@ -1,5 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://13l65w5vx8vb"]
+[gd_scene load_steps=9 format=3 uid="uid://13l65w5vx8vb"]
 
+[ext_resource type="Script" path="res://Main/PlayerV2/Weapons/shield.gd" id="1_4ba5f"]
 [ext_resource type="Texture2D" uid="uid://cjkxwij2kdhx6" path="res://Main/PlayerV2/Weapons/spear_000000013F730E78-000000013F730E78.png" id="1_eqoy1"]
 [ext_resource type="Texture2D" uid="uid://b5qnxbwaktbil" path="res://Main/PlayerV2/Weapons/spear_000000013F7335F8.jpg" id="2_wmtrt"]
 
@@ -46,10 +47,14 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_avn5v")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_36q63"]
-radius = 0.50057
-height = 1.2
+radius = 0.7
+height = 1.4
 
-[node name="Shield" type="Node3D"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rjsjy"]
+
+[node name="Shield" type="Node3D" node_paths=PackedStringArray("hurtbox")]
+script = ExtResource("1_4ba5f")
+hurtbox = NodePath("ParryHitbox")
 
 [node name="weapons" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_ks615")
@@ -61,3 +66,10 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("CapsuleShape3D_36q63")
 disabled = true
+
+[node name="ParryHitbox" type="Area3D" parent="."]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParryHitbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.509965, 0)
+shape = SubResource("CapsuleShape3D_rjsjy")
