@@ -269,6 +269,7 @@ func _handle_combat(delta):
 			#print(attack_timer)
 			if ( attack_timer >= 0.3 && attack_timer < 0.4583 ):
 				currentweapon.Hurt = true
+				currentweapon.hitCD_cap = 0.135
 			else:
 				currentweapon.Hurt = false
 		"Attack_2":
@@ -278,6 +279,7 @@ func _handle_combat(delta):
 			#print(attack_timer)
 			if ( attack_timer >= 0.3 && attack_timer < 0.5 ):
 				currentweapon.Hurt = true
+				currentweapon.hitCD_cap = 0.180
 			else:
 				currentweapon.Hurt = false
 		"Attack_3":
@@ -287,6 +289,7 @@ func _handle_combat(delta):
 			#print(attack_timer)
 			if ( attack_timer >= 0.4 && attack_timer < 0.5417 ):
 				currentweapon.Hurt = true
+				currentweapon.hitCD_cap = 0.125
 			else:
 				currentweapon.Hurt = false
 		"Attack_4":
@@ -296,6 +299,7 @@ func _handle_combat(delta):
 			#print(attack_timer)
 			if ( attack_timer >= 0.1 && attack_timer < 0.375 ):
 				currentweapon.Hurt = true
+				currentweapon.hitCD_cap = 0.125
 			else:
 				currentweapon.Hurt = false
 		"Attack_5":
@@ -305,6 +309,7 @@ func _handle_combat(delta):
 			#print(attack_timer)
 			if ( attack_timer >= 0.4 && attack_timer < 0.5833 ):
 				currentweapon.Hurt = true
+				currentweapon.hitCD_cap = 0.150
 			else:
 				currentweapon.Hurt = false
 		"in_to_H_Attack_1":
@@ -312,8 +317,9 @@ func _handle_combat(delta):
 			if instaslow == false:
 				attack_timer += delta
 			#print(attack_timer)
-			if ( attack_timer >= 0.7 && attack_timer < 0.875 ):
+			if ( attack_timer >= 0.515 && attack_timer < 0.875 ):
 				currentweapon.Hurt = true
+				currentweapon.hitCD_cap = 0.350
 			else:
 				currentweapon.Hurt = false
 		"H_Attack_2":
@@ -323,6 +329,7 @@ func _handle_combat(delta):
 			#print(attack_timer)
 			if ( attack_timer >= 0.7 && attack_timer < 0.875 ):
 				currentweapon.Hurt = true
+				currentweapon.hitCD_cap = 0.150
 			else:
 				currentweapon.Hurt = false
 		"Attack_C_1":
@@ -336,6 +343,7 @@ func _handle_combat(delta):
 			#print(attack_timer)
 			if ( attack_timer >= 0.3 && attack_timer < 0.5) or ( attack_timer >= 0.7 && attack_timer < 0.993 ):
 				currentweapon.Hurt = true
+				currentweapon.hitCD_cap = 0.200
 			else:
 				currentweapon.Hurt = false
 
