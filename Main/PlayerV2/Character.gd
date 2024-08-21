@@ -29,7 +29,7 @@ var attack_timer := 0.0
 var damI := 0.0
 var damI_cd := 0.08
 var weaponCollidingWall = false
-@export var currentweapon: Weapon
+var currentweapon: Weapon
 var weapons_in_tree
 @export var offhand: Offhand
 
