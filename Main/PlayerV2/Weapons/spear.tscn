@@ -352,7 +352,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_wg7h7")
 
-[node name="Spear" type="Node3D" node_paths=PackedStringArray("hurtbox")]
+[node name="Spear" type="Node3D" node_paths=PackedStringArray("hurtbox") groups=["weapon"]]
 script = ExtResource("1_asan0")
 hurtbox = NodePath("Hurtbox")
 

@@ -44,13 +44,51 @@ var in_mode := false
 var shield_activation := false
 var charge_attack := false
 var RMPos
+var lhi = 1
+var currentanimplayer
+var prev_weapon
+var cometspear
+var botrk
+var fists
 func _ready():
+	if currentweapon == null:
+		LeftHandItem = "Fists"
+		fists = fistScene.instantiate()
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.add_child(fists)
+		currentweapon = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.get_child(0)
+		$BaseModel3D/MeshInstance3D/AnimationTree.set_animation_player("../FistAnimPlayer") 
+		prev_weapon = currentweapon
 	state_machine = animationTree.get("parameters/StateMachine/playback")
 	enemies = get_tree().get_nodes_in_group("enemies")
 	player_no = get_tree().get_nodes_in_group("Player")
 	staminabar.init_stamina(stamina)
 	healthbar.init_health(health)
 func _input(event):
+	if event.is_action_pressed("1") and LeftHandItem != "CometSpear" and !attacking:
+		prev_weapon = currentweapon
+		LeftHandItem = "CometSpear"
+		cometspear = spearScene.instantiate()
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.remove_child(prev_weapon)
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.add_child(cometspear)
+		currentweapon = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.get_child(0)
+		currentweapon.position = Vector3(0.279, 0.13, 0.0)
+		currentweapon.rotation = Vector3(deg_to_rad(66), deg_to_rad(10), deg_to_rad(-73.4))
+	if event.is_action_pressed("2") and LeftHandItem != "BoTRK" and !attacking:
+		prev_weapon = currentweapon
+		LeftHandItem = "BoTRK"
+		botrk = botrkScene.instantiate()
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.remove_child(prev_weapon)
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.add_child(botrk)
+		currentweapon = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.get_child(0)
+		currentweapon.position = Vector3(-0.108, 0.1, -0.05)
+		currentweapon.rotation = Vector3(deg_to_rad(-0.7), deg_to_rad(-12.4), deg_to_rad(-87.6))
+	if event.is_action_pressed("0") and LeftHandItem != "Fists" and !attacking:
+		prev_weapon = currentweapon
+		LeftHandItem = "Fists"
+		fists = fistScene.instantiate()
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.remove_child(prev_weapon)
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.add_child(fists)
+		currentweapon = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.get_child(0)
 	if event.is_action_pressed("Q"):
 		if lockOn == false:
 			lockOn = true
@@ -60,7 +98,13 @@ func _input(event):
 		get_tree().quit()
 		return
 func _process(delta):
-	#print(RMPos)
+
+	print(LeftHandItem , animationTree.get_animation_player())
+	if LeftHandItem == "Fists":
+		$BaseModel3D/MeshInstance3D/AnimationTree.set_animation_player("../FistAnimPlayer")
+	else:
+		$BaseModel3D/MeshInstance3D/AnimationTree.set_animation_player("../AnimationPlayer")
+	#print("prev: ", prev_weapon)
 	current_state = state_machine.get_current_node()
 	current_path = state_machine.get_travel_path()
 	_handle_variables(delta)
@@ -146,7 +190,11 @@ func _handle_variables(delta):
 	var camattachment = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CameraAttachment
 	$Camera.global_transform.origin.x = lerp($Camera.global_transform.origin.x, camattachment.global_transform.origin.x, 0.0125)
 	$Camera.global_transform.origin.z = lerp($Camera.global_transform.origin.z, camattachment.global_transform.origin.z, 0.0125)
-#	if instaslow == true:
+	if instaslow == true:
+		$Camera.rotation.z = deg_to_rad(-2)
+		$Camera.position.y = -0.1
+	else:
+		$Camera.rotation.z = 0
 #		attackCompensation = 0.05
 #	else: attackCompensation = 0.0
 	if shift == true:
@@ -214,6 +262,7 @@ func _handle_animations(delta):
 	pass 
 
 func _handle_combat(delta):
+	print(currentweapon)
 	var staggeranimhelper = 0
 	if staggeranimhelper >= 1:
 		staggeranimhelper += delta
@@ -579,8 +628,8 @@ func _on_animation_tree_animation_started(anim_name):
 				state_machine.travel("Attack_1")
 				attack_buffer = 0
 func _on_animation_tree_animation_finished(anim_name):
-	if !lockOn:
-		rotate_to_view = true
+	#if !lockOn:
+	#	rotate_to_view = true
 	if lockOn and anim_name in ["Attack_1", "Attack_2", "Attack_3", "Attack_4", "Attack_5", "Attack_6"]:
 		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $enemy_radar.rotation.y, 0.75)
 	match anim_name:
@@ -748,7 +797,6 @@ func guard_break():
 	if is_blocking:
 		state_machine.travel("hit_cancel")
 		is_blocking = false
-
 
 
 

@@ -46,9 +46,7 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_avn5v")
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_36q63"]
-radius = 0.7
-height = 1.4
+[sub_resource type="SphereShape3D" id="SphereShape3D_egnuy"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rjsjy"]
 
@@ -61,10 +59,10 @@ mesh = SubResource("ArrayMesh_ks615")
 skeleton = NodePath("")
 
 [node name="Area3D" type="Area3D" parent="." groups=["walls"]]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0.073983)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-shape = SubResource("CapsuleShape3D_36q63")
+shape = SubResource("SphereShape3D_egnuy")
 disabled = true
 
 [node name="ParryHitbox" type="Area3D" parent="."]

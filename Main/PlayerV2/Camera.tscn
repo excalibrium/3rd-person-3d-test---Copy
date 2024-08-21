@@ -18,7 +18,7 @@ camera_slot = NodePath("../view_anchor/CameraSlot")
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.75, 0)
 collision_mask = 2
 shape = SubResource("SeparationRayShape3D_eppg2")
-spring_length = 2.5
+spring_length = 2.75
 
 [node name="CameraSlot" type="Node3D" parent="view_anchor"]
 

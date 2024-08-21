@@ -4,13 +4,9 @@ class_name BoTRK
 #@onready var playerar = get_tree().get_nodes_in_group("Player")
 #@onready var player: CharacterBody3D = playerar[0]
 @export var hurtbox: Area3D
-var neotgtwjs
-var in_area := false
-var incheck
-var prevhit
-var hitCD := 0.0
 func _ready():
-	pass
+	attack_damage = 5.0
+	set_owner(get_parent().owner)
 func _physics_process(delta):
 	pass
 
@@ -32,7 +28,7 @@ func _on_hurtbox_area_exited(area):
 func _process(delta):
 #	print(neotgtwjs)
 	#print(hitCD)
-	if hitCD < 0.3:
+	if hitCD < hitCD_cap:
 		hitCD += delta
 	#print(owner, Hurt, neotgtwjs)
 	#print(incheck)
@@ -46,7 +42,7 @@ func _process(delta):
 		if Hurt == false or neotgtwjs.currentweapon == self: return
 		else:
 			prevhit = neotgtwjs
-			if hitCD >= 0.3:
+			if hitCD >= hitCD_cap:
 				if prevhit.offhand.Active == false:
 					prevhit.damage_by(attack_damage * attack_multiplier)
 #				print("HIT! " , incheck.get_parent().get_parent().get_tree_string())

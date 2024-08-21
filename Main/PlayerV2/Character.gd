@@ -30,6 +30,7 @@ var damI := 0.0
 var damI_cd := 0.08
 var weaponCollidingWall = false
 @export var currentweapon: Weapon
+var weapons_in_tree
 @export var offhand: Offhand
 
 var is_running = false
@@ -38,8 +39,13 @@ var movement_lock = false
 var action_bar = 0
 var instaslow := false
 var attackCompensation
+var spearScene = preload("res://Main/PlayerV2/Weapons/spear.tscn")
+var botrkScene = preload("res://Main/PlayerV2/Weapons/BladeOfTheRuinedKing.tscn")
+var fistScene = preload("res://Main/PlayerV2/Weapons/fists.tscn")
+var LeftHandItem : String
+var RightHandItem : String
 func _process(_delta):
-	return
+	pass
 
 func _physics_process(delta):
 	if not is_on_floor():

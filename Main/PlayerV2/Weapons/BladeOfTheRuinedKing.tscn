@@ -55,9 +55,10 @@ shadow_mesh = SubResource("ArrayMesh_i7ivj")
 size = Vector3(1.865, 0.1, 0.1)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1syun"]
+height = 2.5
 radius = 0.2
 
-[node name="BladeOfTheRuinedKing" type="Node3D" node_paths=PackedStringArray("hurtbox")]
+[node name="BladeOfTheRuinedKing" type="Node3D" node_paths=PackedStringArray("hurtbox") groups=["weapon"]]
 script = ExtResource("1_wdesp")
 hurtbox = NodePath("Hurtbox")
 
@@ -77,7 +78,7 @@ shape = SubResource("BoxShape3D_5sxxp")
 transform = Transform3D(2.68221e-07, -7.54976e-08, -1, 1, -4.37112e-08, 2.68221e-07, -4.37114e-08, -0.999996, 7.54979e-08, 2.71507e-07, 1.01225, -4.42469e-08)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(-1.62921e-07, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -1.62921e-07, 2.84217e-14, 0.104309, 4.18281e-09, 1.55902e-08)
+transform = Transform3D(-1.62921e-07, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -1.62921e-07, 2.84217e-14, 0, 0, 0)
 shape = SubResource("CylinderShape3D_1syun")
 
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]

@@ -21,7 +21,12 @@ var closest_ally = null
 var knocked
 var canBeDamaged := false
 var shield_break
+var insta
 func _ready():
+	weapons_in_tree = get_tree().get_nodes_in_group("weapon")
+	for a in weapons_in_tree:
+		if a.owner == self:
+			currentweapon = a
 	movement_lock = true
 	stunned = true
 	allies = get_tree().get_nodes_in_group("Ally")
@@ -39,6 +44,7 @@ func _handle_variables(delta):
 	if damI < damI_cd:
 		damI += delta
 func _physics_process(delta):
+	weapons_in_tree = get_tree().get_nodes_in_group("weapon")
 	if not is_on_floor():
 		velocity.y -= gravity * 1.125
 	if movement_lock:
@@ -119,6 +125,7 @@ func _handle_combat(delta):
 			attack_timer += delta
 			if (attack_timer >= 0.7 && attack_timer < 1.0 ):
 				currentweapon.Hurt = true
+				currentweapon.hitCD_cap = 0.135
 			else:
 				currentweapon.Hurt = false
 	if weaponCollidingWall and attacking and currentweapon.Hurt == true or player.is_blocking == true and attacking and currentweapon.Hurt == true:
