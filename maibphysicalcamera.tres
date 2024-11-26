@@ -1,6 +1,0 @@
-[gd_resource type="CameraAttributesPhysical" format=3 uid="uid://clhicyiuwwd5p"]
-
-[resource]
-exposure_multiplier = 6.0
-auto_exposure_enabled = true
-auto_exposure_scale = 0.35

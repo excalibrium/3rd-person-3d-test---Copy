@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://1gu8xg5mtc4u"]
+[gd_scene load_steps=9 format=4 uid="uid://1gu8xg5mtc4u"]
 
 [ext_resource type="Shader" path="res://çimensel/grass.gdshader" id="1_2xmod"]
 [ext_resource type="Script" path="res://çimensel/grass_triangle.gd" id="2_rjybx"]
@@ -42,16 +42,16 @@ shader_parameter/simplex_noise = SubResource("NoiseTexture2D_mrvgl")
 [sub_resource type="ArrayMesh" id="ArrayMesh_6hnv1"]
 _surfaces = [{
 "aabb": AABB(-0.25103, 0, 0, 0.50206, 2, 1e-05),
-"attribute_data": PackedByteArray(255, 255, 153, 153, 0, 0, 153, 153, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 0, 0, 255, 255),
+"attribute_data": PackedByteArray("//+ZmQAAmZn//wAAAAAAAP////8AAP//"),
 "format": 34896613399,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 1, 0, 2, 0, 2, 0, 1, 0, 3, 0, 4, 0, 5, 0, 0, 0, 0, 0, 5, 0, 1, 0),
+"index_data": PackedByteArray("AAABAAIAAgABAAMABAAFAAAAAAAFAAEA"),
 "material": SubResource("ShaderMaterial_oo1yc"),
 "name": "Plane",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 6,
-"vertex_data": PackedByteArray(204, 204, 102, 102, 0, 0, 0, 128, 51, 51, 102, 102, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 0, 128, 255, 127, 255, 255, 0, 0, 254, 127, 255, 255, 0, 0, 0, 0, 0, 128, 0, 0, 0, 0, 0, 0, 0, 128, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255)
+"vertex_data": PackedByteArray("zMxmZgAAAIAzM2ZmAAAAgP9///8AAACA/3///wAA/n///wAAAAAAgAAAAAAAAACA/3////9/////f////3////9/////f///")
 }]
 blend_shape_mode = 0
 
