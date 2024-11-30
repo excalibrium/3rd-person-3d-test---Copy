@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://crgkshruwcx03"]
+[gd_scene load_steps=10 format=3 uid="uid://crgkshruwcx03"]
 
 [ext_resource type="PackedScene" uid="uid://ckc1saq8s40bw" path="res://Main/Entities/Player/Player.tscn" id="1_d12lp"]
 [ext_resource type="PackedScene" uid="uid://dc1tba4wjti4h" path="res://Main/Entities/Enemy/Casual/casual_enemy.tscn" id="2_pcnau"]
@@ -18,6 +18,10 @@ background_mode = 2
 sky = SubResource("Sky_4fys2")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_pa5cx"]
+vertices = PackedVector3Array(-24.5, 0.5, -24.5, -24.5, 0.5, 24.5, 24.5, 0.5, 24.5, 24.5, 0.5, -24.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_mcpjr"]
 size = Vector3(50, 1, 50)
@@ -45,25 +49,19 @@ environment = SubResource("Environment_muv0l")
 [node name="Player" parent="." instance=ExtResource("1_d12lp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7036, 1, 0.183275)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_pa5cx")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D"]
 collision_layer = 7
 collision_mask = 7
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_mcpjr")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/StaticBody3D"]
 mesh = SubResource("PlaneMesh_ubxlm")
 
-[node name="CasualEnemy" parent="StaticBody3D" instance=ExtResource("2_pcnau")]
+[node name="CasualEnemy" parent="." instance=ExtResource("2_pcnau")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.83047, 1, 0.69917)
-
-[node name="CasualEnemy3" parent="StaticBody3D" instance=ExtResource("2_pcnau")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.53047, 1, 0.19917)
-
-[node name="CasualEnemy2" parent="StaticBody3D" instance=ExtResource("2_pcnau")]
-transform = Transform3D(0.942098, 0, 0.335336, 0, 1, 0, -0.335336, 0, 0.942098, 3.5467, 1, -0.0562999)
-
-[node name="CasualEnemy4" parent="StaticBody3D" instance=ExtResource("2_pcnau")]
-transform = Transform3D(0.942098, 0, 0.335336, 0, 1, 0, -0.335336, 0, 0.942098, 4.0385, 1, -0.762085)

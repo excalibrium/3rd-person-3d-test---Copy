@@ -186,7 +186,7 @@ func combat_decision_making() -> void:
 				#print("far")
 				speed = SPEED / 1.5
 			else:
-				speed = SPEED * 1.5
+				speed = SPEED * 2.5
 			if global_position.distance_to(current_attack_target.global_position) < currentweapon.length: #was 2.25 patch0.1
 				spin("init")
 				

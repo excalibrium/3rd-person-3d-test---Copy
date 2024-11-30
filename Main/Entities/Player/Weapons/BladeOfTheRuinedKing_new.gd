@@ -1,6 +1,8 @@
 extends Weapon
 class_name BoTRK
 
+var damage_induced := false
+var veldir
 var owners_hurt : Array[CharacterBody3D]
 var owners : Array[CharacterBody3D]
 @export var hurtbox: Area3D
@@ -15,14 +17,14 @@ func _on_hurtbox_area_entered(area):
 	if area.is_in_group("hitbox"):
 		in_area = true
 		inbox.append(area)
-	if area.is_in_group("walls"):
+	if area.is_in_group("walls") and owner is CharacterBody3D:
 		owner.weaponCollidingWall = true
 func _on_hurtbox_area_exited(area):
 	if area.is_in_group("hitbox"):
 		in_area = false
 		inbox.erase(area)
 		boxes_hit.erase(area)
-	if area.is_in_group("walls"):
+	if area.is_in_group("walls") and owner is CharacterBody3D:
 		owner.weaponCollidingWall = false
 
 func _process(delta: float) -> void:
@@ -42,7 +44,7 @@ func _process(delta: float) -> void:
 						hitCD = 0.0
 						owner.instaslow = true
 						boxes.owner.instaslow = true
-						await get_tree().create_timer(0.1).timeout
+						await get_tree().create_timer(0.075).timeout
 						owner.instaslow = false
 						boxes.owner.instaslow = false
 						boxes_hit.erase(boxes)

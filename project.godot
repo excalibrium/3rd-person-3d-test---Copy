@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="project pantheon"
-run/main_scene="res://test_scene.tscn"
+run/main_scene="res://main2.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -32,6 +32,7 @@ weapon=""
 walls=""
 enemies="enemys"
 impalable="impaling possible"
+Menutton="simple eh"
 
 [input]
 
@@ -165,6 +166,7 @@ ABILITY_3={
 [layer_names]
 
 3d_physics/layer_8="lockon"
+3d_physics/layer_12="Menu"
 
 [physics]
 
@@ -174,4 +176,5 @@ ABILITY_3={
 
 scaling_3d/scale=2.0
 scaling_3d/fsr_sharpness=0.0
+global_illumination/sdfgi/probe_ray_count=5
 occlusion_culling/use_occlusion_culling=true

@@ -1,5 +1,10 @@
 extends Camera3D
 
+@export var Mlooker : Node3D
+@export var Mray : Node3D
+var in_menu := false
+@export var Mcursor : Node3D
+var pressed_rot
 @export var mini_camera_mapper_player : MeshInstance3D
 @export var player: PlayerController
 @export var rotater: Node3D
@@ -25,23 +30,27 @@ const JOY_V_SENS : float = 0.5
 const JOY_H_SENS : float = 0.5
 var camera_velocity := Vector3.ZERO
 func _ready():
+	player = get_tree().get_nodes_in_group("Player")[0]
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	assert(anchor, "Anchor not set")
 
 func _process(delta: float) -> void:
-
+	#print(global_rotation_degrees)
+	#print(rotation_degrees)
+	Mcursor.look_at(global_position)
+	Mray.look_at(Mcursor.global_position)
+	
+	if in_menu == false:
+		Mcursor.global_position = $MenuCursorSlot.global_position
+	
 	anchor.rotate_y(deg_to_rad(-camera_velocity.y))
 	anchor.rotation.x += deg_to_rad(-camera_velocity.x)
-
 	anchor.rotation.x =clamp(anchor.rotation.x,deg_to_rad(-80),deg_to_rad(80))
 	if mouse_time < mouse_cd:
 		mouse_time += delta
-
 	if target_change_time < target_change_cd:
 		target_change_time += delta
-
 	$"../CanvasLayer/Label".text = str(target_change) + str(testvar)
-
 	if owner.owner.lockOn == true:
 		if owner.owner.closest_enemy == null:
 			owner.owner.lockOn = false
@@ -51,9 +60,9 @@ func _process(delta: float) -> void:
 			owner.owner.lockOn = false
 		if owner.owner.closest_enemy.global_position.distance_to(global_position) > owner.owner.max_lock_range:
 			target_change = false
-		$"../Node3D".look_at(owner.owner.closest_enemy.global_position)
-		rotater.global_rotation.y = lerp_angle(rotater.global_rotation.y, $"../Node3D".global_rotation.y, 0.25)
-		anchor.global_rotation.y = lerp_angle(anchor.global_rotation.y, $"../Node3D".global_rotation.y, 0.25)
+		$locked.look_at(owner.owner.closest_enemy.global_position)
+		rotater.global_rotation.y = lerp_angle(rotater.global_rotation.y, $locked.global_rotation.y, 0.25)
+		anchor.global_rotation.y = lerp_angle(anchor.global_rotation.y, $locked.global_rotation.y, 0.25)
 		if target_change_time >= target_change_cd:
 			$pivot.global_rotation.x = lerp_angle($pivot.global_rotation.x, 0, 0.1)
 		else:
@@ -65,7 +74,6 @@ func _process(delta: float) -> void:
 		else:
 			$pivot.global_rotation.y = rotater.global_rotation.y
 		$pivot.global_position = lerp($pivot.global_position, global_position, 0.1)
-
 	elif owner.owner.lockOn == false:
 		$pivot.global_rotation.x = lerp_angle($pivot.global_rotation.x, anchor.global_rotation.x, 0.5)
 		$pivot.global_rotation.y = lerp_angle($pivot.global_rotation.y, anchor.global_rotation.y, 0.5)
@@ -92,7 +100,6 @@ func _physics_process(delta: float) -> void:
 		current_one = affirmed_target
 		target_change_time = 0.0
 	for enemy in owner.owner.enemies:
-		enemy.raycast.global_position.y = global_position.y
 		value = enemy.mini_camera_mapper_thingy.global_position.distance_to(mini_camera_mapper_player.global_position)
 		#value = value * sqrt(sqrt(sqrt(sqrt(global_position.distance_to(enemy.global_position)))))
 		enemy.locking_value = value
@@ -127,6 +134,9 @@ func _physics_process(delta: float) -> void:
 		target_change = true
 
 func _input(event: InputEvent) -> void:
+	if Input.is_action_just_pressed("Escape"):
+			menu_pressed()
+	
 	if event is InputEventMouseMotion:
 		#print(owner.owner.closest_enemy, "sex2", current_one)
 		mouse_time = 0
@@ -179,3 +189,17 @@ func _input(event: InputEvent) -> void:
 		anchor.rotation.y -= event.relative.x / SENSITIVITY
 		anchor.rotation.x -= event.relative.y / SENSITIVITY
 		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-70) , deg_to_rad(60))
+
+func menu_pressed():
+	if in_menu == false:
+		pressed_rot = anchor.global_rotation
+		global_rotation = Vector3.ZERO
+		Engine.time_scale = 0.001
+		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	else: 
+		anchor.global_rotation = pressed_rot
+		global_rotation = Vector3.ZERO
+		Engine.time_scale = 1.0
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	player.in_menu = !player.in_menu
+	in_menu = !in_menu

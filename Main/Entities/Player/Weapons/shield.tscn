@@ -216,9 +216,8 @@ material = SubResource("ShaderMaterial_waomh")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3or44"]
 
-[node name="Shield" type="Node3D" node_paths=PackedStringArray("hurtbox")]
+[node name="Shield" type="Node3D"]
 script = ExtResource("1_4ba5f")
-hurtbox = NodePath("")
 
 [node name="weapons" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_ks615")

@@ -1,6 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://35qp7q3nl6u6"]
+[gd_scene load_steps=26 format=3 uid="uid://35qp7q3nl6u6"]
 
 [ext_resource type="Script" path="res://Main/Entities/Player/CameraController.gd" id="1_xvufl"]
+[ext_resource type="Script" path="res://Main/Entities/Player/menu_hover.gd" id="2_o7p01"]
+[ext_resource type="Shader" path="res://Main/Entities/Player/Cursor.gdshader" id="3_38v2y"]
+[ext_resource type="Script" path="res://Main/Entities/Player/menu_cursor.gd" id="3_saea2"]
+[ext_resource type="Script" path="res://Main/Entities/Player/Button_3D.gd" id="5_j8ssv"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fgv76"]
 shading_mode = 0
@@ -21,14 +25,85 @@ height = 0.2
 [sub_resource type="SphereShape3D" id="SphereShape3D_agigs"]
 radius = 1.25
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_x0jw5"]
+frequency = 0.015
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ip6gw"]
+width = 1024
+height = 1024
+seamless = true
+noise = SubResource("FastNoiseLite_x0jw5")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3m4vo"]
+transparency = 1
+albedo_color = Color(0.65098, 0.654902, 1, 0.168627)
+metallic = 1.0
+metallic_specular = 1.0
+roughness = 0.4
+refraction_enabled = true
+refraction_scale = 0.1
+refraction_texture = SubResource("NoiseTexture2D_ip6gw")
+texture_filter = 4
+grow = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_5ko3p"]
+material = SubResource("StandardMaterial3D_3m4vo")
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="Gradient" id="Gradient_8t3vs"]
+offsets = PackedFloat32Array(0.307692, 0.664336, 1)
+colors = PackedColorArray(0, 0.499973, 0.878977, 1, 1, 1, 1, 1, 0.937241, 0.000284164, 0.836569, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bfwsd"]
+noise_type = 2
+frequency = 0.0275
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f1kdg"]
+in_3d_space = true
+seamless = true
+color_ramp = SubResource("Gradient_8t3vs")
+noise = SubResource("FastNoiseLite_bfwsd")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k06rn"]
+render_priority = 0
+shader = ExtResource("3_38v2y")
+shader_parameter/intensity = 3.707
+shader_parameter/TXT = SubResource("NoiseTexture2D_f1kdg")
+
+[sub_resource type="SphereMesh" id="SphereMesh_jex4q"]
+material = SubResource("ShaderMaterial_k06rn")
+radius = 0.015
+height = 0.021
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sr5n2"]
+shading_mode = 0
+
+[sub_resource type="BoxMesh" id="BoxMesh_cm1cw"]
+material = SubResource("StandardMaterial3D_sr5n2")
+size = Vector3(0.2, 0.1, 0.025)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_r0ljp"]
+viewport_path = NodePath("Camera3D/PauseUI/Quit/Model/SubViewport")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yciy4"]
+size = Vector3(0.2, 0.1, 0.1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5ow71"]
+viewport_path = NodePath("Camera3D/PauseUI/Continue/Model/SubViewport")
+
 [sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_eppg2"]
 
 [node name="CameraRoot" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("mini_camera_mapper_player", "rotater", "anchor", "camera_slot")]
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("Mlooker", "Mray", "Mcursor", "mini_camera_mapper_player", "rotater", "anchor", "camera_slot")]
 transform = Transform3D(1, 0, -7.10543e-15, 0, 1, 0, 7.10543e-15, 0, 1, 0, 0, 0)
 top_level = true
 script = ExtResource("1_xvufl")
+Mlooker = NodePath("MenuLooker")
+Mray = NodePath("MenuRay")
+Mcursor = NodePath("MenuCursor")
 mini_camera_mapper_player = NodePath("pivot/MeshInstance3D")
 rotater = NodePath("../rotation")
 anchor = NodePath("../view_anchor")
@@ -59,6 +134,153 @@ collision_mask = 128
 top_level = true
 shape = SubResource("SphereShape3D_agigs")
 
+[node name="locked" type="Node3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, 0, 0, 0)
+
+[node name="MenuHover" type="MeshInstance3D" parent="Camera3D" node_paths=PackedStringArray("cursor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.0903618, 0.153633)
+mesh = SubResource("BoxMesh_5ko3p")
+script = ExtResource("2_o7p01")
+cursor = NodePath("../MenuCursor")
+
+[node name="MenuLooker" type="Node3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, 0, 0, 0)
+
+[node name="MenuCursor" type="Node3D" parent="Camera3D" node_paths=PackedStringArray("ray")]
+transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, -3.55271e-15, 0, -0.5)
+script = ExtResource("3_saea2")
+ray = NodePath("../MenuRay")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D/MenuCursor"]
+mesh = SubResource("SphereMesh_jex4q")
+
+[node name="MenuCursorSlot" type="Node3D" parent="Camera3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, -3.55271e-15, 0, -0.5)
+
+[node name="MenuRay" type="RayCast3D" parent="Camera3D"]
+target_position = Vector3(0, 0, -100)
+collision_mask = 2048
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="PauseUI" type="Node3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0, 0)
+
+[node name="Quit" type="Node3D" parent="Camera3D/PauseUI" node_paths=PackedStringArray("looker", "hitbox", "hoverer", "ray", "cursor", "model")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.1, -0.1, -0.75)
+script = ExtResource("5_j8ssv")
+main_type = "pause"
+looker = NodePath("Model/lkr")
+hitbox = NodePath("Area")
+hoverer = NodePath("../../MenuHover")
+ray = NodePath("../../MenuRay")
+cursor = NodePath("../../MenuCursor")
+Type = "Quitting"
+model = NodePath("Model")
+
+[node name="Model" type="Node3D" parent="Camera3D/PauseUI/Quit"]
+
+[node name="lkr" type="Node3D" parent="Camera3D/PauseUI/Quit/Model"]
+
+[node name="mesh" type="MeshInstance3D" parent="Camera3D/PauseUI/Quit/Model"]
+mesh = SubResource("BoxMesh_cm1cw")
+
+[node name="Sprite3D" type="Sprite3D" parent="Camera3D/PauseUI/Quit/Model"]
+transform = Transform3D(-0.115, 0, -1.73645e-08, 0, 0.115, 0, 1.73645e-08, 0, -0.115, -0.0403395, -0.00983461, -0.0467516)
+alpha_cut = 1
+alpha_antialiasing_mode = 1
+texture_filter = 5
+texture = SubResource("ViewportTexture_r0ljp")
+
+[node name="SubViewport" type="SubViewport" parent="Camera3D/PauseUI/Quit/Model"]
+transparent_bg = true
+
+[node name="Label" type="Label" parent="Camera3D/PauseUI/Quit/Model/SubViewport"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0.0313726, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+text = "quit"
+
+[node name="Area" type="Area3D" parent="Camera3D/PauseUI/Quit" groups=["Menutton"]]
+collision_layer = 2048
+collision_mask = 2048
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/PauseUI/Quit/Area"]
+shape = SubResource("BoxShape3D_yciy4")
+
+[node name="Backdrop" type="MeshInstance3D" parent="Camera3D/PauseUI/Quit"]
+transform = Transform3D(-7, 0, 8.74228e-08, 0, 16, 0, -6.1196e-07, 0, -1, -0.1, 0.1, 0.25)
+mesh = SubResource("BoxMesh_5ko3p")
+skeleton = NodePath("../..")
+
+[node name="Continue" type="Node3D" parent="Camera3D/PauseUI" node_paths=PackedStringArray("looker", "hitbox", "hoverer", "ray", "cursor", "model")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.1, -0.75)
+script = ExtResource("5_j8ssv")
+main_type = "pause"
+looker = NodePath("Model/lkr")
+hitbox = NodePath("Area")
+hoverer = NodePath("../../MenuHover")
+ray = NodePath("../../MenuRay")
+cursor = NodePath("../../MenuCursor")
+Type = "Continue"
+model = NodePath("Model")
+
+[node name="Model" type="Node3D" parent="Camera3D/PauseUI/Continue"]
+
+[node name="lkr" type="Node3D" parent="Camera3D/PauseUI/Continue/Model"]
+
+[node name="mesh" type="MeshInstance3D" parent="Camera3D/PauseUI/Continue/Model"]
+mesh = SubResource("BoxMesh_cm1cw")
+
+[node name="Sprite3D" type="Sprite3D" parent="Camera3D/PauseUI/Continue/Model"]
+transform = Transform3D(-0.115, 0, -1.73645e-08, 0, 0.115, 0, 1.73645e-08, 0, -0.115, 0.0567368, 0.0327224, -0.0467516)
+alpha_cut = 1
+alpha_antialiasing_mode = 1
+texture_filter = 5
+texture = SubResource("ViewportTexture_5ow71")
+
+[node name="SubViewport" type="SubViewport" parent="Camera3D/PauseUI/Continue/Model"]
+transparent_bg = true
+
+[node name="Label" type="Label" parent="Camera3D/PauseUI/Continue/Model/SubViewport"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0.0313726, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+text = "cont
+"
+
+[node name="Area" type="Area3D" parent="Camera3D/PauseUI/Continue" groups=["Menutton"]]
+collision_layer = 2048
+collision_mask = 2048
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/PauseUI/Continue/Area"]
+shape = SubResource("BoxShape3D_yciy4")
+
 [node name="view_anchor" type="SpringArm3D" parent="."]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.75, 0)
 collision_mask = 2
@@ -71,6 +293,7 @@ spring_length = 1.75
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04175, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="Label" type="Label" parent="CanvasLayer"]
 offset_right = 40.0
@@ -90,5 +313,3 @@ offset_bottom = 69.0
 offset_top = 69.0
 offset_right = 40.0
 offset_bottom = 92.0
-
-[node name="Node3D" type="Node3D" parent="."]

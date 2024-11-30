@@ -4,12 +4,12 @@ class_name PlayerController
 
 var MOVE_BOOL : bool = !staggered and is_moving == true and attacking == false and is_blocking == false and is_running == false and speed < 4.8 and is_on_floor()
 var IDLE_BOOL : bool = velocity.y <= 0 and !staggered and is_moving == false and attacking == false and is_blocking == false and is_running == false and in_mode == false
-
+var killed := 1.0
 @export var ability_1 : String
 @export var ability_2 : String
 @export var ability_3 : String
 @export var ult : String
-
+var in_menu := false
 var two_fps_counter := 0.0
 var throwing := false
 @export var max_lock_range : float = 25.0
@@ -18,7 +18,7 @@ var throwing := false
 var player_no: Array #a mechanic that may help me later on. What? planning to add multiplayer? lol
 @onready var LHI_bone = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem
 @onready var animationTree = $BaseModel3D/MeshInstance3D/AnimationTree
-@onready var _animationPlayer = $BaseModel3D/MeshInstance3D/AnimationPlayer
+#@onready var _animationPlayer = $BaseModel3D/MeshInstance3D/AnimationPlayer
 var state_machine
 var current_state
 @onready var cam = $Camera/Camera3D
@@ -131,8 +131,8 @@ func _input(event):
 		elif lockOn == true:
 			$view.global_rotation.y = $BaseModel3D.global_rotation.y
 			lockOn = false
-	if event.is_action_pressed("Escape"):
-		get_tree().quit()
+	#if event.is_action_pressed("Escape"):
+		#get_tree().quit()
 		return
 func _process(delta):
 	if two_fps_counter < 0.5:
@@ -253,15 +253,15 @@ func _handle_movement(delta):
 		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
 	elif attacking and attack_timer >= attack_grace and !lockOn and !stunned and rotate_to_view == true:
 		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
-	if lockOn == true and is_running == false and is_rolling == false:
+	if lockOn == true and is_running == false and is_rolling == false and in_menu == false:
 		#print("wow")
 		rotate_to_view = false
 		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $enemy_radar.rotation.y, 0.5)
-	if lockOn == false or is_running == true and is_rolling == true:
+	if lockOn == false or is_running == true and is_rolling == true and in_menu == false:
 		rotate_to_view = true
 		#print("dont wow")
 
-	if input_dir.length() > 0 and !movement_lock and !instaslow and !staggered and is_on_floor():
+	if input_dir.length() > 0 and !movement_lock and !instaslow and !staggered and is_on_floor() and in_menu == false:
 		is_moving = true
 		if Input.is_action_pressed("moveForward") and Input.is_action_pressed("moveLeft") and !lockOn:
 			$UpperBody_skewer.rotation.z = lerp_angle($UpperBody_skewer.rotation.z, -PI / 8, 0.1)
@@ -285,7 +285,7 @@ func _handle_movement(delta):
 	#	$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.04)
 		velocity.x = lerp(velocity.x, character_direction.x * speed_multiplier, 0.1)
 		velocity.z = lerp(velocity.z, character_direction.z * speed_multiplier, 0.1)
-	var current_rotation := transform.basis.get_rotation_quaternion().normalized()
+	#var current_rotation := transform.basis.get_rotation_quaternion().normalized()
 
 	if movement_lock and attacking and input_dir.length() > 0:
 		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.1)
@@ -308,7 +308,7 @@ func _handle_movement(delta):
 		
 	if jump_activation == true:
 		jump_time = delta + jump_time
-		if jump_time > 0.2667 and is_on_floor():
+		if jump_time > 0.2667 and is_on_floor() and velocity.y >= 0.0:
 			velocity.y = 3.0
 			#print("velytrue")
 			is_on_air = true
@@ -325,7 +325,7 @@ func _handle_movement(delta):
 		action_bar = 0
 func _handle_variables(delta):
 	if throwing == true:
-		if lockOn == false	:
+		if lockOn == false:
 			$Thrown_target.look_at($Camera/Camera3D/pivot/RayCast3D/MeshInstance3D.global_position)
 			$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $Thrown_target.rotation.y - PI, 0.5)
 	#$Throw_test.global_rotation = $BaseModel3D/MeshInstance3D.global_rotation
@@ -341,7 +341,8 @@ func _handle_variables(delta):
 		$BaseModel3D.global_rotation_degrees.y += -10 * delta
 		$Camera.global_transform.origin = lerp($Camera.global_transform.origin, cam3dTO, 0.0125)
 	if instaslow == true:
-		$Camera/Camera3D.rotation.z = lerp($Camera/Camera3D.rotation.z, deg_to_rad(randf_range(-4.0, 4.0)), 0.5)
+		if in_menu == false:
+			$Camera/Camera3D.rotation.z = lerp($Camera/Camera3D.rotation.z, deg_to_rad(randf_range(-4.0, 4.0)), 0.5)
 		$Camera.position.y = -0.1
 	else:
 		$Camera.rotation.z = 0

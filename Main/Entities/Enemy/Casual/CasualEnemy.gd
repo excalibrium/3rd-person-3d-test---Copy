@@ -24,9 +24,12 @@ func _process(delta: float) -> void:
 func _handle_var(delta):
 	$SubViewport/Label3.text = str(locking_value)
 	raycast.look_at(player.cam.global_position)
-	mini_camera_mapper_thingy.global_position = raycast.get_collision_point()
 	if raycast.get_collider() == null:
 		mini_camera_mapper_thingy.global_position = global_position
+	else:
+		mini_camera_mapper_thingy.global_position = raycast.get_collision_point()
+
+		#print("NAHNU")
 	#damI
 	if damI < damI_cd:
 		damI += delta
@@ -98,18 +101,21 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 	nav.velocity = nav.velocity.move_toward(safe_velocity, 0.1)
 
 func damage_by(damaged):
+	if canBeDamaged:
+		health -= damaged
+	damI = 0.0
+	healthbar.health = health
 	if health <= 0:
 		stunned = true
 		state_machine.stop()
 		state_machine.travel("death")
 		health = 0
-	if canBeDamaged:
-		health -= damaged
 	damI = 0.0
 	healthbar.health = health
 
 func guard_break():
 	pass
+
 
 
 func _on_animation_tree_animation_started(anim_name: StringName) -> void:
@@ -142,6 +148,7 @@ func _on_animation_tree_animation_finished(anim_name: StringName) -> void:
 			attacking = false
 			rot_lock = false
 		"death":
+			player.killed += 1.0
 			current_state = State.IDLE
 			attacking = false
 			death()
@@ -149,6 +156,8 @@ func _on_animation_tree_animation_finished(anim_name: StringName) -> void:
 			curious_stage = 0
 			healthbar.health = health
 			decision_processing = false
+			player.enemies.erase(self)
+			queue_free()
 		"hit_cancel":
 			decision_processing = false
 			reset()
@@ -179,3 +188,43 @@ func _handle_animations(delta) -> void:
 				$SubViewport/Label.set_text("NAN")
 		"block":
 			damI = 0.0
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("F"):
+		print(cdm_seed,
+decision_processing,
+rot_lock,
+speed,
+accel,
+alertness,
+adrenaline,
+combat_range,
+patience,
+
+stall_cd,
+stall_meter,
+looker,
+awareness_rays,
+empty_areas,
+common,
+awareness_nodes,
+awareness_ray,
+awareness_sphere,
+nav,
+healthbar,
+animationTree,
+state_machine,
+current_anim,
+stalling,
+current_state,
+current_idle_substate,
+current_attack_substate,
+last_alerter,
+last_alerter_pos,
+curious_stage,
+curious,
+think_timer,
+default_transform,
+current_attack_target,
+last_seen,
+prio,turn_off_pain_inhibitors,safeness)

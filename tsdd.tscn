@@ -44,7 +44,7 @@ albedo_color = Color(0.690196, 0.690196, 0.690196, 1)
 material = SubResource("StandardMaterial3D_uqpae")
 size = Vector3(10, 1, 500)
 
-[sub_resource type="Resource" id="Resource_bpqlt"]
+[sub_resource type="Resource" id="Resource_foth6"]
 script = ExtResource("7_tn6w6")
 amount = 50000
 enabled = true
@@ -53,7 +53,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 1
 
-[sub_resource type="Resource" id="Resource_v6q8a"]
+[sub_resource type="Resource" id="Resource_ea82w"]
 script = ExtResource("8_isgbw")
 position = Vector3(0.15, 0.15, 0.15)
 rotation = Vector3(20, 360, 20)
@@ -64,7 +64,7 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 2
 
-[sub_resource type="Resource" id="Resource_85tcn"]
+[sub_resource type="Resource" id="Resource_fco67"]
 script = ExtResource("9_kerdm")
 iterations = 3
 offset_step = 0.2
@@ -76,7 +76,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_w38i4"]
+[sub_resource type="Resource" id="Resource_e47nl"]
 script = ExtResource("10_q3868")
 ray_direction = Vector3(0, -1, 0)
 ray_length = 5.0
@@ -92,9 +92,9 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_f6tg5"]
+[sub_resource type="Resource" id="Resource_mvihj"]
 script = ExtResource("5_vgqsp")
-stack = Array[ExtResource("6_7d7ko")]([SubResource("Resource_bpqlt"), SubResource("Resource_v6q8a"), SubResource("Resource_85tcn"), SubResource("Resource_w38i4")])
+stack = Array[ExtResource("6_7d7ko")]([SubResource("Resource_foth6"), SubResource("Resource_ea82w"), SubResource("Resource_fco67"), SubResource("Resource_e47nl")])
 
 [sub_resource type="Resource" id="Resource_pufau"]
 script = ExtResource("14_cet4b")
@@ -262,7 +262,7 @@ transform = Transform3D(-0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, -0.939693, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.189251, -240)
 script = ExtResource("4_h4ou2")
 force_rebuild_on_load = false
-modifier_stack = SubResource("Resource_f6tg5")
+modifier_stack = SubResource("Resource_mvihj")
 Performance/use_chunks = true
 Performance/chunk_dimensions = Vector3(1, 1, 1)
 
