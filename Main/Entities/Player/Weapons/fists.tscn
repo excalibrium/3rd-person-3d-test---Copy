@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxtkfh2rnp2tc"]
+
+[ext_resource type="Script" path="res://Main/Entities/Player/Weapons/Weapon.gd" id="1_gqgjd"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_be2ra"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="Fists" type="Node3D" groups=["weapon"]]
+script = ExtResource("1_gqgjd")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_be2ra")

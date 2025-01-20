@@ -1,0 +1,82 @@
+[gd_scene load_steps=13 format=3 uid="uid://cwrnspbf1av7p"]
+
+[ext_resource type="Texture2D" path="res://Main/FX/particles/slit.png" id="1_smcml"]
+
+[sub_resource type="Curve" id="Curve_wqk76"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_x4h3f"]
+curve = SubResource("Curve_wqk76")
+
+[sub_resource type="Curve" id="Curve_cvnwk"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_boqvj"]
+curve = SubResource("Curve_cvnwk")
+
+[sub_resource type="Curve" id="Curve_dw2wl"]
+_data = [Vector2(0, 0.5), 0.0, 0.0, 0, 0, Vector2(1, 0.2), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_10bh1"]
+_data = [Vector2(0.0362319, 0.989011), 0.0, -1.72372e-07, 0, 0, Vector2(1, 0), -1.19536, 1.4, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_3w8w8"]
+_data = [Vector2(0, 0.5), 0.0, 0.0, 0, 0, Vector2(1, 0.2), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_vxwdi"]
+curve_x = SubResource("Curve_dw2wl")
+curve_y = SubResource("Curve_10bh1")
+curve_z = SubResource("Curve_3w8w8")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vuaqf"]
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(0, 1, 0)
+spread = 30.0
+initial_velocity_min = 5.0
+initial_velocity_max = 10.0
+scale_curve = SubResource("CurveXYZTexture_vxwdi")
+color = Color(0.501961, 0.498039, 0.486275, 0.443137)
+alpha_curve = SubResource("CurveTexture_x4h3f")
+emission_curve = SubResource("CurveTexture_boqvj")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d17s5"]
+transparency = 4
+blend_mode = 1
+cull_mode = 2
+shading_mode = 2
+diffuse_mode = 1
+specular_mode = 2
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 0.431373, 1)
+albedo_texture = ExtResource("1_smcml")
+emission_enabled = true
+emission = Color(0.961224, 0.923666, 0, 1)
+emission_energy_multiplier = 16.0
+emission_operator = 1
+emission_texture = ExtResource("1_smcml")
+detail_blend_mode = 1
+detail_albedo = ExtResource("1_smcml")
+texture_filter = 4
+disable_receive_shadows = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_38gv6"]
+material = SubResource("StandardMaterial3D_d17s5")
+size = Vector2(0.75, 0.75)
+
+[node name="GPUParticles3D4" type="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+cast_shadow = 0
+amount = 16
+lifetime = 0.25
+speed_scale = 1.2
+explosiveness = 1.0
+fixed_fps = 60
+transform_align = 3
+process_material = SubResource("ParticleProcessMaterial_vuaqf")
+draw_pass_1 = SubResource("QuadMesh_38gv6")

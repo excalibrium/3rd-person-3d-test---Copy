@@ -23,7 +23,6 @@ enum Axis {
 @export var forward_axis: Axis = Axis.Z_Minus
 @export_node_path("CollisionShape3D") var collision_shape: NodePath 
 
-@onready var jiggelers = get_parent()
 var skeleton: Skeleton3D
 var bone_id: int
 var bone_id_parent: int
@@ -43,7 +42,7 @@ func _ready() -> void:
 		set_physics_process(false)
 		return
 	top_level = true  # Ignore parent Transform3Dation
-	skeleton = jiggelers.get_parent() # Parent must be a Skeleton node
+	skeleton = get_parent() # Parent must be a Skeleton node
 	skeleton.clear_bones_global_pose_override()
 	prev_pos = global_transform.origin
 	set_collision_shape(collision_shape)
