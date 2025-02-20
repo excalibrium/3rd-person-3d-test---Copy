@@ -1,6 +1,6 @@
 [gd_resource type="ArrayMesh" load_steps=7 format=3 uid="uid://1d1imapa8oci"]
 
-[ext_resource type="Shader" path="res://çimensel/grass.gdshader" id="1_87xrd"]
+[ext_resource type="Shader" path="res://foliage/grass/grass.gdshader" id="1_87xrd"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_7hsuq"]
 noise_type = 3

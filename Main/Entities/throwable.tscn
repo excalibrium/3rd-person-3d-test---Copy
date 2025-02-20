@@ -1,16 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://dx0wueckf2ivj"]
+[gd_scene load_steps=5 format=3 uid="uid://dx0wueckf2ivj"]
 
-[ext_resource type="Script" path="res://Main/Entities/throwable.gd" id="1_tnixs"]
+[ext_resource type="Script" uid="uid://c3ep6iqbd1d00" path="res://Main/Entities/throwable.gd" id="1_tnixs"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_k3g4d"]
 radius = 0.1
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_15t3w"]
-top_radius = 0.01
-bottom_radius = 0.1
+top_radius = 0.1
+bottom_radius = 0.01
+
+[sub_resource type="PrismMesh" id="PrismMesh_aaek0"]
 
 [node name="Throwable" type="RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.26205, 0)
 top_level = true
 collision_layer = 0
 collision_mask = 0
@@ -29,3 +30,7 @@ mesh = SubResource("CylinderMesh_15t3w")
 [node name="velocity" type="Node3D" parent="."]
 
 [node name="lookat" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="lookat"]
+visible = false
+mesh = SubResource("PrismMesh_aaek0")

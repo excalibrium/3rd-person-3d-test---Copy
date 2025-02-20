@@ -1,0 +1,83 @@
+[gd_resource type="ShaderMaterial" load_steps=16 format=3 uid="uid://dkvuoh21bodu1"]
+
+[ext_resource type="Shader" uid="uid://c7383wdky03pj" path="res://Main/Entities/Player/assets/VFX/GStrail.gdshader" id="1_r3ywp"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_abn3g"]
+noise_type = 2
+seed = 337
+fractal_gain = 4.0
+cellular_distance_function = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6s3rl"]
+width = 128
+height = 64
+seamless = true
+noise = SubResource("FastNoiseLite_abn3g")
+
+[sub_resource type="Gradient" id="Gradient_v81c5"]
+offsets = PackedFloat32Array(0.00520833, 0.151042)
+colors = PackedColorArray(1, 0.680992, 0.386209, 1, 1, 0.360784, 0.164706, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_frsjd"]
+gradient = SubResource("Gradient_v81c5")
+
+[sub_resource type="Curve" id="Curve_xjhlx"]
+_limits = [-3.0, 3.0, 0.0, 1.0]
+_data = [Vector2(0, 0.235955), 0.0, -0.734831, 0, 0, Vector2(0.087156, 0.370787), 0.0, 0.0, 0, 0, Vector2(0.522936, -0.438202), 0.0, 0.0, 0, 0, Vector2(1, -0.77528), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_abn3g"]
+_limits = [-3.0, 3.0, 0.0, 1.0]
+_data = [Vector2(0, -0.4), 0.0, -2.92183, 0, 0, Vector2(0.5, -1.2), 0.0, 0.0, 0, 0, Vector2(0.981651, -0.426966), 4.51465, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_6s3rl"]
+_data = [Vector2(0, 0.2), 0.0, 0.0, 0, 0, Vector2(0.5, 0.258427), 0.0, 0.0, 0, 0, Vector2(0.733945, 0.280899), 0.0, 0.0, 0, 0, Vector2(1, 0.2), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_saw2u"]
+curve_x = SubResource("Curve_xjhlx")
+curve_y = SubResource("Curve_abn3g")
+curve_z = SubResource("Curve_6s3rl")
+
+[sub_resource type="Gradient" id="Gradient_pm6l8"]
+offsets = PackedFloat32Array(0.364583, 0.489583, 0.552083)
+colors = PackedColorArray(0, 0, 0, 1, 1, 0.901961, 0.733333, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_l3vgt"]
+gradient = SubResource("Gradient_pm6l8")
+
+[sub_resource type="Gradient" id="Gradient_cfp7d"]
+offsets = PackedFloat32Array(0.302083, 0.40625, 0.517241, 0.6, 0.671875)
+colors = PackedColorArray(1, 1, 1, 1, 0.498039, 0.498039, 0.498039, 1, 0, 0, 0, 1, 0.498039, 0.498039, 0.498039, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0p2rj"]
+gradient = SubResource("Gradient_cfp7d")
+
+[sub_resource type="Gradient" id="Gradient_iuttj"]
+offsets = PackedFloat32Array(0.2, 0.5, 0.52)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gtd6d"]
+gradient = SubResource("Gradient_iuttj")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_r3ywp")
+shader_parameter/progress = 0.0
+shader_parameter/derive_progress = 0.0
+shader_parameter/ease_progress = 0.0
+shader_parameter/time_scale = 0.25
+shader_parameter/anim_rot_amt = 1.0
+shader_parameter/curve_domain = SubResource("CurveXYZTexture_saw2u")
+shader_parameter/base_noise = SubResource("NoiseTexture2D_6s3rl")
+shader_parameter/width_gradient_mask = SubResource("GradientTexture1D_gtd6d")
+shader_parameter/length_gradient_mask = SubResource("GradientTexture1D_0p2rj")
+shader_parameter/highlight = SubResource("GradientTexture1D_l3vgt")
+shader_parameter/zoom = 0.6
+shader_parameter/rotate_all = 330.6
+shader_parameter/alpha_scale = 1.0
+shader_parameter/heightmap_scale = -6.0
+shader_parameter/emission_strength = 1.0
+shader_parameter/mix_strength = 0.6
+shader_parameter/color_lookup = SubResource("GradientTexture1D_frsjd")

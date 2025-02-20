@@ -7,8 +7,8 @@ const JUMP_VELOCITY = 4.0
 
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-var health = 100
-var max_health = 100
+@export var health = 100
+@export var max_health = 100
 var stamina = 100
 var max_stamina = 100
 var stamina_drain_rate = 20
@@ -22,7 +22,7 @@ var staggered = false
 var attacking = false
 var attack_buffer = 0
 var is_attacking = 0
-var time_since_engage = 0
+var time_since_engage = 60
 var attack_grace = 0.1
 var stunned = false
 var attack_timer := 0.0

@@ -10,8 +10,9 @@ var inbox : Array[Area3D]
 var blacklisted_boxes : Array[Area3D]
 var boxes_hit : Array[Area3D]
 func _ready() -> void:
-	set_owner(get_parent().owner)
 
+	set_owner(get_parent().owner)
+	my_owner = owner
  
 func _on_hurtbox_area_entered(area):
 	if area.is_in_group("hitbox"):
@@ -27,7 +28,7 @@ func _on_hurtbox_area_exited(area):
 	if area.is_in_group("walls") and owner is CharacterBody3D:
 		owner.weaponCollidingWall = false
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if in_area == true:
 		if Hurt == true:
 			for each_box in inbox:
@@ -39,7 +40,7 @@ func _process(delta: float) -> void:
 						if boxes.owner != self.owner:
 							owners.append(boxes.owner)
 
-						boxes.owner.damage_by(attack_damage * attack_multiplier)
+						boxes.owner.damage_by(attack_damage * attack_multiplier,my_owner)
 						owners_hurt.append(boxes.owner)
 						hitCD = 0.0
 						owner.instaslow = true
@@ -58,45 +59,30 @@ func _physics_process(delta):
 	if hitCD < hitCD_cap:
 		hitCD += delta
 
-	#if in_area == true and Hurt == true:
-		#neotgtwjs = incheck.owner
-	#else:
-		#neotgtwjs = null
-
-	#if neotgtwjs != null:
-		#if Hurt == false or neotgtwjs.currentweapon == self: return
-		#else:
-			#prevhit = neotgtwjs
-			#if hitCD >= hitCD_cap:
-				#if prevhit.offhand.Active == false:
-					#prevhit.damage_by(attack_damage * attack_multiplier)
-					#owner.instaslow = true
-					#prevhit.instaslow = true
-					#await get_tree().create_timer(0.1).timeout
-					#owner.instaslow = false
-					#prevhit.instaslow = false
-				#else:
-					#owner.stunned = true
-					#owner.attacking = false
-					#owner.state_machine.travel("hit_cancel")
-				#hitCD = 0.0
-			#if prevhit.currentweapon != self and guard_break == true:
-				#prevhit.guard_break()
-
 func _on_hitbox_body_entered(body: Node3D) -> void:
 	if thrown == true:
 		if body.is_in_group("impalable"):
 			#reparent(body, true)
 			if body.has_method("damage_by"):
 				damage_induced = true
-				body.damage_by(10)
+				body.damage_by(10,my_owner)
 				my_owner.instaslow = true
-				await get_tree().create_timer(0.05).timeout
+				body.instaslow = true
+				await get_tree().create_timer(0.075).timeout
 				my_owner.instaslow = false
+				body.instaslow = false
 			thrown = false
 
 func _on_hitbox_area_entered(area: Area3D) -> void:
 	if thrown == true:
-		if area.is_in_group("impalable") and damage_induced == true:
-			reparent(area, true)
-			thrown = false
+		if area.is_in_group("impalable"):
+				if area.owner is CharacterBody3D and damage_induced == true:
+					my_owner = owner
+				reparent(area, true)
+				thrown = false
+			
+
+func restart_particles():
+	$GPUParticles3D2.emitting = false
+	$GPUParticles3D2.restart()
+	$GPUParticles3D2.emitting = true

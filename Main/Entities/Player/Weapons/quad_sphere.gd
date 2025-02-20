@@ -1,4 +1,4 @@
-extends MeshInstance3D
+extends Node3D
 
 var switch_1 := false
 var switch_2 := false
@@ -7,7 +7,7 @@ func _ready() -> void:
 	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	#go_to_tip()
 	if switch_1 == true:
 		global_rotation_degrees += owner.owner.global_rotation_degrees

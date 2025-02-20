@@ -29,7 +29,6 @@ func _handle_var(delta):
 	else:
 		mini_camera_mapper_thingy.global_position = raycast.get_collision_point()
 
-		#print("NAHNU")
 	#damI
 	if damI < damI_cd:
 		damI += delta
@@ -37,6 +36,11 @@ func _handle_var(delta):
 		canBeDamaged = true
 	else:
 		canBeDamaged = false
+	
+	if velocity < Vector3(0.1, 0.1, 0.1):
+		#if current_state == State.ATTACK:
+			#current_attack_substate = AttackSubstate.AWAIT
+		think()
 	
 	#Is moving?
 	if abs(velocity.x + velocity.z) > 0.125:
@@ -51,9 +55,10 @@ func _handle_var(delta):
 		unalert()
 
 	#Think timer/adrenaline mechanic
-	if think_timer < 1.0 + cdm_seed / adrenaline:
-		think_timer += delta
-	if think_timer >= 1.0 + cdm_seed / adrenaline:
+	if think_timer < (1.0 + cdm_seed) / adrenaline:
+		#print(think_timer)
+		think_timer += delta * adrenaline
+	if think_timer >= (1.0 + cdm_seed) / adrenaline:
 		think()
 		
 		think_timer = 0.0
@@ -62,13 +67,13 @@ func _physics_process(delta: float) -> void:
 	$BaseModel3D.set_quaternion($BaseModel3D.get_quaternion() * animationTree.get_root_motion_rotation())
 	RMPos = (animationTree.get_root_motion_rotation_accumulator().inverse() * get_quaternion()) * animationTree.get_root_motion_position()
 	global_position += $BaseModel3D.global_transform.basis * RMPos
-	if stall_meter < stall_cd:
+	if stall_meter <= stall_cd + cdm_seed:
 		stall_meter += delta
 	animationTree.set("parameters/stater/conditions/walk", staggered == false and is_moving == true and attacking == false and is_blocking == false and is_running == false)
 	animationTree.set("parameters/stater/conditions/idle", staggered == false and is_moving == false and attacking == false and is_blocking == false and is_running == false)
 	if prio:
 		$Raycast.look_at(prio.global_position)
-	await get_tree().physics_frame
+	#await get_tree().physics_frame
 
 	var current_position = global_position
 	var next_position = nav.get_next_path_position()
@@ -100,9 +105,11 @@ func _on_alertness_sphere_area_entered(area: Area3D) -> void:
 func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 	nav.velocity = nav.velocity.move_toward(safe_velocity, 0.1)
 
-func damage_by(damaged):
+func damage_by(damaged,by):
 	if canBeDamaged:
 		health -= damaged
+		if by is PlayerController:
+			by.shake(damaged/10.0)
 	damI = 0.0
 	healthbar.health = health
 	if health <= 0:
@@ -112,42 +119,52 @@ func damage_by(damaged):
 		health = 0
 	damI = 0.0
 	healthbar.health = health
-
+	stalling = false
 func guard_break():
-	pass
-
-
+	if is_blocking:
+		state_machine.travel("hit_cancel")
+		is_blocking = false
+		is_attacking = false
 
 func _on_animation_tree_animation_started(anim_name: StringName) -> void:
 	attack_timer = 0
 	match anim_name:
 		"block":
 			state_machine.travel("block")
-			decision_processing = true
 			is_blocking = true
 		"Attack_1":
-			decision_processing = true
+			movement_lock = true
 			attacking = true
 			rot_lock = true
 		"hit_cancel":
+			movement_lock = false
 			stunned = true
 func _on_animation_tree_animation_finished(anim_name: StringName) -> void:
+	
+	movement_lock = false
+	#if stalling == false:
+		#decision_processing = false
 	attack_timer = 0
 	match anim_name:
 		"block":
-			decision_processing = false
+			
 			movement_lock = false
 			is_blocking = false
 			canBeDamaged = true
 			damI = damI_cd
-		"Attack_1":
 			decision_processing = false
+			current_attack_substate = AttackSubstate.AWAIT
+		"Attack_1":
+			
 			movement_lock = false
 			#global_rotation.y = lerp_angle(global_rotation.y, looker.global_rotation.y, 0.5)
 			#$BaseModel3D/MeshInstance3D/Viego/Skeleton3D/CustomModifier.setreal = true
 			attacking = false
 			rot_lock = false
+			decision_processing = false
+			current_attack_substate = AttackSubstate.AWAIT
 		"death":
+			movement_lock = false
 			player.killed += 1.0
 			current_state = State.IDLE
 			attacking = false
@@ -158,6 +175,7 @@ func _on_animation_tree_animation_finished(anim_name: StringName) -> void:
 			decision_processing = false
 			player.enemies.erase(self)
 			queue_free()
+			current_attack_substate = AttackSubstate.AWAIT
 		"hit_cancel":
 			decision_processing = false
 			reset()
@@ -165,9 +183,20 @@ func _on_animation_tree_animation_finished(anim_name: StringName) -> void:
 			attack_timer = 0
 			stunned = false
 			attacking = false
+			movement_lock = false
+			current_attack_substate = AttackSubstate.AWAIT
 	if attacking == false:
 		currentweapon.Hurt = false
 func _handle_animations(delta) -> void:
+	if instaslow == false:
+		animationTree.set("parameters/TimeScale/scale", 1)
+		#$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer.set("speed_scale", 1.0)
+		#$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer2.set("speed_scale", 1.0)
+	else:
+		animationTree.set("parameters/TimeScale/scale", 0.01)
+		#$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer.set("speed_scale", 0.01)
+		#$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer2.set("speed_scale", 0.01)
+		
 	if current_attack_target:
 		looker.look_at(current_attack_target.global_position)
 
@@ -178,10 +207,12 @@ func _handle_animations(delta) -> void:
 			if instaslow == false:
 				attack_timer += delta
 			if ( attack_timer >= 0.7 && attack_timer < 0.95 ):
+				#currentweapon.hit(2)
 				global_rotation.y = lerp_angle(global_rotation.y, looker.global_rotation.y, 1.1)
 				$SubViewport/Label.set_text("0.7-0.9")
 				#global_rotation.y = lerp_angle(global_rotation.y, looker.global_rotation.y, 0.4)
 				currentweapon.Hurt = true
+				
 				currentweapon.hitCD_cap = 0.2
 			else:
 				currentweapon.Hurt = false

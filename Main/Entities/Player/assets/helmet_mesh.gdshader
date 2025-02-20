@@ -2,7 +2,7 @@
 // NOTE: Shader automatically converted from Godot Engine 4.3.stable's StandardMaterial3D.
 shader_type spatial;
 render_mode shadows_disabled, blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx, depth_prepass_alpha;
-uniform float conqueror : hint_range(0.000, 1.000);
+uniform float conqueror : hint_range(0.000, 1.000, 0.0001);
 uniform vec4 albedo : source_color;
 uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
 uniform float point_size : hint_range(0.1, 128.0, 0.1);
@@ -23,9 +23,9 @@ void vertex() {
     UV = UV * uv1_scale.xy + uv1_offset.xy;
 }
 void fragment() {
-    float panning_speed = conqueror;
-    vec2 base_uv = UV + TIME * panning_speed;
-    vec4 albedo_tex = texture(texture_albedo, base_uv);
+    float panning_speed = 0.25;
+    vec2 base_uv = UV;
+    vec4 albedo_tex = texture(texture_albedo, base_uv + TIME * panning_speed);
     // Vertex Color Use as Albedo: Enabled
     albedo_tex *= COLOR;
     ALBEDO = albedo.rgb * albedo_tex.rgb;

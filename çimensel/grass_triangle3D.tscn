@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=4 uid="uid://denxygvufb2d4"]
 
-[ext_resource type="Shader" path="res://çimensel/grass.gdshader" id="1_cuoe4"]
-[ext_resource type="Script" path="res://çimensel/grass_triangle.gd" id="2_wltx1"]
+[ext_resource type="Shader" path="res://foliage/grass/grass.gdshader" id="1_cuoe4"]
+[ext_resource type="Script" path="res://foliage/grass/grass_triangle.gd" id="2_wltx1"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_7hsuq"]
 noise_type = 3

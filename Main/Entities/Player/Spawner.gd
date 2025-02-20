@@ -5,6 +5,7 @@ var spawn_limit := 15.0
 var casene
 var current_spawned := 0.0
 var spawn_count_limit := 10.0
+var scene = preload("res://Main/Entities/Enemy/Casual/casual_enemy.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	player = get_tree().get_nodes_in_group("Player")[0]
@@ -19,13 +20,10 @@ func _process(delta):
 		counter = 0.0
 func _input(event):
 	if Input.is_action_pressed("F"):
-		var scene = preload("res://Main/Entities/Enemy/Casual/casual_enemy.tscn")
-		var casene = scene.instantiate()
-		casene.global_translate(Vector3(0, 5, 0))
-		add_child(casene)
+		spawn_casual()
 
 func spawn_casual():
-	var scene = preload("res://Main/Entities/Enemy/Casual/casual_enemy.tscn")
+	
 	casene = scene.instantiate()
 	add_child(casene)
 	casene.cdm_seed = 0.10379016399384

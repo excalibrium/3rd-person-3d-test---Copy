@@ -57,7 +57,7 @@ func main_ready() -> void:
 		if a.owner == self:
 			currentweapon = a
 	healthbar.init_health(health)
-	await get_tree().physics_frame
+	#await get_tree().physics_frame
 
 func alert(alert_level: float, alerter: Node) -> void:
 	if prio == null:
@@ -155,10 +155,11 @@ func combat_decision_making() -> void:
 	#print(decision_processing)
 	match current_attack_substate:
 		AttackSubstate.AWAIT:
-			lock_on = false
+			decision_processing = false
+			
 			if current_attack_target.threat_level > threat_level and turn_off_pain_inhibitors == false:
+				lock_on = false
 				current_attack_substate = AttackSubstate.FLEE
-				#print("flee")
 			else:
 				current_attack_substate = AttackSubstate.APPROACH
 		AttackSubstate.FLEE:
@@ -177,6 +178,11 @@ func combat_decision_making() -> void:
 				current_state = State.IDLE
 				curious = 1
 		AttackSubstate.APPROACH:
+			#decision_processing = false
+			if decision_processing == false:
+				
+				stalling = false
+				#movement_lock = false
 			if prio and stalling == false:
 				#print("indeed")
 				lock_on = true
@@ -189,28 +195,27 @@ func combat_decision_making() -> void:
 				speed = SPEED * 2.5
 			if global_position.distance_to(current_attack_target.global_position) < currentweapon.length: #was 2.25 patch0.1
 				spin("init")
-				
 				#print("close")
 		AttackSubstate.STRIKE:
-			rot_lock = true
-			#nav.target_position = global_position
-			attacking = true
-			#print("swing", self)
-			decision_processing = true
-			state_machine.travel("Attack_1")
 			movement_lock = true
-			current_attack_substate = AttackSubstate.APPROACH
+			rot_lock = true
+			attacking = true
+			state_machine.travel("Attack_1")
+			#current_attack_substate = AttackSubstate.APPROACH
+			decision_processing = true
+			#print("attack")
 		AttackSubstate.DEFEND:
 			rot_lock = true
-			decision_processing = true
-			state_machine.travel("block")
 			movement_lock = true
-			#decision_processing = true
-			current_attack_substate = AttackSubstate.APPROACH
+			state_machine.travel("block")
+			#current_attack_substate = AttackSubstate.APPROACH
+			decision_processing = true
 			#print("defend")
 		AttackSubstate.STALL:
+			decision_processing = false
 			attacking = false
-			print(empty_areas)
+			is_blocking = false
+			#print(empty_areas)
 			for each in awareness_nodes:
 				if each.has_overlapping_bodies():
 					empty_areas.erase(each)
@@ -218,10 +223,9 @@ func combat_decision_making() -> void:
 				else:
 					#print(each, "empty?")
 					empty_areas.append(each)
-			if stalling == false:
+			if stalling == false and empty_areas.is_empty() == false:
 				var a = empty_areas.pick_random()
 				common = awareness_nodes.filter(func(element): return element in empty_areas)
-				#print(a, "SEKKUSU")
 				if common:
 					nav.target_position = common.pick_random().global_position + Vector3(randf_range(-1.0 , 1.0), 0, randf_range(-1.0 , 1.0))
 					stall_meter = 0.0
@@ -234,9 +238,9 @@ func combat_decision_making() -> void:
 			#if common:
 				#nav.target_position = common.pick_random().global_position
 			
-			if nav.is_target_reached() == true or stall_meter > stall_cd + randf_range(-1.0 , 1.0):
-				current_attack_substate = AttackSubstate.APPROACH
+			if nav.is_target_reached() == true or stall_meter > stall_cd + cdm_seed:
 				stalling = false
+				current_attack_substate = AttackSubstate.APPROACH
 func find_nearest_ally() -> Node:
 	var alpha_group = get_tree().get_nodes_in_group("enemies")
 	var nearest_ally: Node = null
@@ -288,38 +292,30 @@ func get_health_percentage():
 	return int((float(h) / H) * 100)
 
 func spin(wheel):
-	if not decision_processing:
+	if decision_processing == false:
 		cdm_seed = randf()
 	match wheel:
 		"init":
-			if cdm_seed >= 0.5:
-				current_attack_substate = AttackSubstate.STALL
-			if get_health_percentage() > 50:
+			if cdm_seed >= 0.9:
+				if movement_lock == false:
+					current_attack_substate = AttackSubstate.STALL
+			elif get_health_percentage() > 50:
 				return spin("above_50")
-			if get_health_percentage() <= 50:
+			elif get_health_percentage() <= 50:
 				return spin("below_50")
 		"above_50":
-			if not decision_processing:
-				cdm_seed = randf()
-			#print("above50")
 			if cdm_seed >= 0.3 and decision_processing == false:
-				#print(cdm_seed)
 				current_attack_substate = AttackSubstate.STRIKE
 			if cdm_seed < 0.3 and decision_processing == false:
-				#print(cdm_seed)
 				current_attack_substate = AttackSubstate.DEFEND
 		"below_50":
-			if not decision_processing:
-				cdm_seed = randf()
-			#print("below50")
 			if cdm_seed >= 0.7 and decision_processing == false:
-				#print(cdm_seed)
 				current_attack_substate = AttackSubstate.STRIKE
 			if cdm_seed < 0.7 and decision_processing == false:
-				#print(cdm_seed)
 				current_attack_substate = AttackSubstate.DEFEND
 
 func reset_ai_state():
+	movement_lock = false
 	stunned = false
 	stalling = false
 	rot_lock = false

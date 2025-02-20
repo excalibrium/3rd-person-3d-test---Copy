@@ -1,19 +1,25 @@
 extends Character
 
 class_name PlayerController
-
 var MOVE_BOOL : bool = !staggered and is_moving == true and attacking == false and is_blocking == false and is_running == false and speed < 4.8 and is_on_floor()
 var IDLE_BOOL : bool = velocity.y <= 0 and !staggered and is_moving == false and attacking == false and is_blocking == false and is_running == false and in_mode == false
 var killed := 1.0
-@export var ability_1 : String
-@export var ability_2 : String
-@export var ability_3 : String
-@export var ult : String
+@export_category("Ability System")
+
+var ability_timer := 0.0
+var performing_ability := false
+var ability_1 : String
+var ability_2 : String
+var ability_3 : String
+var ult : String
 var in_menu := false
 var two_fps_counter := 0.0
 var throwing := false
+@export_category("Extras")
 @export var max_lock_range : float = 25.0
 @export var raycast_ground : RayCast3D
+
+@export var aim_look_at : Node3D
 
 var player_no: Array #a mechanic that may help me later on. What? planning to add multiplayer? lol
 @onready var LHI_bone = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem
@@ -59,6 +65,7 @@ var z: float
 var fps = Engine.get_frames_per_second()
 var trail_switch = false
 var conqueror_stacks := 0.1
+var conqueror_value := 0.0
 var is_jumping := false
 var jump_start_pos
 var jump_time : float
@@ -67,6 +74,9 @@ var jump_activation : bool
 var time_since_jump_buffer : float
 var distance_to_ground : float
 var is_on_air := false
+var jump_lock := false
+var camera_on_right_shoulder := true
+@export var groan_streams : AudioStreamPlayer3D
 
 var throw_timer := 0.0
 func _ready():
@@ -85,27 +95,21 @@ func _ready():
 	staminabar.init_stamina(stamina)
 	healthbar.init_health(health)
 func _input(event):
+	#print(ability_1)
 	if event.is_action_pressed("ABILITY_1"):
-		match ability_1:
-			"hop":
-				
-				state_machine.travel("ability_1")
+		handle_ability_input(ability_1)
 	if event.is_action_pressed("ABILITY_2"):
-		match ability_2:
-			"spring":
-				print("sniff")
+		handle_ability_input(ability_2)
 	if event.is_action_pressed("ABILITY_3"):
-		match ability_3:
-			"bomboclat":
-				print("uohh")
+		handle_ability_input(ability_3)
 	
 	
 	
 	
 	
-	
-	
-	if event.is_action_pressed("x"):
+	if event.is_action_pressed("y"):
+		camera_on_right_shoulder = !camera_on_right_shoulder
+	if event.is_action_pressed("LeftClick"):
 		if throwing == true:
 			state_machine.travel("throw")
 	if event.is_action_pressed("R"):
@@ -115,7 +119,7 @@ func _input(event):
 			currentweapon.position = Vector3(0.28, 0.1, -0.04)
 			currentweapon.rotation = Vector3(deg_to_rad(11), deg_to_rad(2), deg_to_rad(-90))
 		if LeftHandItem == "CometSpear" and throwing == true:
-			$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CustomModifier.influence = 0.5
+			$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CustomModifier.influence = 0.95
 			currentweapon.position = Vector3(-0.02, 0.078, -0.03)
 			currentweapon.rotation = Vector3(deg_to_rad(11), deg_to_rad(175.0), deg_to_rad(-95.0))
 
@@ -134,15 +138,21 @@ func _input(event):
 	#if event.is_action_pressed("Escape"):
 		#get_tree().quit()
 		return
+
+func handle_ability_input(slot_index: String):
+	match slot_index:
+		"hop":
+			print("yeah")
+			if is_on_floor() == true:
+				state_machine.travel("ability_1")
+
 func _process(delta):
 	if two_fps_counter < 0.5:
 		two_fps_counter += delta
 	if two_fps_counter >= 0.5:
 		two_fps()
 		two_fps_counter = 0
-	#$Throw_test.global_rotation = $BaseModel3D/MeshInstance3D.global_rotation
-	#$Throw_test.global_position = $Thrown.global_position
-	#print($BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CustomModifier.influence)
+
 	IDLE_BOOL = velocity.y <= 0 and !staggered and is_moving == false and attacking == false and is_blocking == false and is_running == false and in_mode == false
 	MOVE_BOOL = !staggered and is_moving == true and attacking == false and is_blocking == false and is_running == false and speed < 4.8 and is_on_floor()
 	if MOVE_BOOL == true:
@@ -154,7 +164,7 @@ func _process(delta):
 	#print(global_dir)
 	#$BaseModel3D.set_quaternion($BaseModel3D.get_quaternion() * animationTree.get_root_motion_rotation())
 	RMPos =  (animationTree.get_root_motion_rotation_accumulator().inverse() * get_quaternion()) * animationTree.get_root_motion_position()
-	if current_state == "ability_1":
+	if current_state == "ability_1" and ( ability_timer >= 0.2 && ability_timer < 0.8 ):
 		velocity = Vector3.ZERO
 	if current_state != "walk_to_jump" and current_state != "idle_to_jump":
 		global_position.y += RMPos.y
@@ -170,16 +180,32 @@ func _process(delta):
 		distance_to_ground = global_position.distance_to(raycast_ground.get_collision_point())
 	else:
 		distance_to_ground = 100
-	if distance_to_ground < 1.01 and velocity.y <= 0:
+	if distance_to_ground < 1.01 and velocity.y <= 0.01:
 		is_on_air = false
 	current_state = state_machine.get_current_node()
 	current_path = state_machine.get_travel_path()
 	_handle_variables(delta)
 	_handle_detection()
-func _physics_process(delta):
 	_handle_movement(delta)
 	_handle_combat(delta)
 	_handle_animations(delta)
+func _physics_process(delta):
+			
+	conqueror_value = lerpf(conqueror_value, conqueror_stacks, 0.1)
+	if Input.is_action_pressed("SpaceBar") and is_on_floor():
+		action_bar += 1
+		time_since_actionbar_halt = 0
+	aim_look_at.look_at(cam.pivot_ray.get_collision_point(), Vector3.UP, true)
+	#if throwing == true:
+		#$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/UB2_applier.influence = 1.0
+		#var original_rot = $Chest.global_rotation
+		#var rot_to_apply = original_rot + aim_look_at.rotation
+		#$Chest.global_rotation = rot_to_apply
+	#else:
+		#$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/UB2_applier.influence = 0.0
+	#_handle_movement(delta)
+	#_handle_combat(delta)
+	#_handle_animations(delta)
 	super(delta)
 
 func _handle_detection():
@@ -199,9 +225,18 @@ func _handle_detection():
 
 func _handle_movement(delta):
 	move_and_slide()
-	if velocity.y <= 0 and current_state == "walk_to_jump" and is_on_floor() and jump_time > 0.2667:
+	if is_on_floor() == true and current_state == "walk_to_jump" and jump_time > 0.2667 :
 		state_machine.travel("jump_to_walk")
-	raycast_ground.global_rotation_degrees.y += 15
+	if is_on_floor() == true and current_state == "idle_to_jump" and jump_time > 0.2667:
+		state_machine.travel("jump_to_idle")
+	
+	if is_on_floor() and current_state == "ability_1" and ability_timer > 0.8:
+		
+		state_machine.travel("ability_1_to_idle")
+
+	#elif is_on_floor() == true and current_state in ["walk_to_jump", "idle_to_jump"] and jump_time < 0.2667 and jump_lock == false:
+		#state_machine.travel("idle") 
+	raycast_ground.global_rotation_degrees.y += 30
 	wrapf(raycast_ground.global_rotation_degrees.y, -360, 360)
 	#if is_on_air == true:
 		#velocity.x = velocity.x / 0.9
@@ -220,8 +255,7 @@ func _handle_movement(delta):
 	target_rotation = atan2(camera_direction.x, camera_direction.z)
 	
 	var bone_rot = $UpperBody_skewer.rotation
-
-	if lockOn:
+	if lockOn == true:
 		if throwing == false:
 			$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CustomModifier.influence = 0.0
 		bone_rot = $enemy_radar.rotation
@@ -232,7 +266,6 @@ func _handle_movement(delta):
 			bone_rot.y =  $UpperBody_skewer_true.global_rotation.y
 		elif abs($UpperBody_skewer.rotation.y) <= PI / 2:
 			bone_rot.y = $Camera/Camera3D.rotation.y - PI
-
 	bone_rot.x = -$Camera/Camera3D.rotation.x
 	bone_rot -= $BaseModel3D.rotation
 	bone_rot.y = wrapf(bone_rot.y, -PI, PI)
@@ -245,18 +278,18 @@ func _handle_movement(delta):
 	if abs(bone_rot.y) >= PI / 2:
 		bone_rot.y = $UpperBody_skewer_true.global_rotation.y
 	# Smooth interpolation
-	$UpperBody_skewer.rotation = $UpperBody_skewer.rotation.lerp(bone_rot, 0.1)
+	$UpperBody_skewer.rotation = $UpperBody_skewer.rotation.lerp(bone_rot, delta * 6)
 	
 	if attacking == true:
 		$UpperBody_skewer.global_rotation.y = $UpperBody_skewer_true.global_rotation.y
 	if rotate_to_view == true and !attacking and !stunned:
-		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
+		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, delta * 6)
 	elif attacking and attack_timer >= attack_grace and !lockOn and !stunned and rotate_to_view == true:
-		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, 0.1)
+		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $view.rotation.y, delta * 5)
 	if lockOn == true and is_running == false and is_rolling == false and in_menu == false:
 		#print("wow")
 		rotate_to_view = false
-		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $enemy_radar.rotation.y, 0.5)
+		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $enemy_radar.rotation.y, delta * 30)
 	if lockOn == false or is_running == true and is_rolling == true and in_menu == false:
 		rotate_to_view = true
 		#print("dont wow")
@@ -264,57 +297,57 @@ func _handle_movement(delta):
 	if input_dir.length() > 0 and !movement_lock and !instaslow and !staggered and is_on_floor() and in_menu == false:
 		is_moving = true
 		if Input.is_action_pressed("moveForward") and Input.is_action_pressed("moveLeft") and !lockOn:
-			$UpperBody_skewer.rotation.z = lerp_angle($UpperBody_skewer.rotation.z, -PI / 8, 0.1)
+			$UpperBody_skewer.rotation.z = lerp_angle($UpperBody_skewer.rotation.z, -PI / 8, delta * 6)
 		elif Input.is_action_pressed("moveForward") and Input.is_action_pressed("moveRight") and !lockOn:
-			$UpperBody_skewer.rotation.z = lerp_angle($UpperBody_skewer.rotation.z, PI / 8, 0.1)
+			$UpperBody_skewer.rotation.z = lerp_angle($UpperBody_skewer.rotation.z, PI / 8, delta * 6)
 		else:
-			$UpperBody_skewer.rotation.z = lerp_angle($UpperBody_skewer.rotation.z, 0.0, 0.1)
-		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.2)
-		velocity = lerp(velocity, character_direction * speed_multiplier, 0.075)
+			$UpperBody_skewer.rotation.z = lerp_angle($UpperBody_skewer.rotation.z, 0.0, delta * 6)
+		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, delta * 12)
+		velocity = lerp(velocity, character_direction * speed_multiplier, delta * 6)
 		stored_velocity = velocity
 	elif is_on_floor():
 		is_moving = false
-		velocity.x = lerpf(velocity.x, 0, 0.3)
-		velocity.z = lerpf(velocity.z, 0, 0.3)
+		velocity.x = lerpf(velocity.x, 0, delta * 18)
+		velocity.z = lerpf(velocity.z, 0, delta * 18)
 	#print(is_on_air)
 	#if global_dir == Vector2(0,0) and current_state in ["jump_to_walk", "jump_to_idle"]:
 		#velocity.x = lerpf(velocity.x, 0, 0.02)
 		#velocity.z = lerpf(velocity.z, 0, 0.02)
 		#print(velocity)
-	elif is_on_air:
+	elif is_on_floor() == false:
 	#	$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.04)
-		velocity.x = lerp(velocity.x, character_direction.x * speed_multiplier, 0.1)
-		velocity.z = lerp(velocity.z, character_direction.z * speed_multiplier, 0.1)
+		velocity.x = lerp(velocity.x, character_direction.x * speed_multiplier, delta * 6)
+		velocity.z = lerp(velocity.z, character_direction.z * speed_multiplier, delta * 6)
 	#var current_rotation := transform.basis.get_rotation_quaternion().normalized()
 
 	if movement_lock and attacking and input_dir.length() > 0:
-		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, 0.1)
+		$view.rotation.y = lerp_angle($view.rotation.y, target_rotation, delta * 6)
 		
-	if Input.is_action_pressed("SpaceBar") and is_on_floor():
-		action_bar += 1
-		time_since_actionbar_halt = 0
 
-	if jump_buffer == 1.0 and current_state in ["idle", "walk", "idle_to_walk", "walk_to_idle"] or jump_buffer == 1.0 and is_on_floor() and current_state in ["jump_to_walk", "jump_to_idle", "run_to_idle"]:
+	if jump_buffer == 1.0 and is_on_floor() and current_state in ["jump_to_walk", "jump_to_idle", "run_to_idle", "idle", "walk", "idle_to_walk", "walk_to_idle"]:
 		if !staggered and is_moving == false and is_on_floor() and attacking == false and is_blocking == false and is_running == false and in_mode == false:
 			state_machine.travel("idle_to_jump")
 		if !staggered and is_moving == true and is_on_floor() and attacking == false and is_blocking == false and is_running == false:
 			state_machine.travel("walk_to_jump")
 		jump_time = 0
 		jump_start_pos = global_position.y
+		jump_lock = false
 		is_jumping = true
 		action_bar = 0
 		jump_buffer = 0
 		jump_activation = true
-		
+	
 	if jump_activation == true:
 		jump_time = delta + jump_time
-		if jump_time > 0.2667 and is_on_floor() and velocity.y >= 0.0:
+		if velocity.y < -0.9:
+			jump_lock = true
+			is_jumping = false
+		if jump_time > 0.2667 and is_on_floor() == true and velocity.y >= 0.0 and jump_lock == false:
 			velocity.y = 3.0
 			#print("velytrue")
 			is_on_air = true
 			is_jumping = false
 			jump_activation = false
-
 	if distance_to_ground > 2.0:
 		#print("flyingtrue")
 		is_on_air = true
@@ -324,28 +357,34 @@ func _handle_movement(delta):
 		state_machine.travel("Roll")
 		action_bar = 0
 func _handle_variables(delta):
+	if performing_ability == true:
+		ability_timer += delta
 	if throwing == true:
 		if lockOn == false:
 			$Thrown_target.look_at($Camera/Camera3D/pivot/RayCast3D/MeshInstance3D.global_position)
 			$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $Thrown_target.rotation.y - PI, 0.5)
 	#$Throw_test.global_rotation = $BaseModel3D/MeshInstance3D.global_rotation
 	var camattachment = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CameraAttachment
-	var camAttTO = camattachment.global_transform.origin
+	var camattachmentright = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CameraAttachment/right
+	var camattachmentleft = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CameraAttachment/left
 	var cam3dTO = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CameraAttachment/right.global_transform.origin
-	if throwing == false:
-		$Camera/view_anchor.spring_length = 3.5
-		$Camera.global_transform.origin.x = lerp($Camera.global_transform.origin.x, camattachment.global_transform.origin.x, 0.0125)
-		$Camera.global_transform.origin.z = lerp($Camera.global_transform.origin.z, camattachment.global_transform.origin.z, 0.0125)
+	if not throwing:
+		if time_since_engage >= 3:
+			cam.anchor.spring_length = 3.5
+		else:
+			cam.anchor.spring_length = lerp(cam.anchor.spring_length, 2.5, 0.1)
+		if camera_on_right_shoulder == true:
+			$Camera.global_transform.origin = lerp($Camera.global_transform.origin, camattachmentright.global_transform.origin, 0.125)
+		else:
+			$Camera.global_transform.origin = lerp($Camera.global_transform.origin, camattachmentleft.global_transform.origin, 0.125)
+		#$Camera.global_transform.origin.x = lerp($Camera.global_transform.origin.x, camattachment.global_transform.origin.x, 0.0125)
 	else:
-		$Camera/view_anchor.spring_length = 2.0
+		cam.anchor.spring_length = 2.0
 		$BaseModel3D.global_rotation_degrees.y += -10 * delta
 		$Camera.global_transform.origin = lerp($Camera.global_transform.origin, cam3dTO, 0.0125)
-	if instaslow == true:
-		if in_menu == false:
-			$Camera/Camera3D.rotation.z = lerp($Camera/Camera3D.rotation.z, deg_to_rad(randf_range(-4.0, 4.0)), 0.5)
-		$Camera.position.y = -0.1
-	else:
-		$Camera.rotation.z = 0
+	#else:
+		#camera_original_position = cam.position
+		#$Camera.rotation.z = 0
 	if shift == true:
 		shield_meter = 0
 	if shield_meter > 0:
@@ -366,7 +405,7 @@ func _handle_variables(delta):
 		stamina = 0
 	staminabar.stamina = stamina
 
-	if Input.is_action_just_pressed("SpaceBar") and action_bar >= 20 or Input.is_action_just_pressed("B") and is_jumping == false:
+	if Input.is_action_just_pressed("B") and is_jumping == false:
 		jump_buffer = 1.0
 		time_since_jump_buffer = 0.0
 	if time_since_jump_buffer < 0.35:
@@ -391,7 +430,7 @@ func _handle_variables(delta):
 	# regen stamina.
 	if time_since_stamina_used >= stamina_grace_period and stamina < max_stamina:
 		stamina += delta * stamina_regeneration_rate
-	$"BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/helmet mesh".get_active_material(0).set_shader_parameter("conqueror", conqueror_stacks)
+	$"BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/helmet mesh".get_active_material(0).set_shader_parameter("conqueror", conqueror_value)
 	if time_since_engage < 3 and trail_switch == false:
 		currentweapon.attack_init()
 		trail_switch = true
@@ -399,7 +438,7 @@ func _handle_variables(delta):
 		currentweapon.attack_end()
 		trail_switch = false
 	if time_since_engage >= 3 and conqueror_stacks > 0.1:
-		conqueror_stacks = lerp(conqueror_stacks, 0.0, delta / 10)
+		conqueror_stacks = lerp(conqueror_stacks, 0.0, delta * 100)
 	#print(current_state, current_path)
 func _handle_animations(_delta):
 	#print(distance_to_ground)
@@ -431,8 +470,15 @@ func _handle_combat(delta):
 		staggered = false
 	if instaslow == false:
 		animationTree.set("parameters/TimeScale/scale", 1)
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer.set("speed_scale", 1.0)
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer2.set("speed_scale", 1.0)
+		
+
 	else:
 		animationTree.set("parameters/TimeScale/scale", 0.01)
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer.set("speed_scale", 0.01)
+		$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer2.set("speed_scale", 0.01)
+		
 	if shift == true and is_on_floor() and is_blocking == false and is_running == false:
 		in_mode = true
 	else:
@@ -454,7 +500,7 @@ func _handle_combat(delta):
 	match current_state: # Attack hurt frame code AND DEATH!!!! YARRR GRRRRR DEATHHH!!!
 		"throw":
 			throw_timer += delta
-			if throw_timer >= 0.2916666666666667:
+			if throw_timer >= 0.235:
 				throw_weapon()
 				throw_timer = 0.0
 		"death_01":
@@ -462,7 +508,7 @@ func _handle_combat(delta):
 		"Attack_bash":
 			if instaslow == false:
 				attack_timer += delta
-			if ( attack_timer >= 0.1 && attack_timer < 0.375 ):
+			if ( attack_timer >= 0.01 && attack_timer < 0.375 ):
 				offhand.Active = true
 			else:
 				offhand.Active = false
@@ -470,8 +516,10 @@ func _handle_combat(delta):
 			currentweapon.attack_multiplier = 1.5
 			if instaslow == false:
 				attack_timer += delta
-			if ( attack_timer >= 0.3 && attack_timer < 0.4583 ):
+			if ( attack_timer >= 0.11 && attack_timer < 0.4583 ):
 				currentweapon.hit(1)
+			if ( attack_timer >= 0.3 && attack_timer < 0.4583 ):
+				#currentweapon.hit(2)
 				currentweapon.Hurt = true
 				currentweapon.hitCD_cap = 0.135
 			else:
@@ -501,7 +549,7 @@ func _handle_combat(delta):
 			if instaslow == false:
 				attack_timer += delta
 			if ( attack_timer >= 0.1 && attack_timer < 0.375 ):
-				currentweapon.hit(4)
+				currentweapon.hit(3)
 				currentweapon.Hurt = true
 				currentweapon.hitCD_cap = 0.125
 			else:
@@ -511,7 +559,7 @@ func _handle_combat(delta):
 			if instaslow == false:
 				attack_timer += delta
 			if ( attack_timer >= 0.4 && attack_timer < 0.5833 ):
-				currentweapon.hit(2)
+				currentweapon.hit(1)
 				currentweapon.Hurt = true
 				currentweapon.hitCD_cap = 0.150
 			else:
@@ -598,8 +646,9 @@ func _handle_combat(delta):
 	if Input.is_action_just_released("shiftKey"):
 		shift = false
 
-	if Input.is_action_just_pressed("LeftClick"):
-		leftclick = true
+	if Input.is_action_just_pressed("LeftClick") and in_menu == false:
+		if cam.in_ingame_menu == false:
+			leftclick = true
 	if Input.is_action_pressed("LeftClick") and !stunned and leftclick:
 		attack_meter += delta
 
@@ -731,41 +780,61 @@ func _on_animation_tree_animation_started(anim_name):
 	if anim_name in ["H_Attack_2", "in_to_H_Attack_1", "Attack_1", "Attack_2", "Attack_3", "Attack_4", "Attack_5", "Attack_6", "Attack_roll", "Attack_C_1", "Attack_bash"]:
 #		print("SWOOOSH! BITCH!!!")
 		attacking = true
-		attack_timer = 0
+		attack_timer = 0.0
+	if anim_name in ["ability_1"]:
+		performing_ability = true
+	
 	match anim_name:
+		"Light_Damaged_L":
+			offhand.Active = false
+		"ability_1_to_idle":
+			print("AAAh")
+			ability_timer = 0.0
 		"H_Attack_2":
+			groan_streams.play()
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"in_to_H_Attack_1":
+			groan_streams.play()
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_1":
+			cam.anchor.spring_length = 1.75
+			groan_streams.play()
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_2":
+			groan_streams.play()
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_3":
+			$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer.play("A3 swing")
+			groan_streams.play()
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_4":
+			$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer2.play("A4 swing")
+			#groan_streams.play()
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_5":
+			groan_streams.play()
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_6":
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_roll":
+			groan_streams.play()
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_C_1":
+			groan_streams.play()
 			attacking = true
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_bash":
 			#attacking = true # EXPERIMENTAL. DELETE IF BUG DANGER ALERT FIXME ATTENTION CRITICAL HACK
-			attack_timer = 0
+			attack_timer = 0.0
 		"Attack_1_to_idle":
 			if attack_buffer == 1 and !weaponCollidingWall and in_mode == false:
 				state_machine.travel("Attack_2")
@@ -804,6 +873,10 @@ func _on_animation_tree_animation_finished(anim_name):
 		$BaseModel3D.rotation.y = lerp_angle($BaseModel3D.rotation.y, $enemy_radar.rotation.y, 0.75)
 	if anim_name in ["H_Attack_2", "in_to_H_Attack_1", "Attack_1", "Attack_2", "Attack_3", "Attack_4", "Attack_5", "Attack_6", "Attack_roll", "Attack_C_1", "Attack_bash"]:
 		pass
+	if anim_name in ["ability_1"]:
+		performing_ability = false
+		if is_on_floor() == true:
+			ability_timer = 0.0
 	match anim_name:
 		"jump_to_idle":
 			is_jumping = false
@@ -944,6 +1017,7 @@ func _on_animation_tree_animation_finished(anim_name):
 			stunned = false
 			player_death(0)
 		"Attack_bash":
+			offhand.Active = false
 			stunned = false
 			shift = false
 			attack_timer = 0
@@ -963,7 +1037,10 @@ func player_death(x):
 	is_running = false
 	healthbar.health = health
 
-func damage_by(damaged: int, side = 1):
+func damage_by(damaged: int,by, side = 1):
+	if canBeDamaged:
+		health -= damaged
+		shake(damaged/10.0)
 	if side == 1 and canBeDamaged:
 		staggered = true
 		throwing = false
@@ -973,8 +1050,6 @@ func damage_by(damaged: int, side = 1):
 		state_machine.stop()
 		state_machine.travel("death_01")
 		health = 0
-	if canBeDamaged:
-		health -= damaged
 	damI = 0.0
 	healthbar.health = health
 
@@ -992,16 +1067,18 @@ func throw_weapon():
 	throwable.linear_velocity = Vector3.ZERO
 	throwable.angular_velocity = Vector3.ZERO
 	throwable.global_rotation = $BaseModel3D.global_rotation
-	throwable.global_rotation.x += $UpperBody_skewer.global_rotation.x / 1.6
+	throwable.global_rotation.x += $UpperBody_skewer.global_rotation.x / 1.0
 	#$Throw_test.global_rotation.x = 0
 	throwable.global_position = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.global_position
 	thrown_weapon = currentweapon
 	currentweapon.attack_multiplier = 10
 	currentweapon.my_owner = self
 	currentweapon.reparent(throwable, true)
+	groan_streams.play()
 	set_weapon("Fist")
 	var impulse = throwable.global_transform.basis.z * cam.strength * 5 # Forward is -Z in Godot
 	throwable.apply_central_impulse(impulse)
+	thrown_weapon.rotate_x(deg_to_rad(10))
 	thrown_weapon.thrown = true
 func set_weapon(weapon_name):
 	match weapon_name:
@@ -1031,8 +1108,19 @@ func set_weapon(weapon_name):
 			currentweapon.position = Vector3(0.28, 0.1, -0.04)
 			currentweapon.rotation = Vector3(deg_to_rad(11), deg_to_rad(2), deg_to_rad(-90))
 			if throwing == true:
-				$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CustomModifier.influence = 0.5
+				$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CustomModifier.influence = 0.95
 				currentweapon.position = Vector3(-0.02, 0.078, -0.03)
 				currentweapon.rotation = Vector3(deg_to_rad(11), deg_to_rad(175.0), deg_to_rad(-95.0))
 func two_fps() -> void:
 	pass
+	
+func update_ability():
+	ability_1 = cam.ingame_menu.slots[0].get_ability()
+	ability_2 = cam.ingame_menu.slots[1].get_ability()
+	ability_3 = cam.ingame_menu.slots[2].get_ability()
+	ult = cam.ingame_menu.slots[3].get_ability()
+
+func shake(mag):
+	var mag10 = mag/10.0
+	$Camera.position += Vector3(randf_range(-mag10,mag10), randf_range(-mag10/2.0,mag10/2.0),randf_range(-mag10,mag10))
+	cam.rotation_degrees += Vector3(randf_range(-mag,mag),randf_range(-mag,mag),randf_range(-mag,mag))

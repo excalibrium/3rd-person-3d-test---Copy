@@ -1,0 +1,104 @@
+[gd_scene load_steps=12 format=3 uid="uid://ctkb7jwogde5y"]
+
+[ext_resource type="Shader" uid="uid://b3h0i3bl1gtny" path="res://slit.gdshader" id="1_4b741"]
+[ext_resource type="Texture2D" uid="uid://cwvx1u28w0v3" path="res://Main/FX/slit.png" id="2_a8c6i"]
+
+[sub_resource type="Gradient" id="Gradient_ileod"]
+offsets = PackedFloat32Array(0, 0.10084, 0.235294, 0.428571, 1)
+colors = PackedColorArray(1, 0.603922, 0.211765, 0, 1, 0.658824, 0.364706, 0.235294, 1, 0.774731, 0.69257, 0.719388, 1, 0.381807, 0.222462, 0.607843, 1, 0.619608, 0.47451, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wdl2p"]
+gradient = SubResource("Gradient_ileod")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lqfwd"]
+render_priority = 0
+shader = ExtResource("1_4b741")
+shader_parameter/slit = ExtResource("2_a8c6i")
+shader_parameter/color_lookup = SubResource("GradientTexture2D_wdl2p")
+shader_parameter/emission_strength = 4.1
+
+[sub_resource type="QuadMesh" id="QuadMesh_arlne"]
+material = SubResource("ShaderMaterial_lqfwd")
+size = Vector2(0.9, 0.7)
+
+[sub_resource type="Gradient" id="Gradient_4b741"]
+offsets = PackedFloat32Array(0, 0.226891, 0.344538, 0.537815, 1)
+colors = PackedColorArray(0.999154, 0.596725, 0, 0, 0.99583, 0.633016, 0.358711, 0.276018, 1, 0.498039, 0.215686, 0.717647, 0.96913, 0.478426, 0.138693, 0.607843, 1, 0.619608, 0.47451, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_a8c6i"]
+gradient = SubResource("Gradient_4b741")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ileod"]
+load_path = "res://.godot/imported/slit.png-83163b2b39be7770c4357351ded411f4.s3tc.ctex"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2ymph"]
+render_priority = 0
+shader = ExtResource("1_4b741")
+shader_parameter/slit = SubResource("CompressedTexture2D_ileod")
+shader_parameter/color_lookup = SubResource("GradientTexture2D_a8c6i")
+shader_parameter/emission_strength = 7.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_3t8sl"]
+material = SubResource("ShaderMaterial_2ymph")
+
+[node name="S_Hit_FX_CS" type="Node3D"]
+
+[node name="4-1no1" type="Node3D" parent="."]
+
+[node name="1-1no1" type="Node3D" parent="4-1no1"]
+transform = Transform3D(0.996195, 0, -0.0871557, 0, 1, 0, 0.0871557, 0, 0.996195, 0, 0, -0.038)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="4-1no1/1-1no1"]
+mesh = SubResource("QuadMesh_arlne")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="4-1no1/1-1no1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_arlne")
+skeleton = NodePath("../../..")
+
+[node name="1-1no2" type="Node3D" parent="4-1no1"]
+transform = Transform3D(0.996195, 0, 0.0871557, 0, 1, 0, -0.0871557, 0, 0.996195, 0, 0, 0.038)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="4-1no1/1-1no2"]
+mesh = SubResource("QuadMesh_arlne")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="4-1no1/1-1no2"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_arlne")
+skeleton = NodePath("../../..")
+
+[node name="1-1no3" type="Node3D" parent="4-1no1"]
+transform = Transform3D(1.046, 0.0871557, 0, -0.0915134, 0.996195, 0, 0, 0, 1, -0.0292249, 0.038, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="4-1no1/1-1no3"]
+mesh = SubResource("QuadMesh_arlne")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="4-1no1/1-1no3"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_arlne")
+skeleton = NodePath("../../..")
+
+[node name="1-1no4" type="Node3D" parent="4-1no1"]
+transform = Transform3D(1.046, -0.0871557, 0, 0.0915134, 0.996195, 0, 0, 0, 1, -0.0292249, -0.038, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="4-1no1/1-1no4"]
+mesh = SubResource("QuadMesh_arlne")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="4-1no1/1-1no4"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_arlne")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="4-1no1"]
+transform = Transform3D(1.05, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.0716504, 0, 0)
+mesh = SubResource("QuadMesh_3t8sl")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="4-1no1"]
+transform = Transform3D(1.05, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, -0.0716504, 0, 0)
+mesh = SubResource("QuadMesh_3t8sl")
+skeleton = NodePath("../..")

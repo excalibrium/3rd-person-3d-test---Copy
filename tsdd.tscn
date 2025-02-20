@@ -4,19 +4,19 @@
 [ext_resource type="Sky" uid="uid://xak2xrl37uv1" path="res://normalsky.tres" id="1_t205q"]
 [ext_resource type="PackedScene" uid="uid://dc1tba4wjti4h" path="res://Main/Entities/Enemy/Casual/casual_enemy.tscn" id="2_6eduu"]
 [ext_resource type="PackedScene" uid="uid://ci5j1ijq0tgrw" path="res://box.tscn" id="3_f2llp"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/scatter.gd" id="4_h4ou2"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/stack/modifier_stack.gd" id="5_vgqsp"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/modifiers/base_modifier.gd" id="6_7d7ko"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/modifiers/create_inside_random.gd" id="7_tn6w6"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/modifiers/randomize_transforms.gd" id="8_isgbw"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/modifiers/relax.gd" id="9_kerdm"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/modifiers/project_on_geometry.gd" id="10_q3868"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/scatter_item.gd" id="11_7pe55"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/scatter_shape.gd" id="12_nlkb8"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/shapes/box_shape.gd" id="14_cet4b"]
-[ext_resource type="Script" path="res://addons/proton_scatter/src/cache/scatter_cache.gd" id="15_j0p4l"]
+[ext_resource type="Script" uid="uid://ckdwpyvpw05nd" path="res://addons/proton_scatter/src/scatter.gd" id="4_h4ou2"]
+[ext_resource type="Script" uid="uid://cv3lfm0d5bk7g" path="res://addons/proton_scatter/src/stack/modifier_stack.gd" id="5_vgqsp"]
+[ext_resource type="Script" uid="uid://bpy5axln4dv5e" path="res://addons/proton_scatter/src/modifiers/base_modifier.gd" id="6_7d7ko"]
+[ext_resource type="Script" uid="uid://dl41eyo7ajpxv" path="res://addons/proton_scatter/src/modifiers/create_inside_random.gd" id="7_tn6w6"]
+[ext_resource type="Script" uid="uid://b0hqg7t7eroic" path="res://addons/proton_scatter/src/modifiers/randomize_transforms.gd" id="8_isgbw"]
+[ext_resource type="Script" uid="uid://b2ciy5dyi6hx0" path="res://addons/proton_scatter/src/modifiers/relax.gd" id="9_kerdm"]
+[ext_resource type="Script" uid="uid://bcdaodtk6hehc" path="res://addons/proton_scatter/src/modifiers/project_on_geometry.gd" id="10_q3868"]
+[ext_resource type="Script" uid="uid://d1iscdbhx42hm" path="res://addons/proton_scatter/src/scatter_item.gd" id="11_7pe55"]
+[ext_resource type="Script" uid="uid://dofrip27yptg2" path="res://addons/proton_scatter/src/scatter_shape.gd" id="12_nlkb8"]
+[ext_resource type="Script" uid="uid://ppdew3nm7wv1" path="res://addons/proton_scatter/src/shapes/box_shape.gd" id="14_cet4b"]
+[ext_resource type="Script" uid="uid://dsxmt755rsas" path="res://addons/proton_scatter/src/cache/scatter_cache.gd" id="15_j0p4l"]
 [ext_resource type="PackedScene" uid="uid://1gu8xg5mtc4u" path="res://çimensel/grass_triangle.tscn" id="16_teng6"]
-[ext_resource type="Shader" path="res://çimensel/grass.gdshader" id="17_aveuf"]
+[ext_resource type="Shader" uid="uid://cbu1tbngv4ke7" path="res://foliage/grass/grass.gdshader" id="17_aveuf"]
 
 [sub_resource type="Environment" id="Environment_asirw"]
 background_mode = 2
@@ -44,7 +44,7 @@ albedo_color = Color(0.690196, 0.690196, 0.690196, 1)
 material = SubResource("StandardMaterial3D_uqpae")
 size = Vector3(10, 1, 500)
 
-[sub_resource type="Resource" id="Resource_foth6"]
+[sub_resource type="Resource" id="Resource_if5nt"]
 script = ExtResource("7_tn6w6")
 amount = 50000
 enabled = true
@@ -53,7 +53,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 1
 
-[sub_resource type="Resource" id="Resource_ea82w"]
+[sub_resource type="Resource" id="Resource_8jemc"]
 script = ExtResource("8_isgbw")
 position = Vector3(0.15, 0.15, 0.15)
 rotation = Vector3(20, 360, 20)
@@ -64,7 +64,7 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 2
 
-[sub_resource type="Resource" id="Resource_fco67"]
+[sub_resource type="Resource" id="Resource_llo3b"]
 script = ExtResource("9_kerdm")
 iterations = 3
 offset_step = 0.2
@@ -76,7 +76,7 @@ custom_seed = 0
 restrict_height = true
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_e47nl"]
+[sub_resource type="Resource" id="Resource_ifqs1"]
 script = ExtResource("10_q3868")
 ray_direction = Vector3(0, -1, 0)
 ray_length = 5.0
@@ -92,9 +92,9 @@ custom_seed = 0
 restrict_height = false
 reference_frame = 0
 
-[sub_resource type="Resource" id="Resource_mvihj"]
+[sub_resource type="Resource" id="Resource_vg2vk"]
 script = ExtResource("5_vgqsp")
-stack = Array[ExtResource("6_7d7ko")]([SubResource("Resource_foth6"), SubResource("Resource_ea82w"), SubResource("Resource_fco67"), SubResource("Resource_e47nl")])
+stack = Array[ExtResource("6_7d7ko")]([SubResource("Resource_if5nt"), SubResource("Resource_8jemc"), SubResource("Resource_llo3b"), SubResource("Resource_ifqs1")])
 
 [sub_resource type="Resource" id="Resource_pufau"]
 script = ExtResource("14_cet4b")
@@ -135,15 +135,15 @@ shader_parameter/player_displacement_strength = 30.0
 shader_parameter/player_displacement_size = 1.5
 shader_parameter/wind_direction = Vector3(1, 0, 0)
 shader_parameter/wind_strength = 0.3
+shader_parameter/global_noise = SubResource("NoiseTexture2D_vnb6d")
 shader_parameter/global_noise_size = 0.79
 shader_parameter/global_noise_speed = 0.1
 shader_parameter/player_position = Vector3(0, 0.9, -245)
 shader_parameter/vertical_displacement_strength = 0.91
+shader_parameter/simplex_noise = SubResource("NoiseTexture2D_mrvgl")
 shader_parameter/simplex_noise_size = 0.1
 shader_parameter/grass_height_scale = 1.2
 shader_parameter/grass_width_scale = 1.2
-shader_parameter/global_noise = SubResource("NoiseTexture2D_vnb6d")
-shader_parameter/simplex_noise = SubResource("NoiseTexture2D_mrvgl")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_j4j6k"]
 _surfaces = [{
@@ -262,7 +262,7 @@ transform = Transform3D(-0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, -0.939693, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.189251, -240)
 script = ExtResource("4_h4ou2")
 force_rebuild_on_load = false
-modifier_stack = SubResource("Resource_mvihj")
+modifier_stack = SubResource("Resource_vg2vk")
 Performance/use_chunks = true
 Performance/chunk_dimensions = Vector3(1, 1, 1)
 

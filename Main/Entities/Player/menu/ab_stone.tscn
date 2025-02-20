@@ -1,0 +1,88 @@
+[gd_scene load_steps=8 format=3 uid="uid://bcxpmndy2hudc"]
+
+[ext_resource type="Script" uid="uid://njgotge7f4i5" path="res://Main/Entities/Player/menu/ability_stone.gd" id="1_fcine"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_fcine"]
+viewport_path = NodePath("Model/SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2diak"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ym348"]
+material = SubResource("StandardMaterial3D_2diak")
+size = Vector3(0.055, 0.055, 0.055)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_endgo"]
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_dfvm0"]
+material = SubResource("StandardMaterial3D_endgo")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_fcine"]
+radius = 0.05
+
+[node name="AB1" type="Node3D" node_paths=PackedStringArray("looker", "hitbox", "model")]
+script = ExtResource("1_fcine")
+ability_name = "fusrodah"
+main_type = "tayyiperdogan"
+looker = NodePath("Model/lkr")
+hitbox = NodePath("Area")
+Type = "tayyip"
+model = NodePath("Model")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="lkr" type="Node3D" parent="Model"]
+
+[node name="Sprite3D" type="Sprite3D" parent="Model"]
+transform = Transform3D(-0.115, 0, -1.73645e-08, 0, 0.115, 0, 1.73645e-08, 0, -0.115, -0.04, 0.1, -0.05)
+cast_shadow = 0
+alpha_cut = 1
+alpha_antialiasing_mode = 1
+texture_filter = 5
+texture = SubResource("ViewportTexture_fcine")
+
+[node name="SubViewport" type="SubViewport" parent="Model"]
+transparent_bg = true
+
+[node name="Label" type="Label" parent="Model/SubViewport"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0.0313726, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+text = "cex sanavarı"
+
+[node name="mesh" type="MeshInstance3D" parent="Model"]
+layers = 24
+mesh = SubResource("BoxMesh_ym348")
+
+[node name="real_mesh" type="MeshInstance3D" parent="Model/mesh"]
+layers = 24
+cast_shadow = 0
+mesh = SubResource("SphereMesh_dfvm0")
+
+[node name="Area" type="Area3D" parent="." groups=["Menutton"]]
+collision_layer = 0
+collision_mask = 0
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area"]
+shape = SubResource("SphereShape3D_fcine")
+
+[connection signal="area_entered" from="Area" to="." method="_on_area_area_entered"]
+[connection signal="area_exited" from="Area" to="." method="_on_area_area_exited"]

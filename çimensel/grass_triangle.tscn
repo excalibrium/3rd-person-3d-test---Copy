@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=4 uid="uid://1gu8xg5mtc4u"]
 
-[ext_resource type="Shader" path="res://çimensel/grass.gdshader" id="1_2xmod"]
-[ext_resource type="Script" path="res://çimensel/grass_triangle.gd" id="2_rjybx"]
+[ext_resource type="Shader" uid="uid://cbu1tbngv4ke7" path="res://foliage/grass/grass.gdshader" id="1_2xmod"]
+[ext_resource type="Script" uid="uid://dh1h4y5usjkgp" path="res://foliage/grass/grass_triangle.gd" id="2_rjybx"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_7hsuq"]
 noise_type = 3
@@ -29,15 +29,15 @@ shader_parameter/player_displacement_strength = 3.0
 shader_parameter/player_displacement_size = 0.5
 shader_parameter/wind_direction = Vector3(1, 0, 1)
 shader_parameter/wind_strength = 0.3
+shader_parameter/global_noise = SubResource("NoiseTexture2D_vnb6d")
 shader_parameter/global_noise_size = 0.79
 shader_parameter/global_noise_speed = 0.1
 shader_parameter/player_position = Vector3(0, 0.9, 0)
 shader_parameter/vertical_displacement_strength = 0.7
+shader_parameter/simplex_noise = SubResource("NoiseTexture2D_mrvgl")
 shader_parameter/simplex_noise_size = 0.1
 shader_parameter/grass_height_scale = 1.5
 shader_parameter/grass_width_scale = 0.7
-shader_parameter/global_noise = SubResource("NoiseTexture2D_vnb6d")
-shader_parameter/simplex_noise = SubResource("NoiseTexture2D_mrvgl")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_6hnv1"]
 _surfaces = [{

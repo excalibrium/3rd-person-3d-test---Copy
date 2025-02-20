@@ -15,27 +15,24 @@ var my_owner : CharacterBody3D
 var hitCD := 0.0
 var hitCD_cap := 0.125
 var thrown := false
-@export var trails := false
-@export var trail : GPUTrail3D
-func _physics_process(delta):
+func _physics_process(_delta):
 	#print(player)
 	hitboxes = get_tree().get_nodes_in_group("hitbox")
 	#print(hitboxes)
 func hit(no):
-	if self is CometSpear:
+	if self is CometSpear or self is BoTRK:
 		if no == 1:
 			$AnimationPlayer.play("hit1")
 		if no == 2:
 			$AnimationPlayer.play("hit2")
 		if no == 3:
 			$AnimationPlayer.play("hit3")
-		if no == 4:
-			$AnimationPlayer.play("hit4")
-
+		#if no == 4:
+			#$AnimationPlayer.play("hit4")
 func attack_init() -> void:
-	if self.trails == true:
-		trail._set_length(150)
+	pass
+	#if self is CometSpear:
+		#if 
 
 func attack_end() -> void:
-	if self.trails == true:
-		trail._set_length(15)
+	pass

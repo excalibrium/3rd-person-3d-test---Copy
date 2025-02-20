@@ -1,7 +1,7 @@
 @tool
 extends AnimationTree
 @export var setactive: bool
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if setactive == false:
 		set_active(false)
 	else:

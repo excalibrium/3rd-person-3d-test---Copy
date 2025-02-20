@@ -1,13 +1,9 @@
-[gd_scene load_steps=26 format=4 uid="uid://13l65w5vx8vb"]
+[gd_scene load_steps=17 format=4 uid="uid://13l65w5vx8vb"]
 
-[ext_resource type="Script" path="res://Main/Entities/Player/Weapons/shield.gd" id="1_4ba5f"]
+[ext_resource type="Script" uid="uid://b3ib8fc7cup6u" path="res://Main/Entities/Player/Weapons/shield.gd" id="1_4ba5f"]
 [ext_resource type="Texture2D" uid="uid://cjkxwij2kdhx6" path="res://Main/Entities/Player/assets/spear_000000013F730E78-000000013F730E78.png" id="1_eqoy1"]
 [ext_resource type="Texture2D" uid="uid://b5qnxbwaktbil" path="res://Main/Entities/Player/assets/spear_000000013F7335F8.jpg" id="2_wmtrt"]
 [ext_resource type="Texture2D" uid="uid://2walnlnwmck7" path="res://Main/Entities/Player/assets/PantheonAtreusA23_00000001141F8E38.png" id="4_cb5nq"]
-[ext_resource type="Shader" path="res://GPUTrail-main/shaders/trail.gdshader" id="5_y5k8g"]
-[ext_resource type="Shader" path="res://GPUTrail-main/shaders/trail_draw_pass.gdshader" id="6_wv1p4"]
-[ext_resource type="Texture2D" uid="uid://ct31fhxvcragr" path="res://GPUTrail-main/defaults/curve.tres" id="7_qf7mt"]
-[ext_resource type="Script" path="res://GPUTrail-main/GPUTrail3D.gd" id="9_d7crj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2k7jw"]
 resource_name = "weapons"
@@ -129,6 +125,7 @@ void fragment() {
 render_priority = 0
 shader = SubResource("Shader_fbns4")
 shader_parameter/albedo = Color(0, 1, 1, 1)
+shader_parameter/texture_albedo = ExtResource("4_cb5nq")
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
@@ -144,7 +141,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/texture_albedo = ExtResource("4_cb5nq")
 
 [sub_resource type="TubeTrailMesh" id="TubeTrailMesh_7fm0f"]
 material = SubResource("ShaderMaterial_42sbs")
@@ -163,6 +159,7 @@ point_count = 3
 render_priority = 0
 shader = SubResource("Shader_fbns4")
 shader_parameter/albedo = Color(0, 1, 1, 0.0156863)
+shader_parameter/texture_albedo = ExtResource("4_cb5nq")
 shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/metallic_texture_channel = null
@@ -178,7 +175,6 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/texture_albedo = ExtResource("4_cb5nq")
 
 [sub_resource type="TubeTrailMesh" id="TubeTrailMesh_ify3n"]
 material = SubResource("ShaderMaterial_4frwd")
@@ -189,35 +185,11 @@ cap_top = false
 cap_bottom = false
 curve = SubResource("Curve_eut1k")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_lg26k"]
-shader = ExtResource("5_y5k8g")
-
-[sub_resource type="Gradient" id="Gradient_7ac3q"]
-colors = PackedColorArray(0, 1, 1, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_i6o24"]
-gradient = SubResource("Gradient_7ac3q")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_waomh"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("6_wv1p4")
-shader_parameter/emmission_transform = Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
-shader_parameter/flags = 40
-shader_parameter/panning_speed = 1.0
-shader_parameter/emission_strength = 1.0
-shader_parameter/brightness_boost = 1.2
-shader_parameter/tex = ExtResource("4_cb5nq")
-shader_parameter/color_ramp = SubResource("GradientTexture1D_i6o24")
-shader_parameter/curve = ExtResource("7_qf7mt")
-
-[sub_resource type="QuadMesh" id="QuadMesh_k80a2"]
-material = SubResource("ShaderMaterial_waomh")
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3or44"]
 
-[node name="Shield" type="Node3D"]
+[node name="Shield" type="Node3D" node_paths=PackedStringArray("hurtbox")]
 script = ExtResource("1_4ba5f")
+hurtbox = NodePath("ParryHitbox")
 
 [node name="weapons" type="MeshInstance3D" parent="."]
 mesh = SubResource("ArrayMesh_ks615")
@@ -225,6 +197,8 @@ skeleton = NodePath("")
 
 [node name="Area3D" type="Area3D" parent="." groups=["walls"]]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+collision_layer = 7
+collision_mask = 7
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 shape = SubResource("SphereShape3D_egnuy")
@@ -237,21 +211,6 @@ mesh = SubResource("TubeTrailMesh_7fm0f")
 [node name="blue_circle_shield2" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.173648, -4.30473e-08, 0.984808, -0.984808, 7.5904e-09, -0.173648, 0, -1, -4.37114e-08, 0.00948519, -0.14307, 0.0656854)
 mesh = SubResource("TubeTrailMesh_ify3n")
-
-[node name="GPUTrail3D2" type="GPUParticles3D" parent="."]
-transform = Transform3D(0.1, 0, 0, 0, -4.37114e-09, 0.1, 0, -0.1, -4.37114e-09, 0, -0.144092, 0.0755136)
-amount = 200
-lifetime = 200.0
-explosiveness = 1.0
-fixed_fps = 0
-process_material = SubResource("ShaderMaterial_lg26k")
-draw_pass_1 = SubResource("QuadMesh_k80a2")
-script = ExtResource("9_d7crj")
-length = 200
-texture = ExtResource("4_cb5nq")
-color_ramp = SubResource("GradientTexture1D_i6o24")
-curve = ExtResource("7_qf7mt")
-_defaults_have_been_set = true
 
 [node name="ParryHitbox" type="Area3D" parent="."]
 

@@ -17,3 +17,6 @@ func _process(delta: float) -> void:
 	$Label8.set_text("move: "+ str(!player.staggered and player.is_moving == true and player.attacking == false and player.is_blocking == false and player.is_running == false and player.speed < 4.8 and player.is_on_floor()))
 	$Label9.set_text("current state: "+ str(player.current_state))
 	$Label10.set_text("dami: "+ str(player.damI >= player.damI_cd))
+	$Label11.set_text("abilitimer: "+ str(player.ability_timer))
+	$Label12.set_text("offhand_active: "+ str(player.offhand.Active))
+	$Label13.set_text("shield meter: "+ str(player.shield_meter))

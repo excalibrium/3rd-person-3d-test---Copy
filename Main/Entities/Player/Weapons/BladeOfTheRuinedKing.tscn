@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=4 uid="uid://dfr4gqduqkcjr"]
+[gd_scene load_steps=15 format=4 uid="uid://dfr4gqduqkcjr"]
 
 [ext_resource type="Texture2D" uid="uid://bsj6p5426khjy" path="res://Main/Entities/Player/Weapons/RuinedViegoSword_SwordB_2.png" id="1_8xdao"]
-[ext_resource type="Script" path="res://Main/Entities/Player/Weapons/BladeOfTheRuinedKing_new.gd" id="1_ss0d7"]
+[ext_resource type="Script" uid="uid://c2qb75yrq3w7o" path="res://Main/Entities/Player/Weapons/BladeOfTheRuinedKing_new.gd" id="1_ss0d7"]
 [ext_resource type="Texture2D" uid="uid://dwqdroqopds7f" path="res://Main/Entities/Player/Weapons/RuinedViegoSword_SwordB.png" id="2_xcl6p"]
 [ext_resource type="Texture2D" uid="uid://dah02yftmige7" path="res://Main/Entities/Player/Weapons/RuinedViegoSword_SwordN.png" id="3_kp8g6"]
+[ext_resource type="PackedScene" uid="uid://0474ol80s1pj" path="res://Main/FX/s_hit_fx_botrk.tscn" id="5_b2itf"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_60ciw"]
 resource_name = "sword"
@@ -58,6 +59,168 @@ size = Vector3(1.865, 0.1, 0.1)
 height = 2.5
 radius = 0.2
 
+[sub_resource type="Animation" id="Animation_5l8pw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("s_hit_fx_BOTRK:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("s_hit_fx_BOTRK:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(4, 5, 5)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("s_hit_fx_BOTRK:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 1.5708)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("s_hit_fx_BOTRK:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0.5587, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_neg38"]
+resource_name = "hit2"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("s_hit_fx_BOTRK:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0333333, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("s_hit_fx_BOTRK:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0333333, 0.14511, 0.3),
+"transitions": PackedFloat32Array(0.378929, 1.23114, 1),
+"update": 0,
+"values": [Vector3(4, 5, 5), Vector3(4, 2, 2), Vector3(6, 0.1, 0.1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("s_hit_fx_BOTRK:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0333333, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 1.5708), Vector3(0, 1.5708, 1.5708)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("s_hit_fx_BOTRK:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0333333, 0.3),
+"transitions": PackedFloat32Array(0.707107, 1),
+"update": 0,
+"values": [Vector3(0, 0.5587, 0), Vector3(0, 3, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_b2itf"]
+resource_name = "hit2"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("s_hit_fx_BOTRK:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0164564, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("s_hit_fx_BOTRK:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0164564, 0.0666667, 0.200672),
+"transitions": PackedFloat32Array(1, 1.07177, 1),
+"update": 0,
+"values": [Vector3(4, 5, 5), Vector3(4, 3, 3), Vector3(6, 0.1, 0.1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("s_hit_fx_BOTRK:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0164564, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 1.5708), Vector3(0, 1.5708, 1.5708)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("s_hit_fx_BOTRK:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0164564, 0.2),
+"transitions": PackedFloat32Array(0.707107, 1),
+"update": 0,
+"values": [Vector3(0, 0.5587, 0), Vector3(0, 3, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5l8pw"]
+_data = {
+&"RESET": SubResource("Animation_5l8pw"),
+&"hit1": SubResource("Animation_neg38"),
+&"hit2": SubResource("Animation_b2itf")
+}
+
 [node name="BladeOfTheRuinedKing" type="Node3D" groups=["weapon"]]
 script = ExtResource("1_ss0d7")
 
@@ -67,7 +230,7 @@ mesh = SubResource("ArrayMesh_vepip")
 skeleton = NodePath("")
 
 [node name="Hitbox" type="Area3D" parent="."]
-transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209e-07, -2.98023e-08, -0.999996, 0, -0.004, -0.009, 0)
+transform = Transform3D(2.68221e-07, -2.98023e-08, -1, 1, -5.96046e-08, -1.19209e-07, -2.98023e-08, -0.999996, 0, -0.004, 0.3254, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
 transform = Transform3D(1, -2.98023e-08, -9.13963e-09, 2.98023e-08, 1, 7.92889e-08, 9.13962e-09, -7.92889e-08, 1, 0.37407, 1.11468e-08, 3.25963e-09)
@@ -80,5 +243,16 @@ transform = Transform3D(2.68221e-07, -7.54976e-08, -1, 1, -4.37112e-08, 2.68221e
 transform = Transform3D(-1.62921e-07, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -1.62921e-07, 2.84217e-14, 0, 0, 0)
 shape = SubResource("CylinderShape3D_1syun")
 
+[node name="s_hit_fx_BOTRK" parent="." instance=ExtResource("5_b2itf")]
+transform = Transform3D(-1.448e-05, -5, 0, 4, -1.81e-05, 0, 0, 0, 5, 0, 0.5587, 0)
+visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_5l8pw")
+}
+
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]
 [connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]
