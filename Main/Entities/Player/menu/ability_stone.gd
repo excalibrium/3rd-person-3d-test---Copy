@@ -74,7 +74,7 @@ func _input(_event: InputEvent) -> void:
 		if Input.is_action_just_released("LeftClick"):
 			clicked = false
 			camera_3d.player.update_ability()
-func _ingame_menu_process(delta):
+func _ingame_menu_process(_delta):
 	#if slotted == false:
 		#print("yehoow")
 	if hoverer.clicked == true and hoverer.current_clicked == hitbox:
@@ -95,9 +95,9 @@ func _ingame_menu_process(delta):
 	#print($mesh1.position.x)
 	update_vis()
 	#print(pressed_on, "and", hoverer.current_clicked, " == ", hoverer.last_hovered)
-func pressed(Type):
-	print("entering ", Type)
-	match Type:
+func pressed(Typey):
+	print("entering ", Typey)
+	match Typey:
 		"Audioslider":
 			print("porno")
 		"Quitting":
@@ -114,7 +114,7 @@ func pressed(Type):
 			#cursor.type_history.erase(cursor.type_history.back())
 		"Audio":
 			cursor.set_main_type("audio")
-func switch(sw_bool: bool,Type, delta, once:=false):
+func switch(sw_bool: bool,_Typey, delta, _once:=false):
 	if sw_bool == false:
 		match Type:
 			"Quitting":
@@ -171,10 +171,10 @@ func _on_area_area_exited(area: Area3D) -> void:
 			if slotted_in.full == true:
 				slotted_in.full = false
 				#print("a")
-func reset(slot : Node3D, mayback:= false):
+func reset(sloth : Node3D, mayback:= false):
 	slotted = false
 	fillback = mayback
-	last_slotted = slot
+	last_slotted = sloth
 
 func slot(lockslot):
 	

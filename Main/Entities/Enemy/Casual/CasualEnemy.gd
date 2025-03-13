@@ -69,8 +69,8 @@ func _physics_process(delta: float) -> void:
 	global_position += $BaseModel3D.global_transform.basis * RMPos
 	if stall_meter <= stall_cd + cdm_seed:
 		stall_meter += delta
-	animationTree.set("parameters/stater/conditions/walk", staggered == false and is_moving == true and attacking == false and is_blocking == false and is_running == false)
-	animationTree.set("parameters/stater/conditions/idle", staggered == false and is_moving == false and attacking == false and is_blocking == false and is_running == false)
+	animationTree.set("parameters/stater/conditions/walk", stunned == false and is_moving == true and attacking == false and is_blocking == false and is_running == false)
+	animationTree.set("parameters/stater/conditions/idle", stunned == false and is_moving == false and attacking == false and is_blocking == false and is_running == false)
 	if prio:
 		$Raycast.look_at(prio.global_position)
 	#await get_tree().physics_frame
@@ -123,9 +123,11 @@ func damage_by(damaged,by):
 func guard_break():
 	if is_blocking:
 		state_machine.travel("hit_cancel")
+		staggered = true
 		is_blocking = false
-		is_attacking = false
-
+		attacking = false
+		movement_lock = false
+		decision_processing = false
 func _on_animation_tree_animation_started(anim_name: StringName) -> void:
 	attack_timer = 0
 	match anim_name:
@@ -140,34 +142,26 @@ func _on_animation_tree_animation_started(anim_name: StringName) -> void:
 			movement_lock = false
 			stunned = true
 func _on_animation_tree_animation_finished(anim_name: StringName) -> void:
-	
 	movement_lock = false
-	#if stalling == false:
-		#decision_processing = false
 	attack_timer = 0
 	match anim_name:
-		"block":
-			
-			movement_lock = false
-			is_blocking = false
-			canBeDamaged = true
-			damI = damI_cd
-			decision_processing = false
-			current_attack_substate = AttackSubstate.AWAIT
-		"Attack_1":
-			
-			movement_lock = false
-			#global_rotation.y = lerp_angle(global_rotation.y, looker.global_rotation.y, 0.5)
-			#$BaseModel3D/MeshInstance3D/Viego/Skeleton3D/CustomModifier.setreal = true
+		"Attack_1", "hit_cancel", "block":  # Handle multiple animations
 			attacking = false
+			is_blocking = false
 			rot_lock = false
 			decision_processing = false
+			current_attack_substate = AttackSubstate.AWAIT
+		"block":
+			movement_lock = false
+			canBeDamaged = true
+			damI = damI_cd
+		"Attack_1":
+			movement_lock = false
 			current_attack_substate = AttackSubstate.AWAIT
 		"death":
 			movement_lock = false
 			player.killed += 1.0
 			current_state = State.IDLE
-			attacking = false
 			death()
 			reset_ai_state()
 			curious_stage = 0
@@ -183,7 +177,6 @@ func _on_animation_tree_animation_finished(anim_name: StringName) -> void:
 			attack_timer = 0
 			stunned = false
 			attacking = false
-			movement_lock = false
 			current_attack_substate = AttackSubstate.AWAIT
 	if attacking == false:
 		currentweapon.Hurt = false

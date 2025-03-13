@@ -153,6 +153,10 @@ func check_awareness() -> void:
 
 func combat_decision_making() -> void:
 	#print(decision_processing)
+	var decision_timeout = 5.0
+	if decision_processing and attack_timer > decision_timeout:
+		decision_processing = false
+		current_attack_substate = AttackSubstate.AWAIT
 	match current_attack_substate:
 		AttackSubstate.AWAIT:
 			decision_processing = false
@@ -200,16 +204,18 @@ func combat_decision_making() -> void:
 			movement_lock = true
 			rot_lock = true
 			attacking = true
+			decision_processing = true
+			
 			state_machine.travel("Attack_1")
 			#current_attack_substate = AttackSubstate.APPROACH
-			decision_processing = true
 			#print("attack")
 		AttackSubstate.DEFEND:
 			rot_lock = true
 			movement_lock = true
+			decision_processing = true
+			
 			state_machine.travel("block")
 			#current_attack_substate = AttackSubstate.APPROACH
-			decision_processing = true
 			#print("defend")
 		AttackSubstate.STALL:
 			decision_processing = false
@@ -306,13 +312,13 @@ func spin(wheel):
 		"above_50":
 			if cdm_seed >= 0.3 and decision_processing == false:
 				current_attack_substate = AttackSubstate.STRIKE
-			if cdm_seed < 0.3 and decision_processing == false:
-				current_attack_substate = AttackSubstate.DEFEND
+			#if cdm_seed < 0.3 and decision_processing == false:
+				#current_attack_substate = AttackSubstate.DEFEND
 		"below_50":
 			if cdm_seed >= 0.7 and decision_processing == false:
 				current_attack_substate = AttackSubstate.STRIKE
-			if cdm_seed < 0.7 and decision_processing == false:
-				current_attack_substate = AttackSubstate.DEFEND
+			#if cdm_seed < 0.7 and decision_processing == false:
+				#current_attack_substate = AttackSubstate.DEFEND
 
 func reset_ai_state():
 	movement_lock = false

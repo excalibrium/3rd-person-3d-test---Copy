@@ -1,7 +1,7 @@
 open source nothing burger !
 
 we have :
-	nothing
+	nothing!
 	
 	and by nothing, I mean a fully functional third person action system with weapon management, and combat with self made animations.
 	
@@ -18,7 +18,7 @@ disclaimer:
 purpose:
 	to learn, as it is the way to create something worth creating. And to save the world along the way, if possible! (in-game)
 	
-	to create a video game that is a sandbox for me, to shape it and create sandcastles with(?). A framework to build upon.
+	to create a video game that is a sandbox for me, to shape it and create sandcastles with. A framework to build upon.
 	
 	
 
