@@ -28,7 +28,7 @@ func _process(delta: float) -> void:
 	#global_position += $BaseModel3D.global_transform.basis * RMPos
 func _handle_var(delta):
 	$SubViewport/Label3.text = str(locking_value)
-	raycast.look_at(player.cam.global_position)
+	raycast.look_at(player.global_position)
 	if raycast.get_collider() == null:
 		mini_camera_mapper_thingy.global_position = global_position
 	else:

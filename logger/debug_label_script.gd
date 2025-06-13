@@ -27,8 +27,7 @@ func _init(node: Node, p_name: Variant):
 				else:
 					param_name += params_arr[i]
 		_:
-			print("HO")
-			assert(true, "Something went VERY wrong.")
+			return
 	m_node = node
 	pass
 

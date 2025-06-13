@@ -4,10 +4,6 @@ class_name Bomb
 func _ready() -> void:
 	set_owner(get_parent().owner)
 
-
-func _physics_process(delta):
-	pass
-
 func _on_timer_timeoout():
 	$AudioStreamPlayer3D.play()
 	var timer = Timer.new()

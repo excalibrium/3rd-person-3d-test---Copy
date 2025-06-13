@@ -160,7 +160,7 @@ func _physics_process(_delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("Escape"):
-			menu_pressed()
+		menu_pressed()
 	if in_menu == false:
 		if Input.is_action_just_pressed("K"):
 			in_game_menu_pressed("Skills")

@@ -7,7 +7,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	$Label2.set_text("distance to ground: "+ str(player.distance_to_ground))
 	$Label3.set_text("rmpos: "+ str(player.RMPos.y))
 	$Label4.set_text("is on air: "+ str(player.is_on_air)+ str(player.is_on_floor()))
