@@ -5,12 +5,19 @@ var target = null
 #@onready var velocity = $velocity
 var timer := 0.0
 var born := 0.0
+var is_thrown: bool = false
+
+func _ready():
+	pass
+
 func _process(_delta):
 	born += _delta
 	if born >= 15.0:
 		queue_free()
 
 func _physics_process(_delta: float) -> void:
+	if !is_thrown:
+		return
 	var velocity = linear_velocity
 	var look_direction = velocity.normalized()
 	$lookat/MeshInstance3D.global_position = global_position + look_direction
