@@ -1,7 +1,5 @@
 extends MeshInstance3D
 var previous_type = ""
-#var tween : Tween
-#var tween2 : Tween
 
 @export var cursor : Node3D
 # Called when the node enters the scene tree for the first time.

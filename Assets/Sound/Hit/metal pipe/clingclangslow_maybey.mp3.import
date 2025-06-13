@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bll7x7lll4eub"
+path="res://.godot/imported/clingclangslow_maybey.mp3-18b77fd2a5f5582759d101d9c610a77e.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sound/Hit/metal pipe/clingclangslow_maybey.mp3"
+dest_files=["res://.godot/imported/clingclangslow_maybey.mp3-18b77fd2a5f5582759d101d9c610a77e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

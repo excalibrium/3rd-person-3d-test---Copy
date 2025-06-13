@@ -1,0 +1,29 @@
+[gd_resource type="StandardMaterial3D" load_steps=6 format=3 uid="uid://b81q73tvqkifc"]
+
+[ext_resource type="Texture2D" uid="uid://ceigj62ox2pmh" path="res://Assets/Textures/rock1/rock1_albedo.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://cwqxhaak4lkdj" path="res://Assets/Textures/rock1/rock1_orm.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://c6437lqy4p4w6" path="res://Assets/Textures/rock1/rock1_normal.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://gmvv4gxjsnwx" path="res://Assets/Textures/rock1/rock1_heightmap.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://d06ffvhwg2m86" path="res://Assets/Textures/rock1/rock1_emission.png" id="5"]
+
+[resource]
+albedo_color = Color(0.768549, 0.819607, 0.822759, 1)
+albedo_texture = ExtResource("1")
+metallic_texture = ExtResource("2")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("2")
+roughness_texture_channel = 1
+emission_enabled = true
+emission_texture = ExtResource("5")
+normal_enabled = true
+normal_scale = 2.0
+normal_texture = ExtResource("3")
+ao_enabled = true
+ao_texture = ExtResource("2")
+heightmap_enabled = true
+heightmap_scale = 2.0
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+heightmap_texture = ExtResource("4")
+uv1_scale = Vector3(4, 4, 4)

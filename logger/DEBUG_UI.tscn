@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=3 uid="uid://5nmbhka6h12l"]
+
+[ext_resource type="Script" uid="uid://btsl50spnerl2" path="res://logger/debug_ui.gd" id="1_wgckb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1chb2"]
+bg_color = Color(0.101961, 0.101961, 0.101961, 0.341176)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+expand_margin_left = 16.0
+expand_margin_top = 16.0
+expand_margin_right = 16.0
+expand_margin_bottom = 16.0
+
+[node name="DebugUi" type="CanvasLayer"]
+layer = 128
+script = ExtResource("1_wgckb")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Control"]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 1
+offset_top = 92.0
+offset_right = 540.0
+offset_bottom = 156.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="Panel" type="Panel" parent="Control/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_1chb2")
+
+[node name="Root" type="VBoxContainer" parent="Control/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 16

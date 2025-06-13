@@ -1,0 +1,68 @@
+[gd_resource type="ArrayMesh" load_steps=7 format=4 uid="uid://dw8q4n2oyap7n"]
+
+[ext_resource type="Shader" path="res://foliage/grass/grass.gdshader" id="1_6n73o"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7hsuq"]
+seed = 60
+frequency = 0.0538
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vnb6d"]
+width = 32
+height = 32
+in_3d_space = true
+seamless = true
+seamless_blend_skirt = 1.0
+noise = SubResource("FastNoiseLite_7hsuq")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_n81mq"]
+noise_type = 0
+frequency = 0.0122
+fractal_octaves = 10
+fractal_lacunarity = 3.92
+domain_warp_fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mrvgl"]
+width = 256
+height = 256
+seamless = true
+noise = SubResource("FastNoiseLite_n81mq")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_venu0"]
+render_priority = 0
+shader = ExtResource("1_6n73o")
+shader_parameter/top_color = Color(0.244047, 0.522089, 0.182319, 1)
+shader_parameter/bottom_color = Color(0.286638, 0.372537, 0.107378, 1)
+shader_parameter/yellow_color = Color(0.651528, 0.86681, 0.0246799, 1)
+shader_parameter/yellow_threshold = 0.7
+shader_parameter/yellow_intensity = 0.74
+shader_parameter/tall_grass_threshold = 0.48
+shader_parameter/player_displacement_strength = 15.0
+shader_parameter/player_displacement_size = 1.0
+shader_parameter/wind_direction = Vector3(0, 0, 0)
+shader_parameter/wind_strength = 1.21
+shader_parameter/global_noise_size = 0.05
+shader_parameter/global_noise_speed = 0.275
+shader_parameter/player_position = Vector3(0, 0.9, 0)
+shader_parameter/vertical_displacement_strength = 0.7
+shader_parameter/simplex_noise_size = 0.08
+shader_parameter/grass_height_scale = 1.5
+shader_parameter/grass_width_scale = 0.8
+shader_parameter/global_noise = SubResource("NoiseTexture2D_vnb6d")
+shader_parameter/simplex_noise = SubResource("NoiseTexture2D_mrvgl")
+
+[resource]
+_surfaces = [{
+"aabb": AABB(-0.25103, 0, 0, 0.50206, 2, 1e-05),
+"attribute_data": PackedByteArray("//+ZmQAAmZn//wAAAAAAAP////8AAP//"),
+"format": 34896613399,
+"index_count": 12,
+"index_data": PackedByteArray("AAABAAIAAgABAAMABAAFAAAAAAAFAAEA"),
+"material": SubResource("ShaderMaterial_venu0"),
+"name": "Plane",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 6,
+"vertex_data": PackedByteArray("zMxmZgAAAIAzM2ZmAAAAgP9///8AAACA/3///wAA/n///wAAAAAAgAAAAAAAAACA/3////9/////f////3////9/////f///")
+}]
+blend_shape_mode = 0

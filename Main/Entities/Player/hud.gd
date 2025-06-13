@@ -20,3 +20,6 @@ func _process(delta: float) -> void:
 	$Label11.set_text("abilitimer: "+ str(player.ability_timer))
 	$Label12.set_text("offhand_active: "+ str(player.offhand.Active))
 	$Label13.set_text("shield meter: "+ str(player.shield_meter))
+	$Label14.set_text("weapon hurt: "+ str(player.currentweapon.Hurt))
+	$Label15.set_text("upbodrotation: "+ str($"../UpperBody_skewer".rotation.y) + str($"../UpperBody_skewer".global_rotation.y))
+	$Label14.set_text("camrot: "+ str($"../Camera/Camera3D/pivot".rotation.y) + str($"../Camera/Camera3D/pivot".global_rotation.y))

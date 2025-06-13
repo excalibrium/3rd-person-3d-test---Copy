@@ -6,6 +6,8 @@ var stone : Node3D
 @export var area : Area3D
 var timer: Timer
 var full := false
+@export var number : int
+
 #func _ready() -> void:
 	#area.look_at(area.global_position - cursor.global_position)
 
@@ -16,18 +18,19 @@ func _ready() -> void:
 	timer = Timer.new()
 	add_child(timer)
 	timer.wait_time = 0.5  # 0.5 seconds = 2 times per second
-	timer.timeout.connect(_on_timer_timeout)
+	#timer.timeout.connect(_on_timer_timeout)
 	
-	timer.start()
+	#timer.start()
 
-func _on_timer_timeout():
-	if prev_stone and stone:
-		print("prevstone: ", prev_stone.ability_name, " stone: ", stone.ability_name, " full: ", full)
-	else:
-		if stone:
-			print("prevstone: ", prev_stone, " stone: ", stone.ability_name, " full: ", full)
-		elif prev_stone:
-			print("prevstone: ", prev_stone.ability_name, " stone: ", stone, " full: ", full)
+#func _on_timer_timeout():
+			
+	#if prev_stone and stone:
+		#print("prevstone: ", prev_stone.ability_name, " stone: ", stone.ability_name, " full: ", full)
+	#else:
+		#if stone:
+			#print("prevstone: ", prev_stone, " stone: ", stone.ability_name, " full: ", full)
+		#elif prev_stone:
+			#print("prevstone: ", prev_stone.ability_name, " stone: ", stone, " full: ", full)
 func unslot(perm_nonperm):
 	match perm_nonperm:
 		"nonperm":

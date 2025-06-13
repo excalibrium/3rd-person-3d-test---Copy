@@ -1,36 +1,75 @@
-[gd_scene load_steps=5 format=3 uid="uid://dx0wueckf2ivj"]
+[gd_scene load_steps=12 format=3 uid="uid://dx0wueckf2ivj"]
 
 [ext_resource type="Script" uid="uid://c3ep6iqbd1d00" path="res://Main/Entities/throwable.gd" id="1_tnixs"]
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_k3g4d"]
-radius = 0.1
+[sub_resource type="SphereShape3D" id="SphereShape3D_aaek0"]
+radius = 0.063
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_15t3w"]
-top_radius = 0.1
-bottom_radius = 0.01
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aaek0"]
+radius = 0.25
+height = 1.5
 
-[sub_resource type="PrismMesh" id="PrismMesh_aaek0"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aaek0"]
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.937255, 0.921569, 0.470588, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_aaek0"]
+material = SubResource("StandardMaterial3D_aaek0")
+radius = 3.0
+height = 6.0
+
+[sub_resource type="Curve" id="Curve_aaek0"]
+_data = [Vector2(0.21801, 0), 0.0, 0.0, 0, 0, Vector2(0.492891, 0.820225), 0.0, 0.0, 0, 0, Vector2(0.796209, 0.438202), 0.0, 0.0, 0, 0, Vector2(0.867299, 0.269663), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_xohp0"]
+_data = [Vector2(0, 0.966292), 0.0, 0.0, 0, 0, Vector2(0.236967, 0), 0.0, 0.0, 0, 0, Vector2(0.492891, 0.820225), 0.0, 0.0, 0, 0, Vector2(0.682464, 0.179775), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Curve" id="Curve_bqjl8"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.478673, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_mqxa5"]
+curve_x = SubResource("Curve_aaek0")
+curve_y = SubResource("Curve_xohp0")
+curve_z = SubResource("Curve_bqjl8")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ha1o2"]
+albedo_texture = SubResource("CurveXYZTexture_mqxa5")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_aaek0"]
+material = SubResource("StandardMaterial3D_ha1o2")
 
 [node name="Throwable" type="RigidBody3D"]
 top_level = true
 collision_layer = 0
 collision_mask = 0
 continuous_cd = true
+linear_damp = 0.5
+angular_damp = 0.5
 script = ExtResource("1_tnixs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-shape = SubResource("CylinderShape3D_k3g4d")
+shape = SubResource("SphereShape3D_aaek0")
+
+[node name="spear" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_aaek0")
+disabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 visible = false
-mesh = SubResource("CylinderMesh_15t3w")
+mesh = SubResource("SphereMesh_aaek0")
 
 [node name="velocity" type="Node3D" parent="."]
 
 [node name="lookat" type="Node3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="lookat"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 visible = false
-mesh = SubResource("PrismMesh_aaek0")
+mesh = SubResource("CapsuleMesh_aaek0")

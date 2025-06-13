@@ -1,0 +1,61 @@
+[gd_scene load_steps=9 format=4 uid="uid://denxygvufb2d4"]
+
+[ext_resource type="Shader" uid="uid://cbu1tbngv4ke7" path="res://foliage/grass/grass.gdshader" id="1_cuoe4"]
+[ext_resource type="Script" uid="uid://dh1h4y5usjkgp" path="res://foliage/grass/grass_triangle.gd" id="2_wltx1"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7hsuq"]
+noise_type = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vnb6d"]
+seamless = true
+noise = SubResource("FastNoiseLite_7hsuq")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_n81mq"]
+noise_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mrvgl"]
+noise = SubResource("FastNoiseLite_n81mq")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oo1yc"]
+render_priority = 0
+shader = ExtResource("1_cuoe4")
+shader_parameter/top_color = Color(3.85046e-06, 0.827778, 0.0258816, 1)
+shader_parameter/bottom_color = Color(0, 0.180392, 0.0156863, 1)
+shader_parameter/yellow_color = Color(1, 0.9, 0.2, 1)
+shader_parameter/yellow_threshold = 0.8
+shader_parameter/yellow_intensity = 0.5
+shader_parameter/tall_grass_threshold = 0.7
+shader_parameter/global_noise = SubResource("NoiseTexture2D_vnb6d")
+shader_parameter/global_noise_size = 0.79
+shader_parameter/global_noise_speed = 0.1
+shader_parameter/simplex_noise = SubResource("NoiseTexture2D_mrvgl")
+shader_parameter/simplex_noise_size = 0.1
+shader_parameter/grass_height_scale = 1.5
+shader_parameter/grass_width_scale = 0.7
+shader_parameter/vertical_displacement_strength = 0.7
+shader_parameter/player_position = Vector3(0, 0.9, 0)
+shader_parameter/player_displacement_strength = 3.0
+shader_parameter/player_displacement_size = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_6hnv1"]
+_surfaces = [{
+"aabb": AABB(-0.25103, 0, 0, 0.50206, 2, 1e-05),
+"attribute_data": PackedByteArray("//+ZmQAAmZn//wAAAAAAAP////8AAP//"),
+"format": 34896613399,
+"index_count": 12,
+"index_data": PackedByteArray("AAABAAIAAgABAAMABAAFAAAAAAAFAAEA"),
+"material": SubResource("ShaderMaterial_oo1yc"),
+"name": "Plane",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 6,
+"vertex_data": PackedByteArray("zMxmZgAAAIAzM2ZmAAAAgP9///8AAACA/3///wAA/n///wAAAAAAgAAAAAAAAACA/3////9/////f////3////9/////f///")
+}]
+blend_shape_mode = 0
+
+[node name="Node3D" type="Node3D"]
+
+[node name="GrassTriangle" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = SubResource("ArrayMesh_6hnv1")
+script = ExtResource("2_wltx1")

@@ -1,6 +1,8 @@
 extends Node3D
 @onready var camera_3d: Camera3D = $"../../../.."
 
+@export var col_L : int
+@export var col_M : int
 @export var ability_name : String
 #@export var origin : Node3D
 @export var main_type: String
@@ -14,21 +16,27 @@ extends Node3D
 var hoveredOn := false
 var clicked := false
 var pressed_on
-
+@export var mesh_assign : Node3D
 var slotted := false # bool to check if we are in a slot or not.
 var fillback : bool
 var last_slotted : Node3D #The slot we were in. (Node3D)
 var slotted_in : Node3D #Which slot we are in. (Node3D)
-
+var found := false
 func _ready():
 	$Model/SubViewport/Label.set_text(ability_name)
 func _process(_delta):
-	#if cursor.get_parent().in_menu == false or cursor.main_type != main_type:
+	if found == true:
+		visible = true
+	else:
+		visible = false
+	#if cursor.get_parent().in
 		#switch(false, Type, delta, true)
 	#else:
 		#visible = true
 		#switch(true, Type, delta, true)
 	if visible == true:
+		if mesh_assign:
+			mesh_assign.global_transform = model.global_transform
 		#looker.global_position = global_position
 		looker.look_at(cursor.global_position)
 		#looker.rotation.y += PI
@@ -80,9 +88,17 @@ func _ingame_menu_process(_delta):
 	if hoverer.clicked == true and hoverer.current_clicked == hitbox:
 		#print("slotted: ", slotted, " slotted in: ", slotted_in)
 		if slotted == false:
-			model.global_position = cursor.global_position * 0.999
+			model.global_position.x = cursor.global_position.x * 1.0
+			model.global_position.y = cursor.global_position.y * 1.0
+			model.global_position.z = cursor.global_position.z * 1.0
 
-		hitbox.global_position = cursor.global_position * 0.999
+			
+			model.position.z += 0.001
+
+		hitbox.global_position.x = cursor.global_position.x * 1.0
+		hitbox.global_position.y = cursor.global_position.y * 1.0
+		hitbox.global_position.z = cursor.global_position.z * 1.0
+
 		#model.position.z = 0.0
 		#hitbox.position.z = 0.0
 	else:
@@ -136,15 +152,15 @@ func update_vis():
 		#hitbox.monitorable = false
 		#hitbox.monitoring = false
 		hitbox.input_ray_pickable = false
-		hitbox.set_collision_mask(4096)
-		hitbox.set_collision_layer(4096)
+		hitbox.set_collision_mask(col_L)
+		hitbox.set_collision_layer(col_L)
 
 	if is_visible_in_tree() == true:
 		hitbox.monitorable = true
 		hitbox.monitoring = true
 		hitbox.input_ray_pickable = true
-		hitbox.set_collision_mask(6144) #12 and 13
-		hitbox.set_collision_layer(6144)
+		hitbox.set_collision_mask(col_M) #12 and 13
+		hitbox.set_collision_layer(col_M)
 
 func _on_area_area_entered(area: Area3D) -> void:
 	

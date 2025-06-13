@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3 uid="uid://bxcgq8w0uc5tt"]
+
+[ext_resource type="Texture2D" uid="uid://bhgjslj53v4gu" path="res://Assets/Textures/b3/blood3_albedo.png" id="1_67sxp"]
+[ext_resource type="Texture2D" uid="uid://cbvmpmx27umiu" path="res://Assets/Textures/b3/blood3_normal.png" id="2_gjn5c"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_14t8m"]
+load_path = "res://.godot/imported/b1_heightmap.png-8a5b70d82f7abb0f9cc74a5ba95a9547.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ohu2n"]
+load_path = "res://.godot/imported/b1_heightmap.png-8a5b70d82f7abb0f9cc74a5ba95a9547.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pqu68"]
+transparency = 4
+albedo_color = Color(0.884314, 3.20069e-06, 1.15514e-06, 1)
+albedo_texture = ExtResource("1_67sxp")
+metallic = 0.39
+metallic_specular = 0.67
+roughness = 0.28
+emission = Color(0.171544, 0, 0.018894, 1)
+emission_operator = 1
+normal_enabled = true
+normal_texture = ExtResource("2_gjn5c")
+anisotropy = 1.0
+ao_texture = SubResource("CompressedTexture2D_14t8m")
+heightmap_enabled = true
+heightmap_texture = SubResource("CompressedTexture2D_ohu2n")
+subsurf_scatter_strength = 1.0
+backlight_enabled = true
+backlight = Color(1, 0.608103, 0.539489, 1)
+billboard_mode = 1
+billboard_keep_scale = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8fvb0"]
+material = SubResource("StandardMaterial3D_pqu68")
+orientation = 2
+
+[node name="blood_m_2" type="MeshInstance3D"]
+mesh = SubResource("PlaneMesh_8fvb0")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=3 uid="uid://35qp7q3nl6u6"]
+[gd_scene load_steps=74 format=3 uid="uid://35qp7q3nl6u6"]
 
 [ext_resource type="Script" uid="uid://cf2cjmubtjhbc" path="res://Main/Entities/Player/menu/CameraController.gd" id="1_xvufl"]
 [ext_resource type="Script" uid="uid://cu38nbiyg1bim" path="res://Main/Entities/Player/menu/menu_hover.gd" id="2_o7p01"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://imei2uyui57r" path="res://Main/Entities/Player/menu/ingame_menu.gd" id="8_fi4lh"]
 [ext_resource type="PackedScene" uid="uid://bcxpmndy2hudc" path="res://Main/Entities/Player/menu/ab_stone.tscn" id="9_8cqrs"]
 [ext_resource type="Script" uid="uid://dm514l227tgkh" path="res://Main/Entities/Player/menu/ab_slot.gd" id="9_727ko"]
+[ext_resource type="Script" uid="uid://dka18lq1rwfyj" path="res://Main/Entities/Player/menu/3x3grid.gd" id="12_nrf2d"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fgv76"]
 shading_mode = 0
@@ -168,7 +169,7 @@ material = SubResource("StandardMaterial3D_gbvow")
 size = Vector3(0.2, 0.1, 0.025)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_8cqrs"]
-viewport_path = NodePath("Camera3D/InGameUI/Equipments/Model/SubViewport")
+viewport_path = NodePath("Camera3D/InGameUI/Equipment/Model/SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_727ko"]
 shading_mode = 0
@@ -199,8 +200,8 @@ top_radius = 0.075
 bottom_radius = 0.075
 height = 0.1
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_8cqrs"]
-height = 0.5
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_727ko"]
+height = 0.66
 radius = 0.01
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5hka1"]
@@ -211,10 +212,6 @@ material = SubResource("StandardMaterial3D_5hka1")
 top_radius = 0.075
 bottom_radius = 0.075
 height = 0.1
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_727ko"]
-height = 0.5
-radius = 0.001
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fg33y"]
 albedo_color = Color(0, 0.955077, 0.956005, 1)
@@ -233,6 +230,10 @@ material = SubResource("StandardMaterial3D_qnaa1")
 top_radius = 0.075
 bottom_radius = 0.075
 height = 0.1
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_8cqrs"]
+height = 0.66
+radius = 0.01
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dtlbo"]
 transparency = 1
@@ -261,9 +262,10 @@ margin = 1.0
 [node name="CameraRoot" type="Node3D"]
 physics_interpolation_mode = 2
 
-[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("Mlooker", "Mray", "ingame_menu", "Mcursor", "mini_camera_mapper_player", "rotater", "anchor", "camera_slot", "pivot_ray")]
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("Mlooker", "Mray", "ingame_menu", "Mcursor", "mini_camera_mapper_player", "rotater", "anchor", "camera_slot", "pivot_ray", "interact_ray")]
 transform = Transform3D(1, 0, -7.10543e-15, 0, 1, 0, 7.10543e-15, 0, 1, 0, 0, 0)
 top_level = true
+far = 100000.0
 script = ExtResource("1_xvufl")
 Mlooker = NodePath("MenuLooker")
 Mray = NodePath("MenuRay")
@@ -274,6 +276,7 @@ rotater = NodePath("../rotation")
 anchor = NodePath("../view_anchor")
 camera_slot = NodePath("../view_anchor/CameraSlot")
 pivot_ray = NodePath("pivot/RayCast3D")
+interact_ray = NodePath("pivot/RayCast3D2")
 
 [node name="pivot" type="Node3D" parent="Camera3D"]
 
@@ -290,6 +293,16 @@ collision_mask = 2
 hit_back_faces = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D/pivot/RayCast3D"]
+layers = 24
+mesh = SubResource("SphereMesh_y64mp")
+
+[node name="RayCast3D2" type="RayCast3D" parent="Camera3D/pivot"]
+transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, 0, 0, 0)
+target_position = Vector3(0, 0, -100)
+collision_mask = 8
+collide_with_areas = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D/pivot/RayCast3D2"]
 layers = 24
 mesh = SubResource("SphereMesh_y64mp")
 
@@ -316,7 +329,7 @@ cursor = NodePath("../MenuCursor")
 transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, 0, 0, 0)
 
 [node name="MenuCursor" type="Node3D" parent="Camera3D" node_paths=PackedStringArray("ray")]
-transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, -3.55271e-15, 0, -0.5)
+transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, 0, 0, -0.7)
 script = ExtResource("3_saea2")
 ray = NodePath("../MenuRay")
 
@@ -326,7 +339,7 @@ mesh = SubResource("SphereMesh_jex4q")
 
 [node name="MenuCursorSlot" type="Node3D" parent="Camera3D"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, -3.55271e-15, 0, -0.5)
+transform = Transform3D(1, 0, 7.10543e-15, 0, 1, 0, -7.10543e-15, 0, 1, 0, 0, -0.7)
 
 [node name="MenuRay" type="RayCast3D" parent="Camera3D"]
 target_position = Vector3(0, 0, -100)
@@ -366,6 +379,7 @@ texture = SubResource("ViewportTexture_f7w8y")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/OptionsUI/Back/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/OptionsUI/Back/Model/SubViewport"]
 anchors_preset = 8
@@ -421,6 +435,7 @@ texture = SubResource("ViewportTexture_rkaoq")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/OptionsUI/Audio/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/OptionsUI/Audio/Model/SubViewport"]
 anchors_preset = 8
@@ -477,6 +492,7 @@ texture = SubResource("ViewportTexture_txj7n")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/OptionsUI/Graphic/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/OptionsUI/Graphic/Model/SubViewport"]
 anchors_preset = 8
@@ -532,6 +548,7 @@ texture = SubResource("ViewportTexture_5ow71")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/OptionsUI/Continue/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/OptionsUI/Continue/Model/SubViewport"]
 anchors_preset = 8
@@ -591,6 +608,7 @@ texture = SubResource("ViewportTexture_f7w8y")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/AudioUI/Back/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/AudioUI/Back/Model/SubViewport"]
 anchors_preset = 8
@@ -646,6 +664,7 @@ texture = SubResource("ViewportTexture_5ow71")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/AudioUI/Continue/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/AudioUI/Continue/Model/SubViewport"]
 anchors_preset = 8
@@ -711,6 +730,7 @@ texture = SubResource("ViewportTexture_islpm")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/AudioUI/AudioSlider/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/AudioUI/AudioSlider/Model/SubViewport"]
 anchors_preset = 8
@@ -733,6 +753,7 @@ text = "sex
 
 [node name="SubViewport2" type="SubViewport" parent="Camera3D/AudioUI/AudioSlider/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/AudioUI/AudioSlider/Model/SubViewport2"]
 anchors_preset = 8
@@ -796,6 +817,7 @@ texture = SubResource("ViewportTexture_f7w8y")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/GraphicUI/Back/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/GraphicUI/Back/Model/SubViewport"]
 anchors_preset = 8
@@ -851,6 +873,7 @@ texture = SubResource("ViewportTexture_5ow71")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/GraphicUI/Continue/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/GraphicUI/Continue/Model/SubViewport"]
 anchors_preset = 8
@@ -905,6 +928,7 @@ texture = SubResource("ViewportTexture_ttjug")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/GraphicUI/Bilinear/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/GraphicUI/Bilinear/Model/SubViewport"]
 anchors_preset = 8
@@ -960,6 +984,7 @@ texture = SubResource("ViewportTexture_7syuq")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/GraphicUI/FSR1_0/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/GraphicUI/FSR1_0/Model/SubViewport"]
 anchors_preset = 8
@@ -1015,6 +1040,7 @@ texture = SubResource("ViewportTexture_8ftg0")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/GraphicUI/FSR2_2/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/GraphicUI/FSR2_2/Model/SubViewport"]
 anchors_preset = 8
@@ -1081,6 +1107,7 @@ texture = SubResource("ViewportTexture_awonb")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/GraphicUI/ResolutionSlider/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/GraphicUI/ResolutionSlider/Model/SubViewport"]
 anchors_preset = 8
@@ -1103,6 +1130,7 @@ text = "sex
 
 [node name="SubViewport2" type="SubViewport" parent="Camera3D/GraphicUI/ResolutionSlider/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/GraphicUI/ResolutionSlider/Model/SubViewport2"]
 anchors_preset = 8
@@ -1166,6 +1194,7 @@ texture = SubResource("ViewportTexture_r0ljp")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/PauseUI/Quit/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/PauseUI/Quit/Model/SubViewport"]
 anchors_preset = 8
@@ -1221,6 +1250,7 @@ texture = SubResource("ViewportTexture_5ow71")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/PauseUI/Continue/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/PauseUI/Continue/Model/SubViewport"]
 anchors_preset = 8
@@ -1277,6 +1307,7 @@ texture = SubResource("ViewportTexture_1g8nc")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/PauseUI/Options/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/PauseUI/Options/Model/SubViewport"]
 anchors_preset = 8
@@ -1303,14 +1334,16 @@ collision_mask = 2048
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/PauseUI/Options/Area"]
 shape = SubResource("BoxShape3D_yciy4")
 
-[node name="InGameUI" type="Node3D" parent="Camera3D" node_paths=PackedStringArray("slots", "backdrop")]
+[node name="InGameUI" type="Node3D" parent="Camera3D" node_paths=PackedStringArray("slots", "weapon_slots", "skills", "weapons", "backdrop")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.42109e-15, 0, -0.2)
-visible = false
 script = ExtResource("7_gbvow")
 slots = [NodePath("Skills_menu/Slot/S1"), NodePath("Skills_menu/Slot/S2"), NodePath("Skills_menu/Slot/S3"), NodePath("Skills_menu/Slot/S4")]
+weapon_slots = [NodePath("Equipment_menu/Slot/S1"), NodePath("Equipment_menu/Slot/S2"), NodePath("Equipment_menu/Slot/S3"), NodePath("Equipment_menu/Slot/S4")]
+skills = [NodePath("Skills_menu/Abilities/AB1"), NodePath("Skills_menu/Abilities/AB2"), NodePath("Skills_menu/Abilities/AB3")]
+weapons = [NodePath("Equipment_menu/Abilities/spear"), NodePath("Equipment_menu/Abilities/botrk"), NodePath("Equipment_menu/Abilities/bomb")]
 backdrop = NodePath("../Ingame_Backdrop")
 
-[node name="Equipments" type="Node3D" parent="Camera3D/InGameUI" node_paths=PackedStringArray("ingame_ui", "looker", "hitbox", "hoverer", "ray", "cursor", "model")]
+[node name="Equipment" type="Node3D" parent="Camera3D/InGameUI" node_paths=PackedStringArray("ingame_ui", "looker", "hitbox", "hoverer", "ray", "cursor", "model")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -0.12077, 0.538036, -0.6)
 script = ExtResource("5_j8ssv")
 ingame_ui = NodePath("..")
@@ -1323,16 +1356,16 @@ cursor = NodePath("../../MenuCursor")
 Type = "Equipment"
 model = NodePath("Model")
 
-[node name="Model" type="Node3D" parent="Camera3D/InGameUI/Equipments"]
+[node name="Model" type="Node3D" parent="Camera3D/InGameUI/Equipment"]
 
-[node name="lkr" type="Node3D" parent="Camera3D/InGameUI/Equipments/Model"]
+[node name="lkr" type="Node3D" parent="Camera3D/InGameUI/Equipment/Model"]
 
-[node name="mesh" type="MeshInstance3D" parent="Camera3D/InGameUI/Equipments/Model"]
+[node name="mesh" type="MeshInstance3D" parent="Camera3D/InGameUI/Equipment/Model"]
 layers = 24
 cast_shadow = 0
 mesh = SubResource("BoxMesh_fi4lh")
 
-[node name="Sprite3D" type="Sprite3D" parent="Camera3D/InGameUI/Equipments/Model"]
+[node name="Sprite3D" type="Sprite3D" parent="Camera3D/InGameUI/Equipment/Model"]
 transform = Transform3D(-0.115, 0, -1.73645e-08, 0, 0.115, 0, 1.73645e-08, 0, -0.115, -0.0403395, 0.0104168, -0.0467516)
 cast_shadow = 0
 alpha_cut = 1
@@ -1340,10 +1373,11 @@ alpha_antialiasing_mode = 1
 texture_filter = 5
 texture = SubResource("ViewportTexture_8cqrs")
 
-[node name="SubViewport" type="SubViewport" parent="Camera3D/InGameUI/Equipments/Model"]
+[node name="SubViewport" type="SubViewport" parent="Camera3D/InGameUI/Equipment/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
-[node name="Label" type="Label" parent="Camera3D/InGameUI/Equipments/Model/SubViewport"]
+[node name="Label" type="Label" parent="Camera3D/InGameUI/Equipment/Model/SubViewport"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -1361,11 +1395,11 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 64
 text = "equips"
 
-[node name="Area" type="Area3D" parent="Camera3D/InGameUI/Equipments" groups=["Menutton"]]
+[node name="Area" type="Area3D" parent="Camera3D/InGameUI/Equipment" groups=["Menutton"]]
 collision_layer = 2048
 collision_mask = 2048
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/InGameUI/Equipments/Area"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/InGameUI/Equipment/Area"]
 shape = SubResource("BoxShape3D_yciy4")
 
 [node name="Skills" type="Node3D" parent="Camera3D/InGameUI" node_paths=PackedStringArray("ingame_ui", "looker", "hitbox", "hoverer", "ray", "cursor", "model")]
@@ -1400,6 +1434,7 @@ texture = SubResource("ViewportTexture_fg33y")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/InGameUI/Skills/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/InGameUI/Skills/Model/SubViewport"]
 anchors_preset = 8
@@ -1458,6 +1493,7 @@ texture = SubResource("ViewportTexture_dcajv")
 
 [node name="SubViewport" type="SubViewport" parent="Camera3D/InGameUI/Exit/Model"]
 transparent_bg = true
+scaling_3d_scale = 2.0
 
 [node name="Label" type="Label" parent="Camera3D/InGameUI/Exit/Model/SubViewport"]
 anchors_preset = 8
@@ -1490,7 +1526,7 @@ type = "Skills"
 ingame_ui = NodePath("..")
 
 [node name="Slot" type="Node3D" parent="Camera3D/InGameUI/Skills_menu"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.075)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -0.075)
 
 [node name="S1" type="Node3D" parent="Camera3D/InGameUI/Skills_menu/Slot" node_paths=PackedStringArray("cursor", "area")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.3, -0.55)
@@ -1510,10 +1546,10 @@ collision_mask = 4097
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/InGameUI/Skills_menu/Slot/S1/Area3D"]
 transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08, -1, -7.10543e-15, 1, -4.37114e-08, 0, 0, 0.3)
-shape = SubResource("CylinderShape3D_8cqrs")
+shape = SubResource("CylinderShape3D_727ko")
 
 [node name="S2" type="Node3D" parent="Camera3D/InGameUI/Skills_menu/Slot" node_paths=PackedStringArray("cursor", "area")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.1, -0.551)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.1, -0.55)
 script = ExtResource("9_727ko")
 cursor = NodePath("../../../../MenuCursor")
 area = NodePath("Area3D")
@@ -1533,7 +1569,7 @@ transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08
 shape = SubResource("CylinderShape3D_727ko")
 
 [node name="S3" type="Node3D" parent="Camera3D/InGameUI/Skills_menu/Slot" node_paths=PackedStringArray("cursor", "area")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, -0.1, -0.551)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, -0.1, -0.55)
 script = ExtResource("9_727ko")
 cursor = NodePath("../../../../MenuCursor")
 area = NodePath("Area3D")
@@ -1553,7 +1589,7 @@ transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08
 shape = SubResource("CylinderShape3D_727ko")
 
 [node name="S4" type="Node3D" parent="Camera3D/InGameUI/Skills_menu/Slot" node_paths=PackedStringArray("cursor", "area")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, -0.3, -0.551)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, -0.3, -0.55)
 script = ExtResource("9_727ko")
 cursor = NodePath("../../../../MenuCursor")
 area = NodePath("Area3D")
@@ -1576,18 +1612,178 @@ shape = SubResource("CylinderShape3D_727ko")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.2, -0.6)
 
 [node name="AB1" parent="Camera3D/InGameUI/Skills_menu/Abilities" node_paths=PackedStringArray("hoverer", "ray", "cursor") instance=ExtResource("9_8cqrs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.1, 0)
+col_L = 4096
+col_M = 6144
 ability_name = "hop"
 hoverer = NodePath("../../../../MenuHover")
 ray = NodePath("../../../../MenuRay")
 cursor = NodePath("../../../../MenuCursor")
 
 [node name="AB2" parent="Camera3D/InGameUI/Skills_menu/Abilities" node_paths=PackedStringArray("hoverer", "ray", "cursor") instance=ExtResource("9_8cqrs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0, 0)
-ability_name = "dahrofus"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, -0.1, 0)
+col_L = 4096
+col_M = 6144
+ability_name = "assault"
 hoverer = NodePath("../../../../MenuHover")
 ray = NodePath("../../../../MenuRay")
 cursor = NodePath("../../../../MenuCursor")
+
+[node name="AB3" parent="Camera3D/InGameUI/Skills_menu/Abilities" node_paths=PackedStringArray("hoverer", "ray", "cursor") instance=ExtResource("9_8cqrs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, -0.2, 0)
+col_L = 4096
+col_M = 6144
+ability_name = "hypercharge"
+hoverer = NodePath("../../../../MenuHover")
+ray = NodePath("../../../../MenuRay")
+cursor = NodePath("../../../../MenuCursor")
+
+[node name="Equipment_menu" type="Node3D" parent="Camera3D/InGameUI" node_paths=PackedStringArray("ingame_ui")]
+script = ExtResource("8_fi4lh")
+type = "Equipment"
+ingame_ui = NodePath("..")
+
+[node name="Slot" type="Node3D" parent="Camera3D/InGameUI/Equipment_menu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.35, -0.075)
+
+[node name="S1" type="Node3D" parent="Camera3D/InGameUI/Equipment_menu/Slot" node_paths=PackedStringArray("cursor", "area")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.23517e-08, 0, -0.55)
+script = ExtResource("9_727ko")
+cursor = NodePath("../../../../MenuCursor")
+area = NodePath("Area3D")
+
+[node name="L" type="MeshInstance3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S1"]
+transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08, -1, -7.10543e-15, 1, -4.37114e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_8cqrs")
+skeleton = NodePath("../../../../../Ingame_Backdrop")
+
+[node name="Area3D" type="Area3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S1" groups=["slot"]]
+collision_layer = 8193
+collision_mask = 8193
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S1/Area3D"]
+transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08, -1, -7.10543e-15, 1, -4.37114e-08, 0, 0, 0.3)
+shape = SubResource("CylinderShape3D_8cqrs")
+
+[node name="S2" type="Node3D" parent="Camera3D/InGameUI/Equipment_menu/Slot" node_paths=PackedStringArray("cursor", "area")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, -0.55)
+script = ExtResource("9_727ko")
+cursor = NodePath("../../../../MenuCursor")
+area = NodePath("Area3D")
+
+[node name="R" type="MeshInstance3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S2"]
+transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08, -1, -7.10543e-15, 1, -4.37114e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_fg33y")
+skeleton = NodePath("../../../../../Ingame_Backdrop")
+
+[node name="Area3D" type="Area3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S2" groups=["slot"]]
+collision_layer = 8193
+collision_mask = 8193
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S2/Area3D"]
+transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08, -1, -7.10543e-15, 1, -4.37114e-08, -1.42109e-15, 0, 0.3)
+shape = SubResource("CylinderShape3D_727ko")
+
+[node name="S3" type="Node3D" parent="Camera3D/InGameUI/Equipment_menu/Slot" node_paths=PackedStringArray("cursor", "area")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0, -0.55)
+script = ExtResource("9_727ko")
+cursor = NodePath("../../../../MenuCursor")
+area = NodePath("Area3D")
+
+[node name="D" type="MeshInstance3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S3"]
+transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08, -1, -7.10543e-15, 1, -4.37114e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_qnaa1")
+skeleton = NodePath("../../../../../Ingame_Backdrop")
+
+[node name="Area3D" type="Area3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S3" groups=["slot"]]
+collision_layer = 8193
+collision_mask = 8193
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S3/Area3D"]
+transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08, -1, -7.10543e-15, 1, -4.37114e-08, 0, 0, 0.3)
+shape = SubResource("CylinderShape3D_727ko")
+
+[node name="S4" type="Node3D" parent="Camera3D/InGameUI/Equipment_menu/Slot" node_paths=PackedStringArray("cursor", "area")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0, -0.55)
+script = ExtResource("9_727ko")
+cursor = NodePath("../../../../MenuCursor")
+area = NodePath("Area3D")
+
+[node name="U" type="MeshInstance3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S4"]
+transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08, -1, -7.10543e-15, 1, -4.37114e-08, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_2diak")
+skeleton = NodePath("../../../../../Ingame_Backdrop")
+
+[node name="Area3D" type="Area3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S4" groups=["slot"]]
+collision_layer = 8193
+collision_mask = 8193
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/InGameUI/Equipment_menu/Slot/S4/Area3D"]
+transform = Transform3D(1, 7.10543e-15, -7.10543e-15, -7.10543e-15, -4.37114e-08, -1, -7.10543e-15, 1, -4.37114e-08, 0, 0, 0.3)
+shape = SubResource("CylinderShape3D_727ko")
+
+[node name="Abilities" type="Node3D" parent="Camera3D/InGameUI/Equipment_menu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.2, -0.6)
+
+[node name="spear" parent="Camera3D/InGameUI/Equipment_menu/Abilities" node_paths=PackedStringArray("hoverer", "ray", "cursor", "mesh_assign") instance=ExtResource("9_8cqrs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.1, 0)
+col_L = 8192
+col_M = 10240
+ability_name = "spear"
+hoverer = NodePath("../../../../MenuHover")
+ray = NodePath("../../../../MenuRay")
+cursor = NodePath("../../../../MenuCursor")
+mesh_assign = NodePath("spear_label3d")
+
+[node name="spear_label3d" type="Label3D" parent="Camera3D/InGameUI/Equipment_menu/Abilities/spear"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
+pixel_size = 0.0002
+texture_filter = 0
+text = "spear"
+font_size = 144
+outline_size = 48
+
+[node name="botrk" parent="Camera3D/InGameUI/Equipment_menu/Abilities" node_paths=PackedStringArray("hoverer", "ray", "cursor", "mesh_assign") instance=ExtResource("9_8cqrs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, -0.1, 0)
+col_L = 8192
+col_M = 10240
+ability_name = "botrk"
+hoverer = NodePath("../../../../MenuHover")
+ray = NodePath("../../../../MenuRay")
+cursor = NodePath("../../../../MenuCursor")
+mesh_assign = NodePath("botrk_label3d")
+
+[node name="botrk_label3d" type="Label3D" parent="Camera3D/InGameUI/Equipment_menu/Abilities/botrk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
+pixel_size = 0.0002
+texture_filter = 0
+text = "botrk
+"
+font_size = 144
+outline_size = 48
+
+[node name="bomb" parent="Camera3D/InGameUI/Equipment_menu/Abilities" node_paths=PackedStringArray("hoverer", "ray", "cursor", "mesh_assign") instance=ExtResource("9_8cqrs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, -0.2, 0)
+col_L = 8192
+col_M = 10240
+ability_name = "bomb"
+hoverer = NodePath("../../../../MenuHover")
+ray = NodePath("../../../../MenuRay")
+cursor = NodePath("../../../../MenuCursor")
+mesh_assign = NodePath("bomb_label3d")
+
+[node name="bomb_label3d" type="Label3D" parent="Camera3D/InGameUI/Equipment_menu/Abilities/bomb"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
+pixel_size = 0.0002
+texture_filter = 0
+text = "bomb
+"
+font_size = 144
+outline_size = 48
 
 [node name="Backdrop" type="Node3D" parent="Camera3D"]
 
@@ -1620,6 +1816,22 @@ skeleton = NodePath("../../InGameUI")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0, 0)
 mesh = SubResource("BoxMesh_gbvow")
 skeleton = NodePath("../../InGameUI")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Camera3D/Ingame_Backdrop"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0, 0)
+visible = false
+mesh = SubResource("BoxMesh_gbvow")
+skeleton = NodePath("../../InGameUI")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Camera3D/Ingame_Backdrop"]
+transform = Transform3D(2.5, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, 0)
+visible = false
+mesh = SubResource("BoxMesh_gbvow")
+skeleton = NodePath("../../InGameUI")
+
+[node name="GridOverlay" type="CanvasLayer" parent="Camera3D"]
+visible = false
+script = ExtResource("12_nrf2d")
 
 [node name="view_anchor" type="SpringArm3D" parent="."]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.75, 0)

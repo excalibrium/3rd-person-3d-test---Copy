@@ -6,6 +6,7 @@ var in_menu := false
 var in_ingame_menu := false
 @export var ingame_menu : Node3D
 
+var active := true
 @export var Mcursor : Node3D
 var pressed_rot
 @export var mini_camera_mapper_player : MeshInstance3D
@@ -14,6 +15,7 @@ var pressed_rot
 @export var anchor: SpringArm3D
 @export var camera_slot: Node3D
 @export var pivot_ray : RayCast3D
+@export var interact_ray : RayCast3D
 var strength := 10.0
 var cameramode = 1
 var SEXES := 0.0
@@ -33,6 +35,7 @@ const JOY_DEADZONE : float = 0.15
 const JOY_V_SENS : float = 0.5
 const JOY_H_SENS : float = 0.5
 var camera_velocity := Vector3.ZERO
+@onready var pivot_mesh = $pivot/RayCast3D/MeshInstance3D
 func _ready():
 	player = get_tree().get_nodes_in_group("Player")[0]
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -51,7 +54,7 @@ func _process(delta: float) -> void:
 	
 	anchor.rotate_y(deg_to_rad(-camera_velocity.y))
 	anchor.rotation.x += deg_to_rad(-camera_velocity.x)
-	anchor.rotation.x =clamp(anchor.rotation.x,deg_to_rad(-70),deg_to_rad(70))
+	anchor.rotation.x =clamp(anchor.rotation.x,deg_to_rad(-60),deg_to_rad(60))
 	if mouse_time < mouse_cd:
 		mouse_time += delta
 	if target_change_time < target_change_cd:
@@ -85,12 +88,24 @@ func _process(delta: float) -> void:
 		$pivot.global_rotation.y = lerp_angle($pivot.global_rotation.y, anchor.global_rotation.y, 0.5)
 		$pivot.global_position = global_position
 	#print(target_change_time)
-	global_transform.origin = global_transform.origin.lerp(camera_slot.global_transform.origin, 0.3)
-	
+	if active == true:
+		global_transform.origin = global_transform.origin.lerp(camera_slot.global_transform.origin, 0.3)
+	if owner.owner.lockOn == true:
+		$pivot.global_rotation.x = lerp_angle($pivot.global_rotation.x, anchor.global_rotation.x, 0.5)
+		$pivot.global_rotation.y = lerp_angle($pivot.global_rotation.y, anchor.global_rotation.y, 0.5)
+		anchor.look_at(affirmed_target.global_position)
+		#print("loked")
+		#anchor.rotation.x = $locked.rotation.x * 3.0
 	rotation.y = lerp_angle(rotation.y, anchor.rotation.y, 0.25)
 	rotation.x = lerp_angle(rotation.x, anchor.rotation.x, 0.25)
 	rotation.z = lerp_angle(rotation.z, anchor.rotation.z, 0.25)
 	
+	#GLogger.LOG_INFO(str(global_rotation_degrees.x))
+	if abs(global_rotation_degrees.x) >= 70.0:
+		#global_rotation.y = $BaseModel3D.global_rotation.y #once
+		lockOn = false
+		owner.owner.lockOn = false
+
 	var _target = player.closest_enemy
 	#print(rotater.rotation)
 	var best_value = INF
@@ -100,7 +115,7 @@ func _process(delta: float) -> void:
 		target_change_time = 0.0
 	for enemy in owner.owner.enemies:
 		value = enemy.mini_camera_mapper_thingy.global_position.distance_to(mini_camera_mapper_player.global_position)
-		#value = value * sqrt(sqrt(sqrt(sqrt(global_position.distance_to(enemy.global_position)))))
+		value = value * sqrt(sqrt(sqrt(sqrt(global_position.distance_to(enemy.global_position)))))
 		enemy.locking_value = value
 		if enemy.global_position.distance_to(global_position) > owner.owner.max_lock_range:
 			enemy.mini_camera_mapper_thingy.global_position = enemy.global_position
@@ -122,9 +137,11 @@ func _process(delta: float) -> void:
 				#target_change = true
 	owner.owner.closest_enemy = affirmed_target
 
-	if lockOn == true:
+	if lockOn == true: #deprecated
 		anchor.rotation.y = lerp_angle(anchor.rotation.y, rotater.rotation.y, 0.25)
 		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(30) , deg_to_rad(-20))
+		#if affirmed_target:
+		#anchor.look_at(affirmed_target.global_position)
 		anchor.rotation.z = lerp_angle(anchor.rotation.z, rotater.rotation.z, 0.25)
 	if owner.owner.lockOn == false:
 		
@@ -181,48 +198,44 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and cameramode == 1 and owner.owner.lockOn == false and in_menu == false and in_ingame_menu == false:
 		anchor.rotation.y -= event.relative.x / SENSITIVITY
 		anchor.rotation.x -= event.relative.y / SENSITIVITY
-	anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-60) , deg_to_rad(50))
+	if player.is_on_floor() == true:
+		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-55) , deg_to_rad(55))
+		
+	else:
+		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-70) , deg_to_rad(70))
+		
 	if event is InputEventJoypadMotion:
 		if event.axis == 2:
 			$"../CanvasLayer/Label4".text = str(event) + " " + str(event.axis) + " " + str(event.axis_value)
 			if abs(event.get_axis_value()) > JOY_DEADZONE:
-				camera_velocity.y = (event.get_axis_value() * JOY_H_SENS)
+				camera_velocity.y = (event.get_axis_value() * JOY_H_SENS *(Engine.get_frames_per_second() / 200.0))
 			else:
 				camera_velocity.y = 0
 		if event.axis == 3:
 			$"../CanvasLayer/Label4".text = str(event) + " " + str(event.axis) + " " + str(event.axis_value)
 			if abs(event.get_axis_value()) > JOY_DEADZONE:
-				camera_velocity.x = (event.get_axis_value() * JOY_V_SENS)
+				camera_velocity.x = (event.get_axis_value() * JOY_V_SENS * (Engine.get_frames_per_second() / 200.0))
 			else:
 				camera_velocity.x = 0
-		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-60) , deg_to_rad(50))
+		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-55) , deg_to_rad(50))
 	elif event is InputEventScreenDrag and cameramode == 2 and owner.owner.lockOn == false:
 		anchor.rotation.y -= event.relative.x / SENSITIVITY
 		anchor.rotation.x -= event.relative.y / SENSITIVITY
-		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-60) , deg_to_rad(50))
+		anchor.rotation.x = clamp(anchor.rotation.x , deg_to_rad(-55) , deg_to_rad(50))
 
 func menu_pressed():
 	if in_menu == false:
 		Mcursor.set_main_type("pause")
-		#if pressed_rot:
-			#anchor.global_rotation = pressed_rot
-		#global_rotation = Vector3.ZERO
 		player.set_physics_process(false)
-		Engine.time_scale = 0.01
+		Engine.time_scale = 0.05
 		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	else:
-		#if Mcursor.type_history.back() == Mcursor.main_type:
-			#Mcursor.type_history.erase(Mcursor.type_history.back())
 		for i in range(Mcursor.type_history.size() - 1,-1,-1):
 			if Mcursor.type_history[i] == Mcursor.main_type:
 				Mcursor.type_history.erase(Mcursor.type_history.back())
 		Mcursor.main_type = str(Mcursor.type_history.pop_back())
-		#if Mcursor.type_history.back() == "options":
-			#Mcursor.type_history.erase(Mcursor.type_history.back())
 	if Mcursor.main_type == "null":
 		player.set_physics_process(true)
-		#pressed_rot = anchor.global_rotation
-		#global_rotation = Vector3.ZERO
 		Engine.time_scale = 1.0
 		if in_ingame_menu == false:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED

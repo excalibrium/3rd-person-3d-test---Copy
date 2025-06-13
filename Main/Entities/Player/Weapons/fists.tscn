@@ -1,14 +1,33 @@
 [gd_scene load_steps=3 format=3 uid="uid://bxtkfh2rnp2tc"]
 
-[ext_resource type="Script" path="res://Main/Entities/Player/Weapons/Weapon.gd" id="1_gqgjd"]
+[ext_resource type="Script" uid="uid://b8uplpowav35a" path="res://Main/Entities/Player/Weapons/fists.gd" id="1_bkgjb"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_be2ra"]
-size = Vector3(0.1, 0.1, 0.1)
+size = Vector3(0.5, 1.5, 0.5)
 
-[node name="Fists" type="Node3D" groups=["weapon"]]
-script = ExtResource("1_gqgjd")
+[node name="Fists" type="Node3D" node_paths=PackedStringArray("hurtbox", "secondary_collision_shape", "anim_player") groups=["weapon"]]
+script = ExtResource("1_bkgjb")
+hurtbox = NodePath("Hurtbox")
+secondary_collision_shape = NodePath("Hurtbox/CollisionShape3DRight")
+type = "fist"
+anim_player = NodePath("AnimationPlayer")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="Hurtbox" type="Area3D" parent="."]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
 shape = SubResource("BoxShape3D_be2ra")
+
+[node name="CollisionShape3DRight" type="CollisionShape3D" parent="Hurtbox"]
+shape = SubResource("BoxShape3D_be2ra")
+
+[node name="Hitbox" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox"]
+shape = SubResource("BoxShape3D_be2ra")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_exited" from="Hurtbox" to="." method="_on_hurtbox_area_exited"]
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="area_exited" from="Hitbox" to="." method="_on_hurtbox_area_exited"]

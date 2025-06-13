@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cvwjqkquhcr6x"]
+
+[ext_resource type="Texture2D" uid="uid://faa2keeunhs7" path="res://Assets/Textures/b1/b1_albedo.png" id="1_44s4y"]
+
+[node name="Sprite3D" type="Sprite3D"]
+modulate = Color(1, 0, 0, 1)
+pixel_size = 0.0003
+billboard = 1
+texture = ExtResource("1_44s4y")

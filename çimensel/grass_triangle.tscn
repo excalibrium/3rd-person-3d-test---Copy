@@ -1,43 +1,31 @@
-[gd_scene load_steps=9 format=4 uid="uid://1gu8xg5mtc4u"]
+[gd_scene load_steps=5 format=4 uid="uid://1gu8xg5mtc4u"]
 
 [ext_resource type="Shader" uid="uid://cbu1tbngv4ke7" path="res://foliage/grass/grass.gdshader" id="1_2xmod"]
 [ext_resource type="Script" uid="uid://dh1h4y5usjkgp" path="res://foliage/grass/grass_triangle.gd" id="2_rjybx"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_7hsuq"]
-noise_type = 3
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vnb6d"]
-seamless = true
-noise = SubResource("FastNoiseLite_7hsuq")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_n81mq"]
-noise_type = 0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mrvgl"]
-noise = SubResource("FastNoiseLite_n81mq")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oo1yc"]
 render_priority = 0
 shader = ExtResource("1_2xmod")
-shader_parameter/top_color = Color(3.85046e-06, 0.827778, 0.0258816, 1)
-shader_parameter/bottom_color = Color(0, 0.180392, 0.0156863, 1)
+shader_parameter/top_color = Color(0, 0, 0, 1)
+shader_parameter/bottom_color = Color(0, 0, 0, 1)
 shader_parameter/yellow_color = Color(1, 0.9, 0.2, 1)
 shader_parameter/yellow_threshold = 0.8
 shader_parameter/yellow_intensity = 0.5
 shader_parameter/tall_grass_threshold = 0.7
-shader_parameter/player_displacement_strength = 3.0
-shader_parameter/player_displacement_size = 0.5
-shader_parameter/wind_direction = Vector3(1, 0, 1)
-shader_parameter/wind_strength = 0.3
-shader_parameter/global_noise = SubResource("NoiseTexture2D_vnb6d")
-shader_parameter/global_noise_size = 0.79
+shader_parameter/em = Vector3(0, 0, 0)
+shader_parameter/global_noise_size = 0.05
 shader_parameter/global_noise_speed = 0.1
-shader_parameter/player_position = Vector3(0, 0.9, 0)
-shader_parameter/vertical_displacement_strength = 0.7
-shader_parameter/simplex_noise = SubResource("NoiseTexture2D_mrvgl")
 shader_parameter/simplex_noise_size = 0.1
 shader_parameter/grass_height_scale = 1.5
 shader_parameter/grass_width_scale = 0.7
+shader_parameter/vertical_displacement_strength = 0.1
+shader_parameter/height_variation_contrast = 2.0
+shader_parameter/height_distribution_sharpness = 1.5
+shader_parameter/normal_strength = 0.5
+shader_parameter/normal_variation = 0.2
+shader_parameter/player_position = Vector3(0, 0, 0)
+shader_parameter/player_displacement_strength = 0.4
+shader_parameter/player_displacement_size = 1.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_6hnv1"]
 _surfaces = [{

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cumigj0gck226"
+path="res://.godot/imported/boomboom.mp3-653974a6f38e846b6604f528d71dd6cf.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sound/Hit/metal pipe/boomboom.mp3"
+dest_files=["res://.godot/imported/boomboom.mp3-653974a6f38e846b6604f528d71dd6cf.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

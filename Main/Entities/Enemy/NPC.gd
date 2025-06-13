@@ -8,9 +8,11 @@ enum AttackSubstate { AWAIT, FLEE, APPROACH, DEFEND, STRIKE, STALL }
 const THRESHOLD_A := 1.0
 const THRESHOLD_B := 3.0
 
+var BodyDetector : PlayerDetector
 var cdm_seed = 0
 var decision_processing = false
 var rot_lock: bool = false
+var current_speed := 2.0
 @export var speed := 2.0
 @export var accel := 10.0
 @export var alertness := 2.0
@@ -28,11 +30,14 @@ var common : Array[Area3D]
 @export var awareness_ray: RayCast3D
 @export var awareness_sphere: CollisionShape3D
 @export var nav: NavigationAgent3D
+@onready var posturebar := $SubViewport/PostureBar
+
 @onready var healthbar := $SubViewport/HealthBar
 @export var animationTree: AnimationTree
 var state_machine
 var current_anim
 
+var consequent_attack_points : float = 1.0
 var stalling : bool = false
 var current_state: State = State.IDLE
 var current_idle_substate: IdleSubstate = IdleSubstate.STANDING
@@ -57,7 +62,10 @@ func main_ready() -> void:
 		if a.owner == self:
 			currentweapon = a
 	healthbar.init_health(health)
-	#await get_tree().physics_frame
+	actor_setup.call_deferred()
+
+func actor_setup():
+	await get_tree().physics_frame
 
 func alert(alert_level: float, alerter: Node) -> void:
 	if prio == null:
@@ -87,13 +95,13 @@ func think() -> void:
 	#print("cs: ", current_state)
 	#print("attackss: ", current_attack_substate)
 	#print("alerted and : ", nav.target_position)
-	if stunned == false:
+	if stunned == false and health > 0.0:
 		match current_state:
 			State.IDLE:
 				think_idle()
 			State.ATTACK:
 				
-				#print("EX TER MI NATEEE")
+				
 			
 				combat_decision_making()
 
@@ -125,33 +133,37 @@ func think_idle() -> void:
 func check_awareness() -> void:
 	#print(current_attack_substate, current_state,  current_attack_target)
 	#print(prio)
-	var a:float = INF
+	var a:float = -INF
+	#if BodyDetector.find_bodies():
+		#curious = prio.curiosityFactor
 	for ray in $Raycast.raycasts:
-		awareness_ray = ray
-		last_seen = awareness_ray.get_collider()
-		if prio == null and awareness_ray.get_collider() is Character:
-			prio = awareness_ray.get_collider()
-		if prio is Character and prio.curiosityFactor < a:
-			a = prio.curiosityFactor
-			#prio = awareness_ray.get_collider()
-		if prio and prio.is_in_group("Ally"):
-			#print("ally seen")
-			safeness = 0
-			current_attack_target = prio
-			current_state = State.ATTACK
-		if awareness_ray.get_collider() and awareness_ray.get_collider().owner == prio:
-			curious = prio.curiosityFactor
-			if prio.curiosityFactor >= (THRESHOLD_A + THRESHOLD_B) / 2 and awareness_ray.get_collider().owner == prio:
+		last_seen = ray.get_collider()
+		if last_seen is CharacterBody3D:
+			if prio == null:
+				prio = last_seen
+				a = last_seen.curiosityFactor
+			elif last_seen.curiosityFactor > a and last_seen.is_in_group("Ally"): #something something future stuff
+				a = last_seen.curiosityFactor
+				prio = last_seen
 
-				if prio.is_in_group("Ally") and awareness_ray.get_collider().owner == last_alerter:
-					safeness = 0
+			if prio and prio.is_in_group("Ally"):
+				safeness = 0
+				current_attack_target = prio
+				current_state = State.ATTACK
 
-					current_attack_target = prio
-					current_state = State.ATTACK
-			else:
-				unalert()
+				if last_seen and last_seen.owner == prio:
+					curious = prio.curiosityFactor
+					if prio.curiosityFactor >= (THRESHOLD_A + THRESHOLD_B) / 2:
+						if prio.is_in_group("Ally"):
+							safeness = 0
+							current_attack_target = prio
+							current_state = State.ATTACK
+					else:
+						unalert()
 
 func combat_decision_making() -> void:
+	#if current_attack_target.current_state in ["Attack_1", "Attack_2"]:
+		#current_attack_substate = AttackSubstate.DEFEND
 	#print(decision_processing)
 	var decision_timeout = 5.0
 	if decision_processing and attack_timer > decision_timeout:
@@ -168,7 +180,7 @@ func combat_decision_making() -> void:
 				current_attack_substate = AttackSubstate.APPROACH
 		AttackSubstate.FLEE:
 			flee()
-			speed = SPEED * 2.0
+			current_speed = speed * 2.0
 			if find_nearest_ally() and find_nearest_ally().global_position.distance_to(global_position) < 2:
 				if global_position.distance_to(current_attack_target.global_position) > 10:
 					#print("im safe")
@@ -194,19 +206,25 @@ func combat_decision_making() -> void:
 				nav.target_position = current_attack_target.global_position
 			if global_position.distance_to(current_attack_target.global_position) < combat_range:
 				#print("far")
-				speed = SPEED / 1.5
+				current_speed = speed / 1.5
 			else:
-				speed = SPEED * 2.5
-			if global_position.distance_to(current_attack_target.global_position) < currentweapon.length: #was 2.25 patch0.1
-				spin("init")
+				current_speed = speed * 2.5
+			if global_position.distance_to(current_attack_target.global_position) < currentweapon.length and decision_processing == false: #was 2.25 patch0.1
+				#if current_attack_target.current_state in ["Attack_1", "Attack_2"]:
+					#current_attack_substate = AttackSubstate.DEFEND
+				#if current_attack_target.current_state in ["idle", "walk"]:
+					spin("init")
 				#print("close")
 		AttackSubstate.STRIKE:
 			movement_lock = true
 			rot_lock = true
-			attacking = true
-			decision_processing = true
+			#decision_processing = true
 			
 			state_machine.travel("Attack_1")
+			if decision_processing == false:
+				consequent_attack_points += 1.0
+			decision_processing = true
+			
 			#current_attack_substate = AttackSubstate.APPROACH
 			#print("attack")
 		AttackSubstate.DEFEND:
@@ -244,7 +262,7 @@ func combat_decision_making() -> void:
 			#if common:
 				#nav.target_position = common.pick_random().global_position
 			
-			if nav.is_target_reached() == true or stall_meter > stall_cd + cdm_seed:
+			if nav.get_final_position() == position or stall_meter > stall_cd + cdm_seed:
 				stalling = false
 				current_attack_substate = AttackSubstate.APPROACH
 func find_nearest_ally() -> Node:
@@ -302,9 +320,10 @@ func spin(wheel):
 		cdm_seed = randf()
 	match wheel:
 		"init":
-			if cdm_seed >= 0.9:
+			if cdm_seed >= 0.9 / consequent_attack_points:
 				if movement_lock == false:
 					current_attack_substate = AttackSubstate.STALL
+					consequent_attack_points = 1.0
 			elif get_health_percentage() > 50:
 				return spin("above_50")
 			elif get_health_percentage() <= 50:
@@ -312,13 +331,13 @@ func spin(wheel):
 		"above_50":
 			if cdm_seed >= 0.3 and decision_processing == false:
 				current_attack_substate = AttackSubstate.STRIKE
-			#if cdm_seed < 0.3 and decision_processing == false:
-				#current_attack_substate = AttackSubstate.DEFEND
+			if cdm_seed < 0.3 and decision_processing == false:
+				current_attack_substate = AttackSubstate.DEFEND
 		"below_50":
 			if cdm_seed >= 0.7 and decision_processing == false:
 				current_attack_substate = AttackSubstate.STRIKE
-			#if cdm_seed < 0.7 and decision_processing == false:
-				#current_attack_substate = AttackSubstate.DEFEND
+			if cdm_seed < 0.7 and decision_processing == false:
+				current_attack_substate = AttackSubstate.DEFEND
 
 func reset_ai_state():
 	movement_lock = false

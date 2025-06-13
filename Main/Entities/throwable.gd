@@ -4,16 +4,19 @@ var target = null
 @onready var looker = $lookat
 #@onready var velocity = $velocity
 var timer := 0.0
-
+var born := 0.0
 func _process(_delta):
-	var velocity = linear_velocity
-	if velocity.length() > 0:
-		if self and target: #if prev freed dont then!!! what the hell
-			#look_at(global_position - target.global_position + Vector3(0,1,0))
-			global_position = lerp(global_position, target.global_position + Vector3(0,1,0), 0.05)
-		
+	born += _delta
+	if born >= 15.0:
+		queue_free()
+
 func _physics_process(_delta: float) -> void:
 	var velocity = linear_velocity
 	var look_direction = velocity.normalized()
-	if look_direction.normalized().dot(Vector3.UP) > 0.0000000000000000000001:
-		look_at(global_position - look_direction)
+	$lookat/MeshInstance3D.global_position = global_position + look_direction
+	#if look_direction.normalized().dot(Vector3.UP) > 0.00000000000000001:
+	#global_position = look_direction / 0.999999
+	#if global_position != global_position + look_direction:
+	#if look_direction != Vector3(0.0, 0.0, 0.0):
+	look_at(global_position + look_direction) #colinear eror
+	

@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=4 uid="uid://dfr4gqduqkcjr"]
 
 [ext_resource type="Texture2D" uid="uid://bsj6p5426khjy" path="res://Main/Entities/Player/Weapons/RuinedViegoSword_SwordB_2.png" id="1_8xdao"]
-[ext_resource type="Script" uid="uid://c2qb75yrq3w7o" path="res://Main/Entities/Player/Weapons/BladeOfTheRuinedKing_new.gd" id="1_ss0d7"]
+[ext_resource type="Script" uid="uid://c2qb75yrq3w7o" path="res://Main/Entities/Player/Weapons/BladeOfTheRuinedKing.gd" id="1_ss0d7"]
 [ext_resource type="Texture2D" uid="uid://dwqdroqopds7f" path="res://Main/Entities/Player/Weapons/RuinedViegoSword_SwordB.png" id="2_xcl6p"]
 [ext_resource type="Texture2D" uid="uid://dah02yftmige7" path="res://Main/Entities/Player/Weapons/RuinedViegoSword_SwordN.png" id="3_kp8g6"]
 [ext_resource type="PackedScene" uid="uid://0474ol80s1pj" path="res://Main/FX/s_hit_fx_botrk.tscn" id="5_b2itf"]
@@ -221,8 +221,10 @@ _data = {
 &"hit2": SubResource("Animation_b2itf")
 }
 
-[node name="BladeOfTheRuinedKing" type="Node3D" groups=["weapon"]]
+[node name="BladeOfTheRuinedKing" type="Node3D" node_paths=PackedStringArray("anim_player") groups=["weapon"]]
 script = ExtResource("1_ss0d7")
+type = "sword"
+anim_player = NodePath("AnimationPlayer")
 
 [node name="sword" type="MeshInstance3D" parent="."]
 transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0)

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://pc0w24fyun68"
+path="res://.godot/imported/clingclangslow.mp3-a311c155bd122ad7a66e76fc6e0537c0.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sound/Hit/metal pipe/clingclangslow.mp3"
+dest_files=["res://.godot/imported/clingclangslow.mp3-a311c155bd122ad7a66e76fc6e0537c0.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

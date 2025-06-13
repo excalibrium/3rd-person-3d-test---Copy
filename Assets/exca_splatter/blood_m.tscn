@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://b20lppdaf8gnl"]
+
+[ext_resource type="Texture2D" uid="uid://faa2keeunhs7" path="res://Assets/Textures/b1/b1_albedo.png" id="1_m12k2"]
+[ext_resource type="Texture2D" uid="uid://bpfse3edqelpj" path="res://Assets/Textures/b1/b1_heightmap.png" id="2_7cj62"]
+[ext_resource type="Texture2D" uid="uid://bx3p77wgw3iox" path="res://Assets/Textures/b1/b1_normal.png" id="3_lhsjt"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8e52p"]
+transparency = 4
+albedo_color = Color(0.884314, 3.20069e-06, 1.15514e-06, 1)
+albedo_texture = ExtResource("1_m12k2")
+metallic = 0.39
+metallic_specular = 0.67
+roughness = 0.28
+emission_enabled = true
+emission = Color(0.171544, 0, 0.018894, 1)
+emission_operator = 1
+normal_enabled = true
+normal_texture = ExtResource("3_lhsjt")
+anisotropy = 1.0
+ao_texture = ExtResource("2_7cj62")
+heightmap_enabled = true
+heightmap_texture = ExtResource("2_7cj62")
+subsurf_scatter_strength = 1.0
+backlight_enabled = true
+backlight = Color(1, 0.608103, 0.539489, 1)
+billboard_mode = 1
+billboard_keep_scale = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_7cj62"]
+material = SubResource("StandardMaterial3D_8e52p")
+size = Vector2(1.16188, 1.16188)
+orientation = 2
+
+[node name="BloodM" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("PlaneMesh_7cj62")

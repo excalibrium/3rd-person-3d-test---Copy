@@ -5,6 +5,8 @@ class_name Casual_EnemyD
 @export var raycast : RayCast3D
 var player
 var locking_value
+var hit = 0.0
+@onready var label : Label3D = $Label3D
 func _ready() -> void:
 	player = get_tree().get_nodes_in_group("Player")[0]
 
@@ -18,6 +20,7 @@ func _ready() -> void:
 			currentweapon = each_weapon
 
 func _process(delta: float) -> void:
+	
 	_handle_animations(delta)
 	_handle_var(delta)
 
@@ -95,18 +98,30 @@ func _on_alertness_sphere_area_entered(area: Area3D) -> void:
 func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 	nav.velocity = nav.velocity.move_toward(safe_velocity, 0.1)
 
-func damage_by(damaged):
+func damage_by(damaged,by):
+	if canBeDamaged:
+		hit += 1
+		label.text = str(hit)
+		health -= damaged
+		if health <= 0:
+			stunned = true
+			state_machine.stop()
+			if current_anim != "death":
+				state_machine.start("death")
+			health = 0
+		if by is PlayerController:
+			by.shake(damaged/10.0)
+	healthbar.health = health
 	if health <= 0:
 		stunned = true
 		state_machine.stop()
-		state_machine.travel("death")
-		health = 0
-	if canBeDamaged:
-		health -= damaged
-	damI = 0.0
-	healthbar.health = health 
-
-func guard_break():
+		if current_anim != "death":
+			state_machine.start("death")
+			print("muh")
+		health = 0.0
+	healthbar.health = health
+	stalling = false
+func parried():
 	pass
 
 
@@ -160,6 +175,12 @@ func _on_animation_tree_animation_finished(anim_name: StringName) -> void:
 	if attacking == false:
 		currentweapon.Hurt = false
 func _handle_animations(delta) -> void:
+	if instaslow == false:
+		animationTree.set("parameters/TimeScale/scale", 1)
+		#$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer.set("speed_scale", 1.0)
+		#$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/BoneAttachment3D/VFX/AnimationPlayer2.set("speed_scale", 1.0)
+	else:
+		animationTree.set("parameters/TimeScale/scale", 0.01)
 	#print(nav.is_target_reached())
 	#print(common.pick_random(), "SEKKUSU")
 	if current_attack_target:

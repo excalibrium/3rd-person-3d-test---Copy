@@ -1,6 +1,8 @@
 extends Node3D
 class_name Weapon
 
+@export var type : String
+@export var anim_player : AnimationPlayer
 @export var Hurt = false
 @onready var hitboxes: Array = []
 @export var attack_damage := 10.0

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c4e7006i74pp8"
+path="res://.godot/imported/spearthrust01.mp3-a8e8e50e8e7dd8992335f907e036c23d.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sound/Hit/metal pipe/spearthrust01.mp3"
+dest_files=["res://.godot/imported/spearthrust01.mp3-a8e8e50e8e7dd8992335f907e036c23d.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

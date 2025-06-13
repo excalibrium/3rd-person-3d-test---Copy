@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddd3e403ct3ju"]
+
+[ext_resource type="Script" uid="uid://vp1v0dpluihn" path="res://Assets/exca_splatter/splatter.gd" id="1_e0y12"]
+[ext_resource type="PackedScene" uid="uid://b20lppdaf8gnl" path="res://Assets/exca_splatter/blood_m.tscn" id="2_6vuey"]
+
+[sub_resource type="Curve3D" id="Curve3D_e0y12"]
+bake_interval = 0.1
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.3, 0.2559, 0.3, 0, 0, 0, 0, 0, 0, 0.6, 0.4236, 0.6, 0, 0, 0, 0, 0, 0, 0.9, 0.5031, 0.9, 0, 0, 0, 0, 0, 0, 1.2, 0.4944, 1.2, 0, 0, 0, 0, 0, 0, 1.5, 0.3975, 1.5),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0)
+}
+point_count = 6
+
+[node name="splatter" type="Node3D"]
+script = ExtResource("1_e0y12")
+progress = true
+gravity = 0.98
+trajectory = Vector3(1, 1, 1)
+speed_multiplier = 10.0
+lifetime = 1.5
+splats = 24
+spawn_delay = 0.001
+splat_scene = ExtResource("2_6vuey")
+scale_variation = 2.0
+
+[node name="Path3D" type="Path3D" parent="."]
+curve = SubResource("Curve3D_e0y12")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
+transform = Transform3D(-0.707106, -0.259923, -0.657581, 0, 0.929956, -0.367588, 0.707106, -0.259923, -0.657581, 0.536635, 0.388179, 0.536635)
+progress = 0.854753

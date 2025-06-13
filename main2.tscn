@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=4 uid="uid://dqa8uutueoir1"]
+[gd_scene load_steps=36 format=4 uid="uid://dqa8uutueoir1"]
 
 [ext_resource type="PackedScene" uid="uid://ckc1saq8s40bw" path="res://Main/Entities/Player/Player.tscn" id="1_uuh3q"]
 [ext_resource type="Texture2D" uid="uid://djv1h3a0d7l56" path="res://Main/textures/sand/Ground080_1K-JPG_Color.jpg" id="2_fd661"]
@@ -10,12 +10,23 @@
 [ext_resource type="Texture2D" uid="uid://cjnsd62vva1pj" path="res://Main/textures/brick/Bricks066_1K-JPG_AmbientOcclusion.jpg" id="8_6deml"]
 [ext_resource type="Texture2D" uid="uid://cv465etp2axos" path="res://Main/textures/brick/Bricks066_1K-JPG_Displacement.jpg" id="9_7jk8w"]
 [ext_resource type="Texture2D" uid="uid://glyfc2hkrkms" path="res://Main/textures/brick/Bricks066_1K-JPG_NormalGL.jpg" id="10_wbghg"]
-[ext_resource type="Sky" uid="uid://xak2xrl37uv1" path="res://normalsky.tres" id="11_cyffs"]
 [ext_resource type="Script" uid="uid://ha31whyinuti" path="res://Main/Entities/Player/Spawner.gd" id="12_rqun8"]
+[ext_resource type="PackedScene" uid="uid://byca0p5krtjmb" path="res://Main/Entities/Player/menu/inventory_item.tscn" id="13_4fcfw"]
+[ext_resource type="PackedScene" uid="uid://ckslkddh002xj" path="res://chest.tscn" id="13_pw2xv"]
+[ext_resource type="Shader" uid="uid://d130hvte1w2vl" path="res://Levels/Cloud_test.gdshader" id="14_pw2xv"]
 
-[sub_resource type="Environment" id="Environment_6dosp"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_bbj40"]
+load_path = "res://.godot/imported/newhdr.exr-bb0df6ee754cd1624ea8254dc1ec262c.bptc.ctex"
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_4fcfw"]
+panorama = SubResource("CompressedTexture2D_bbj40")
+
+[sub_resource type="Sky" id="Sky_pw2xv"]
+sky_material = SubResource("PanoramaSkyMaterial_4fcfw")
+
+[sub_resource type="Environment" id="Environment_0v28x"]
 background_mode = 2
-sky = ExtResource("11_cyffs")
+sky = SubResource("Sky_pw2xv")
 ambient_light_color = Color(0.501407, 0.501406, 0.501406, 1)
 ambient_light_sky_contribution = 0.9
 ambient_light_energy = 1.15
@@ -163,10 +174,40 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_e7w11")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_njxwe"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0v28x"]
+seamless = true
+noise = SubResource("FastNoiseLite_njxwe")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_t6f7l"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r462f"]
+invert = true
+seamless = true
+noise = SubResource("FastNoiseLite_t6f7l")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r3f1m"]
+render_priority = 0
+shader = ExtResource("14_pw2xv")
+shader_parameter/small_noise = SubResource("NoiseTexture2D_r462f")
+shader_parameter/big_noise = SubResource("NoiseTexture2D_0v28x")
+shader_parameter/small_noise_scale = 7.913
+shader_parameter/big_noise_scale = 4.618
+shader_parameter/cutoff = 0.313
+shader_parameter/edge_softness = 0.185
+shader_parameter/normal_strength = 1.0
+shader_parameter/depth_multiplier = 1.5
+shader_parameter/time_scale = 0.1
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ygvo0"]
+material = SubResource("ShaderMaterial_r3f1m")
+size = Vector2(50000, 50000)
+
 [node name="Node3D" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_6dosp")
+environment = SubResource("Environment_0v28x")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
 transform = Transform3D(0.999903, -0.0112091, 0.0083246, 0, 0.596225, 0.802817, -0.0139622, -0.802739, 0.596167, -0.436068, 8.42006, 0)
@@ -236,3 +277,61 @@ shape = SubResource("ConcavePolygonShape3D_02mej")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_gdwyg")
+
+[node name="s0" parent="." instance=ExtResource("13_4fcfw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.2678, 1.52205, -2.82975)
+type = "skill"
+active = true
+
+[node name="s1" parent="." instance=ExtResource("13_4fcfw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.2678, 1.52205, -0.555955)
+item_code = 1
+type = "skill"
+active = true
+
+[node name="s2" parent="." instance=ExtResource("13_4fcfw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.2678, 1.52205, 1.41865)
+item_code = 2
+type = "skill"
+active = true
+
+[node name="w0" parent="." instance=ExtResource("13_4fcfw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.2678, 1.52205, 3.91064)
+type = "weapon"
+active = true
+
+[node name="w1" parent="." instance=ExtResource("13_4fcfw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.955, 1.52205, 6.3524)
+item_code = 1
+type = "weapon"
+active = true
+
+[node name="w2" parent="." instance=ExtResource("13_4fcfw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.1478, 1.52205, 8.05394)
+item_code = 2
+type = "weapon"
+active = true
+
+[node name="Chest" parent="." instance=ExtResource("13_pw2xv")]
+transform = Transform3D(-0.420862, 0, 0.907125, 0, 1, 0, -0.907125, 0, -0.420862, 7.71597, 5.09632, -22.3606)
+
+[node name="Chest2" parent="." instance=ExtResource("13_pw2xv")]
+transform = Transform3D(-0.888233, 0, -0.459394, 0, 1, 0, 0.459394, 0, -0.888233, 9.37905, 5.09632, -19.8975)
+
+[node name="Chest3" parent="." instance=ExtResource("13_pw2xv")]
+transform = Transform3D(0.560567, 0, 0.828109, 0, 1, 0, -0.828109, 0, 0.560567, -4.9408, 5.09632, -22.3727)
+
+[node name="cloud" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0, 567.568, 0)
+layers = 16
+mesh = SubResource("PlaneMesh_ygvo0")
+
+[node name="cloud2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0, 615.648, 0)
+layers = 16
+mesh = SubResource("PlaneMesh_ygvo0")
+
+[node name="cloud3" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 0, 0, 1, 0, 655.025, 0)
+layers = 16
+mesh = SubResource("PlaneMesh_ygvo0")

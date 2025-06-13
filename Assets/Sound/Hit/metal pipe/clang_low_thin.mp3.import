@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dvt0dm35j1aa6"
+path="res://.godot/imported/clang_low_thin.mp3-8aeb5486286ab4a0536ffd448e9d6961.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sound/Hit/metal pipe/clang_low_thin.mp3"
+dest_files=["res://.godot/imported/clang_low_thin.mp3-8aeb5486286ab4a0536ffd448e9d6961.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

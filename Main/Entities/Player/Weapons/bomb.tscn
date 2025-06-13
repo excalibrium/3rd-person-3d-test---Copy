@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3 uid="uid://2yjs8vqx3r08"]
+
+[ext_resource type="Script" uid="uid://c0421nmdcjxuq" path="res://Main/Entities/Player/Weapons/bomb.gd" id="1_kpfp3"]
+[ext_resource type="AudioStream" uid="uid://yk1k2psu2ulq" path="res://Main/Entities/Player/tick1.wav" id="2_gpksu"]
+[ext_resource type="AudioStream" uid="uid://0gafa4atbwfj" path="res://Main/Entities/Player/explode3.wav" id="3_h0d5l"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gpksu"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_kpfp3"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aaek0"]
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.937255, 0.921569, 0.470588, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_h0d5l"]
+material = SubResource("StandardMaterial3D_aaek0")
+radius = 5.0
+height = 10.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_h0d5l"]
+radius = 5.0
+
+[node name="Bomb" type="Node3D" node_paths=PackedStringArray("anim_player") groups=["weapon"]]
+script = ExtResource("1_kpfp3")
+type = "throw"
+anim_player = NodePath("AnimationPlayer")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_gpksu")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_kpfp3")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_gpksu")
+
+[node name="AudioStreamPlayer3D2" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_h0d5l")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+visible = false
+mesh = SubResource("SphereMesh_h0d5l")
+
+[node name="Area3D2" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D2"]
+shape = SubResource("SphereShape3D_h0d5l")

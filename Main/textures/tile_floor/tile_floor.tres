@@ -1,0 +1,23 @@
+[gd_resource type="ORMMaterial3D" load_steps=6 format=3 uid="uid://b40b71o8o6b43"]
+
+[ext_resource type="Texture2D" uid="uid://cowti4ofu67ju" path="res://Main/textures/tile_floor/tile_floor_albedo.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://b5fmuexxlv4e5" path="res://Main/textures/tile_floor/tile_floor_orm.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://c6kcbcywqph4l" path="res://Main/textures/tile_floor/tile_floor_normal.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://dutx6l2fun0wv" path="res://Main/textures/tile_floor/tile_floor_heightmap.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://3fa5yapliy7r" path="res://Main/textures/tile_floor/tile_floor_emission.png" id="5"]
+
+[resource]
+albedo_texture = ExtResource("1")
+orm_texture = ExtResource("2")
+emission_enabled = true
+emission_texture = ExtResource("5")
+normal_enabled = true
+normal_texture = ExtResource("3")
+heightmap_enabled = true
+heightmap_scale = 0.625
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+heightmap_texture = ExtResource("4")
+uv1_triplanar = true
+uv2_triplanar = true

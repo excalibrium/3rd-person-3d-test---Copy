@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://b6u4r8e00b7cy"]
 
-[ext_resource type="Script" path="res://Main/Entities/Player/UI/StaminaBar.gd" id="1_ghn1u"]
+[ext_resource type="Script" uid="uid://cl0xaikfapyoh" path="res://Main/Entities/Player/UI/StaminaBar.gd" id="1_ghn1u"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pva3h"]
 
@@ -45,7 +45,6 @@ value = 90.0
 show_percentage = false
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.5
 one_shot = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

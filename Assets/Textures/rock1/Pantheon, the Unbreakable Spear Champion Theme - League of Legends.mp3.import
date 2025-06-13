@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dtrxyq6tqipg5"
+path="res://.godot/imported/Pantheon, the Unbreakable Spear Champion Theme - League of Legends.mp3-919862695e0c7a45b274ee2d591f84a6.mp3str"
+
+[deps]
+
+source_file="res://Assets/Textures/rock1/Pantheon, the Unbreakable Spear Champion Theme - League of Legends.mp3"
+dest_files=["res://.godot/imported/Pantheon, the Unbreakable Spear Champion Theme - League of Legends.mp3-919862695e0c7a45b274ee2d591f84a6.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

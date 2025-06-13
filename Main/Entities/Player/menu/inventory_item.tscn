@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://byca0p5krtjmb"]
+
+[ext_resource type="Script" uid="uid://cnmxqkpo7w1qx" path="res://Main/Entities/Player/menu/inventory_item.gd" id="1_dhd1b"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_uyu0w"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dhd1b"]
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_dhd1b"]
+material = SubResource("StandardMaterial3D_dhd1b")
+
+[node name="Inventory_item" type="Node3D"]
+script = ExtResource("1_dhd1b")
+type = "skill/weapon"
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_uyu0w")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_dhd1b")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+billboard = 1
+text = "aaaß"
