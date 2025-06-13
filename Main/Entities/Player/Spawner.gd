@@ -12,18 +12,16 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
+	if Input.is_action_pressed("F"):
+		spawn_casual()
 	current_spawned = get_tree().get_nodes_in_group("enemies").size()
 	counter += delta * 10.0
 	if counter >= spawn_limit / player.killed and current_spawned < spawn_count_limit:
 		spawn_casual()
 		counter = 0.0
-func _input(event):
-	if Input.is_action_pressed("F"):
-		spawn_casual()
 
 func spawn_casual():
-	
 	casene = scene.instantiate()
 	add_child(casene)
 	casene.cdm_seed = 0.10379016399384
