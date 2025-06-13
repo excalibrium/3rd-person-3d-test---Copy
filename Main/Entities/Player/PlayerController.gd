@@ -4,12 +4,9 @@ class_name PlayerController
 var MOVE_BOOL : bool = !staggered and is_moving == true and attacking == false and is_blocking == false and is_running == false and speed < 4.8 and is_on_floor()
 var IDLE_BOOL : bool = velocity.y <= 0 and !staggered and is_moving == false and attacking == false and is_blocking == false and is_running == false and in_mode == false
 var killed := 1.0
-@onready var parrying: AudioStreamPlayer3D = $parrying
 
 @export var attack_speed_mult : float
 var attack_speed : float
-
-@onready var mat_ray: RayCast3D = $mat_ray
 
 @export var Bone_RightHandItem : BoneAttachment3D
 
@@ -28,7 +25,6 @@ var air_throwing := false
 
 @export_category("Extras")
 @export var max_lock_range : float = 25.0
-@export var raycast_ground : RayCast3D
 
 @export var aim_look_at : Node3D
 
@@ -41,7 +37,6 @@ var player_no: Array #a mechanic that may help me later on. What? planning to ad
 var state_machine
 var current_state
 var previous_state
-@onready var cam = $Camera/Camera3D
 @onready var staminabar = $HUD/StaminaBar
 @onready var healthbar = $HUD/HealthBar
 var speed_multiplier = 1.0
@@ -127,19 +122,6 @@ func _ready():
 	healthbar.init_health(health)
 	connect("state_changed", Callable(self, "_on_state_changed"))
 
-func interact():
-	#print(cam.interact_ray.get_collider().get_parent())
-	if cam.interact_ray.get_collider() and cam.interact_ray.get_collider().get_parent() and cam.interact_ray.get_collider().get_parent().has_method("interacted"):
-		print(cam.interact_ray.get_collider().get_parent())
-		cam.interact_ray.get_collider().get_parent().interacted(self)
-		
-func recieve_item(item_code, type):
-	match type:
-		"skill":
-			cam.ingame_menu.skills[item_code].found = true
-		"weapon":
-			cam.ingame_menu.weapons[item_code].found = true
-
 func _input(event):
 	if event.is_action_pressed("ABILITY_1"):
 		handle_ability_input(ability_1)
@@ -147,10 +129,6 @@ func _input(event):
 		handle_ability_input(ability_2)
 	if event.is_action_pressed("ABILITY_3"):
 		handle_ability_input(ability_3)
-	
-
-	if event.is_action_pressed("interact"):
-		interact()
 	
 	
 	if event.is_action_pressed("y"):
@@ -168,10 +146,6 @@ func _input(event):
 				state_machine.travel("fall_throw")
 	if event.is_action_pressed("R"):
 		throwing = not throwing
-		if throwing:
-			cam.fov = 70.0
-		else:
-			cam.fov = 80.0
 		if LeftHandItem == "CometSpear" and throwing == false:
 			$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CustomModifier.influence = 0.45 #0.45
 			currentweapon.position = Vector3(0.28, 0.1, -0.04)
@@ -191,14 +165,6 @@ func _input(event):
 			$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CustomModifier.influence = 1.0 #0.95
 			currentweapon.position = Vector3(-0.02, 0.078, -0.03)
 			currentweapon.rotation = Vector3(deg_to_rad(11), deg_to_rad(175.0), deg_to_rad(-95.0))
-	if event.is_action_pressed("1") and cam.ingame_menu.weapon_slots[0].get_ability() != current_weapon_code and !attacking:
-		set_weapon(0)
-	if event.is_action_pressed("2") and cam.ingame_menu.weapon_slots[1].get_ability() != current_weapon_code and !attacking:
-		set_weapon(1)
-	if event.is_action_pressed("3") and cam.ingame_menu.weapon_slots[2].get_ability() != current_weapon_code and !attacking:
-		set_weapon(2)
-	if event.is_action_pressed("4") and cam.ingame_menu.weapon_slots[3].get_ability() != current_weapon_code and !attacking:
-		set_weapon(3)
 	if event.is_action_pressed("Q"):
 		
 		if lockOn == false and closest_enemy and closest_enemy.global_position.distance_to(global_position) < max_lock_range:
@@ -220,7 +186,7 @@ func handle_ability_input(slot_index: String):
 					$view.global_rotation.y = aim_look_at.global_rotation.y - PI
 					BaseModel3D.global_rotation.y = aim_look_at.global_rotation.y
 					#velocity += aim_look_at.global_transform.basis.z * 1.0 * (cam.strength / 2.5)
-					velocity += -$view.global_transform.basis.z * 2.0 * (cam.strength / 2.0)
+
 				state_machine.travel("ability_1_down")
 		"assault":
 			if is_on_floor() == true:
@@ -252,25 +218,6 @@ func detect_surface_type(collider):
 	
 	return "nothing"
 func _process(delta):
-	#print(distance_to_ground)
-	if mat_ray.is_colliding():
-		var collider = mat_ray.get_collider()
-		on = detect_surface_type(collider)
-	if distance_to_ground < 2.3:
-		if velocity.y < -0.2 and not $grass_drop.playing and on == "grass":
-			$grass_drop.play()
-		if velocity.y < -0.2 and not $water_drop.playing and on == "water":
-			$water_drop.play()
-	if not is_on_air:
-		if speed > 3.0 and not $grass_run.playing and on == "grass":
-			$grass_run.play()
-		elif speed > 0.1 and not $grass_walk.playing and on == "grass":
-			$grass_walk.play()
-		elif speed > 3.0 and not $water_run.playing and on == "water":
-			$water_run.play()
-		elif speed > 0.1 and not $water_walk.playing and on == "water":
-			$water_walk.play()
-	$cam_pivot_mesh_copier.global_transform = cam.pivot_mesh.global_transform
 	if time_since_stamina_depleted < 5.0:
 		time_since_stamina_depleted += delta
 	if throwing == false:
@@ -308,10 +255,6 @@ func _process(delta):
 	else:
 		animationTree.set_animation_player("../AnimationPlayer")
 
-	if raycast_ground.is_colliding():
-		distance_to_ground = global_position.distance_to(raycast_ground.get_collision_point())
-	else:
-		distance_to_ground = 100
 	if distance_to_ground < 1.1 and velocity.y <= 0.01:
 		is_on_air = false
 	#print_debug(distance_to_ground)
@@ -325,10 +268,6 @@ func _process(delta):
 	_handle_movement(delta)
 	_handle_combat(delta)
 	_handle_animations(delta)
-	if is_on_floor() == false and air_throwing == true:
-		$BaseModel3D.global_rotation_degrees = Vector3(cam.global_rotation_degrees.x,cam.global_rotation_degrees.y, cam.global_rotation_degrees.z)
-	else:
-		$BaseModel3D.global_rotation_degrees = Vector3(0.0, $BaseModel3D.global_rotation_degrees.y, 0.0)
 	#print(air_throwing)
 
 func _on_state_changed(to):
@@ -342,7 +281,7 @@ func _physics_process(delta):
 	if Input.is_action_pressed("SpaceBar") and is_on_floor():
 		action_bar += 1
 		time_since_actionbar_halt = 0
-	aim_look_at.look_at(cam.pivot_ray.get_collision_point(), Vector3.UP, true)
+	#aim_look_at.look_at(cam.pivot_ray.get_collision_point(), Vector3.UP, true)
 	#if throwing == true:
 		#$BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/UB2_applier.influence = 1.0
 		#var original_rot = $Chest.global_rotation
@@ -384,8 +323,6 @@ func _handle_movement(delta):
 
 	#elif is_on_floor() == true and current_state in ["walk_to_jump", "idle_to_jump"] and jump_time < 0.2667 and jump_lock == false:
 		#state_machine.travel("idle") 
-	raycast_ground.global_rotation_degrees.y += 3
-	wrapf(raycast_ground.global_rotation_degrees.y, -360, 360)
 	#if is_on_air == true:
 		#velocity.x = velocity.x / 0.9
 		#velocity.z = velocity.z / 0.9
@@ -531,6 +468,7 @@ func _handle_movement(delta):
 		else: 
 			dodge_buffer = false
 			time_since_dodge_buffer = 0.0
+	
 func _handle_variables(delta):
 	if performing_ability == true:
 		ability_timer += delta
@@ -548,10 +486,6 @@ func _handle_variables(delta):
 	#var cam3dTO = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CameraAttachment/right.global_transform.origin
 	var cam3dthrow = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/CameraAttachment/throw.global_transform.origin
 	if not throwing:
-		if time_since_engage >= 8:
-			cam.anchor.spring_length = lerp(cam.anchor.spring_length, 1.75, 0.1)
-		else:
-			cam.anchor.spring_length = lerp(cam.anchor.spring_length, 3.5, 0.1)
 		if camera_on_lmr == 1:
 			$Camera.global_transform.origin = lerp($Camera.global_transform.origin, camattachmentright.global_transform.origin, 0.125)
 		elif camera_on_lmr == 0:
@@ -561,7 +495,6 @@ func _handle_variables(delta):
 			
 		#$Camera.global_transform.origin.x = lerp($Camera.global_transform.origin.x, camattachment.global_transform.origin.x, 0.0125)
 	else:
-		cam.anchor.spring_length = lerp(cam.anchor.spring_length, 1.85, 0.25)
 		#$BaseModel3D.global_rotation_degrees.y += -10 * delta
 		$Camera.global_transform.origin = lerp($Camera.global_transform.origin, cam3dthrow, 0.125)
 	#else:
@@ -951,13 +884,6 @@ func _handle_combat(delta):
 	if Input.is_action_just_released("shiftKey"):
 		shift = false
 
-	if Input.is_action_just_pressed("LeftClick") and in_menu == false:
-		if cam.in_ingame_menu == false:
-			leftclick = true
-			if not is_on_floor() and air_throwing == true:
-				gravity = 4.0
-			else:
-				gravity = 4.9 * 2.0
 	if Input.is_action_pressed("LeftClick") and !stunned and leftclick and stamina > 0.0:
 		attack_meter += delta
 		throw_meter += delta
@@ -1112,8 +1038,6 @@ func _on_animation_tree_animation_started(anim_name):
 		ability_timer = 0.0
 		damI = 0.0
 		damI_cd = 1.583
-	if anim_name in ["ability_1_start", "ability_1_down"]:
-		attack_timer == 0.0
 	match anim_name:
 		"throw_to_charge":
 			throw_meter = 0.0
@@ -1140,7 +1064,6 @@ func _on_animation_tree_animation_started(anim_name):
 			attack_timer = 0.0
 		"Attack_1":
 
-			cam.anchor.spring_length = lerp(cam.anchor.spring_length, 1.75, 0.1)
 			groan_streams.play()
 			attacking = true
 			attack_timer = 0.0
@@ -1451,9 +1374,8 @@ func damage_by(damaged: int,by, side = 1):
 		damI = 0.0
 	healthbar.health = health
 
-func parried(by):
+func parried(_by):
 	state_machine.travel("staggered")
-	parrying.play()
 	is_blocking = false
 	#rotation_lock = true
 func throw_weapon():
@@ -1466,7 +1388,6 @@ func throw_weapon():
 	throwable.angular_velocity = Vector3.ZERO
 	throwable.global_rotation = $BaseModel3D.global_rotation
 	throwable.global_rotation.x -= $UpperBody_skewer.global_rotation.x / 1.0 - 0.025
-	throwable.global_rotation.y -= 0.25 / cam.strength
 
 	#$Throw_test.global_rotation.x = 0
 	throwable.global_position = $BaseModel3D/MeshInstance3D/Bones_arm/Skeleton3D/LeftHandItem.global_position
@@ -1485,30 +1406,21 @@ func throw_weapon():
 	throw_meter = 0.0
 	currentweapon.reparent(throwable, true)
 	thrown_weapon.position = Vector3.ZERO
-	var impulse = -throwable.global_transform.basis.z * (cam.strength / 2.0) * 5 * (1.0+throw_meter)
 	if currentweapon.type == "throw":
 		thrown_weapon.prime()
-		impulse = throwable.global_transform.basis.z * 15
 		throwable.collision_layer = 8
 		throwable.collision_mask = 8
 	groan_streams.play()
 	set_weapon(-1)
 	print(currentweapon.type)
-	throwable.apply_central_impulse(impulse)
 	throwable.global_rotation = $BaseModel3D.global_rotation
 	thrown_weapon.rotation_degrees -= Vector3(0.0,5.0,0.0) 
 	thrown_weapon.thrown = true
 	
 func set_weapon(weapon_no : int = 0):
-	current_weapon_code = cam.ingame_menu.weapon_slots[weapon_no].get_ability()
 	var current_str: String
 	#var current_int: int
 	var handheld
-	if weapon_no >= 0:
-		current_str = cam.ingame_menu.weapon_slots[weapon_no].get_ability()
-		print(cam.ingame_menu.weapon_slots[weapon_no])
-	else:
-		print(current_str)
 	if current_str in weapons:
 		handheld = weapons[current_str]
 	else:
@@ -1562,20 +1474,11 @@ func set_weapon(weapon_no : int = 0):
 	print(handheld)
 func two_fps() -> void:
 	pass
-	
-func update_ability():
-	ability_1 = cam.ingame_menu.slots[0].get_ability()
-	ability_2 = cam.ingame_menu.slots[1].get_ability()
-	ability_3 = cam.ingame_menu.slots[2].get_ability()
-	ult = cam.ingame_menu.slots[3].get_ability()
+
 
 func shake(mag):
-	cam.active = false
 	var mag10 = mag/10.0
 	$Camera.position += Vector3(randf_range(-mag10,mag10), randf_range(-mag10/2.0,mag10/2.0),randf_range(-mag10,mag10))
-	cam.rotation_degrees += Vector3(randf_range(-mag,mag),randf_range(-mag,mag),randf_range(-mag,mag))
-	#await get_tree().create_timer(1.175).timeout
-	cam.active = true
 func dodge():
 	state_machine.travel("Roll")
 	attacking = false

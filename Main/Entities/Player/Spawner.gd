@@ -13,7 +13,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	if Input.is_action_pressed("F"):
+	if Input.is_action_just_pressed("F"):
 		spawn_casual()
 	current_spawned = get_tree().get_nodes_in_group("enemies").size()
 	counter += delta * 10.0

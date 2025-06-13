@@ -83,21 +83,22 @@ func pressed(Type):
 			cursor.set_main_type("audio")
 func switch(sw_bool: bool,Type, delta, once:=false):
 	if sw_bool == false:
-		match Type:
-			"Quitting":
-				var tween = create_tween()
-				tween.tween_property(self, "global_position", Vector3.RIGHT * 30, 25.0 * delta).set_trans(Tween.TRANS_CUBIC)
-			"Continue":
-				var tween = create_tween()
-				tween.tween_property(self, "global_position", Vector3.RIGHT * 30, 25.0 * delta).set_trans(Tween.TRANS_CUBIC)
-			"Options":
-				var tween = create_tween()
-				tween.tween_property(self, "global_position", Vector3.RIGHT * 30, 25.0 * delta).set_trans(Tween.TRANS_CUBIC)
-				print(tween.finished)
-			"Back":
-				var tween = create_tween()
-				tween.tween_property(self, "global_position", Vector3.RIGHT * 30, 25.0 * delta).set_trans(Tween.TRANS_CUBIC)
-			
+		return
+	match Type:
+		"Quitting":
+			var tween = create_tween()
+			tween.tween_property(self, "global_position", Vector3.RIGHT * 30, 25.0 * delta).set_trans(Tween.TRANS_CUBIC)
+		"Continue":
+			var tween = create_tween()
+			tween.tween_property(self, "global_position", Vector3.RIGHT * 30, 25.0 * delta).set_trans(Tween.TRANS_CUBIC)
+		"Options":
+			var tween = create_tween()
+			tween.tween_property(self, "global_position", Vector3.RIGHT * 30, 25.0 * delta).set_trans(Tween.TRANS_CUBIC)
+			print(tween.finished)
+		"Back":
+			var tween = create_tween()
+			tween.tween_property(self, "global_position", Vector3.RIGHT * 30, 25.0 * delta).set_trans(Tween.TRANS_CUBIC)
+
 func update_vis():
 	if cursor.main_type != main_type:
 		visible = false
