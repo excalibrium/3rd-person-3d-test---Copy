@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="project pantheon"
-run/main_scene="uid://cqaj445dm1d23"
+run/main_scene="uid://dqa8uutueoir1"
 config/features=PackedStringArray("4.4", "Forward Plus")
 run/low_processor_mode=true
 config/icon="uid://iy8pwknq60v3"
